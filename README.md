@@ -3,8 +3,8 @@
 Seismic Station Viewer for the Wolfx API.
 
 # How to run?
-> Download the files<br>
-> Open in VSCode<br>
-> Install Vite Ext.<br>
-> npm install<br>
-> npm run dev<br>
+1. Download the files<br>
+2. Open in VSCode<br>
+3. Install Vite Extension.<br>
+4. > npm install<br>
+5. > npm run dev<br>
