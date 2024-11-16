@@ -40,6 +40,13 @@
             <h4>最大震度: {{ data.Max_Shindo }}</h4>
           </div>
         </div>
+
+        <div class="card-footer">
+          <button class="detail-btn" @click="showStationDetail(data)">
+            <Icon icon="mdi:information" class="icon" />
+            <span>详细信息</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -48,6 +55,10 @@
     </footer>
 
     <DisclaimerModal ref="disclaimerModal" />
+    <StationDetailModal 
+      ref="stationDetailModal"
+      :stationType="selectedStation?.type || null"
+    />
   </div>
 </template>
 
@@ -59,6 +70,7 @@ import { useSeismicStore } from '../stores/seismic'
 import { initWebSocket } from '../services/websocket'
 import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
 import DisclaimerModal from '../components/DisclaimerModal.vue'
+import StationDetailModal from '../components/StationDetailModal.vue'
 
 const themeStore = useThemeStore()
 const seismicStore = useSeismicStore()
@@ -103,6 +115,13 @@ onUnmounted(() => {
 })
 
 const disclaimerModal = ref()
+const stationDetailModal = ref()
+const selectedStation = ref()
+
+function showStationDetail(data: any) {
+  selectedStation.value = data
+  stationDetailModal.value?.show()
+}
 </script>
 
 <style scoped lang="scss">
@@ -134,6 +153,8 @@ const disclaimerModal = ref()
 }
 
 .seismic-card {
+  position: relative;
+  padding-bottom: 3rem;
   padding: 1.5rem;
   border-radius: 1rem;
   background: var(--card-bg);
@@ -208,6 +229,44 @@ const disclaimerModal = ref()
       }
     }
   }
+
+  .card-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    
+    .detail-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 2rem;
+      background: var(--card-bg);
+      color: var(--text-color);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      
+      &:hover {
+        background: var(--card-hover);
+        transform: translateY(-2px);
+      }
+      
+      .icon {
+        font-size: 1.2rem;
+      }
+      
+      span {
+        line-height: 1;
+      }
+    }
+  }
 }
 
 .theme-toggle {
@@ -276,6 +335,27 @@ const disclaimerModal = ref()
     
     .data-grid {
       grid-template-columns: 1fr;
+    }
+    
+    .card-footer {
+      padding: 0.8rem;
+      
+      .detail-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+.dark {
+  .seismic-card {
+    .detail-btn {
+      background: rgba(255, 255, 255, 0.1);
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
     }
   }
 }
