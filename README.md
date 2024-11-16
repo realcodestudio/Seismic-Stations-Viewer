@@ -1,10 +1,12 @@
 # Seismic Stations Viewer
 
-Seismic Station Viewer for the Wolfx API.
+Seismic Station Viewer for the Wolfx Seis API. Wolfx Seis API can only be used in Chinese mainland, so you cannot use it outside of Chinese mainland.
 
 # How to run?
-1. Download the files<br>
-2. Open in VSCode<br>
-3. Install Vite Extension.<br>
-4. > npm install<br>
-5. > npm run dev<br>
+* Download the codes from Releases<br>
+* Open in VSCode<br>
+* Install “Vite” Extension.<br>
+* Run these command in Terminal
+ > cd Seismic-Stations-Viewer<br>
+ > npm install<br>
+ > npm run dev<br>
