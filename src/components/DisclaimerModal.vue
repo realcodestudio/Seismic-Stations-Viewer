@@ -3,7 +3,7 @@
     <div class="modal-content">
       <h2>项目说明</h2>
       <div class="disclaimer-text">
-        本项目用于从Wolfx Websocket API获取地震测站的各种信息并可视化展示；本项目不属于Wolfx管理，当项目出现问题时请勿联系Wolfx。
+        <b>请注意：</b>本项目为独立开发项目，与 Wolfx团队组织没有任何从属关系或官方合作。<br> 本项目仅从 Wolfx团队提供的API中获取公开数据，不代表 Wolfx团队的官方立场。<br>如遇到任何项目相关的问题或故障，请勿联系 Wolfx 团队，应直接在本项目的 Issues 区提出。<br><b>使用本项目即表示您同意并理解上述声明。本项目仅供学习和参考使用。</b>
       </div>
       <button class="close-btn" @click="closeModal">关闭</button>
     </div>
@@ -29,7 +29,7 @@ defineExpose({ show })
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;

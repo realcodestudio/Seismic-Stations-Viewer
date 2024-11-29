@@ -36,6 +36,10 @@ interface SeismicData {
   Max_Shindo: string          // 最大震度
   Max_CalcShindo: number      // 最大计测震度
   
+  // 烈度相关数据
+  Intensity: string            // 烈度
+  Max_Intensity: string        // 最大烈度
+
   // 其他信息
   High_Precision: boolean      // 是否高精度
   private: boolean            // 是否私有
@@ -49,19 +53,22 @@ export const useSeismicStore = defineStore('seismic', () => {
   const seismicDataMap = ref<Map<string, SeismicData>>(new Map())
   
   function updateSeismicData(data: SeismicData) {
+    console.log('更新数据:', data)
     seismicDataMap.value.set(data.type, {
       ...data,
-      region: data.region,
-      latitude: Number(data.latitude),
-      longitude: Number(data.longitude),
+      region: data.region || '未知地区',
+      latitude: Number(data.latitude) || 0,
+      longitude: Number(data.longitude) || 0,
       systemInfo: data.systemInfo,
       version: data.version,
       PGA: Number(data.PGA.toFixed(3)),
       CalcShindo: data.CalcShindo,
       Shindo: data.Shindo,
       Max_Shindo: data.Max_Shindo,
+      Intensity: data.Intensity,
       update_at: data.update_at
     })
+    console.log('更新后的数据Map:', seismicDataMap.value)
   }
 
   return {

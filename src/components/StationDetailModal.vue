@@ -88,7 +88,14 @@ function formatLabel(key: string): string {
     High_Precision: '高精度测站',
     private: '私有',
     update_at: '更新时间',
-    create_at: '创建时间'
+    create_at: '创建时间',
+    Intensity: '实时烈度',
+    Max_Intensity: '最大烈度',
+    cityName: '城市',
+    countryName: '国家',
+    is_desktop: '桌面端',
+    PGD: 'PGD',
+    Max_PGD: '最大PGD'
   }
   
   return labelMap[key] || key
@@ -158,7 +165,7 @@ defineExpose({ show: showModal })
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.699);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -172,7 +179,7 @@ defineExpose({ show: showModal })
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.445);
 
     .modal-header {
       position: sticky;

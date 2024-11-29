@@ -20,24 +20,35 @@
         
         <div class="data-grid">
           <div class="shindo-display"
-               :style="getShindoDisplayStyle(data.Shindo)">
+               :style="getShindoStyle(data.Shindo || '0')">
             <h1 class="shindo-label">实时震度</h1>
-            <span class="shindo-value">{{ data.Shindo }}</span>
+            <span class="shindo-value">{{ data.Shindo || '0' }}</span>
+          </div>
+          
+          <div class="intensity-display"
+               :style="getIntensityStyle(formatIntensity(data.Intensity))">
+            <h1 class="intensity-label">实时烈度</h1>
+            <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
           
           <div class="data-item">
             <h1><Icon icon="mdi:waveform" /></h1>
-            <h4>PGA: {{ data.PGA }}</h4>
+            <h4>PGA: {{ formatNumber(data.PGA) }}</h4>
           </div>
           
           <div class="data-item">
             <h1><Icon icon="mdi:calculator" /></h1>
-            <h4>计测震度: {{ data.CalcShindo }}</h4>
+            <h4>计测震度: {{ formatNumber(data.CalcShindo) }}</h4>
           </div>
           
           <div class="data-item">
             <h1><Icon icon="mdi:format-vertical-align-top" /></h1>
             <h4>最大震度: {{ data.Max_Shindo }}</h4>
+          </div>
+          
+          <div class="data-item">
+            <h1><Icon icon="mdi:format-vertical-align-top" /></h1>
+            <h4>最大烈度: {{ data.Max_Intensity }}</h4>
           </div>
         </div>
 
@@ -63,12 +74,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, computed, ref } from 'vue'
+import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useThemeStore } from '../stores/theme'
 import { useSeismicStore } from '../stores/seismic'
 import { initWebSocket } from '../services/websocket'
 import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
+import { getIntensityStyle } from '../utils/intensityUtils'
 import DisclaimerModal from '../components/DisclaimerModal.vue'
 import StationDetailModal from '../components/StationDetailModal.vue'
 
@@ -77,7 +89,9 @@ const seismicStore = useSeismicStore()
 let ws: WebSocket
 
 const seismicDataArray = computed(() => {
-  return Array.from(seismicStore.seismicDataMap.values())
+  const data = Array.from(seismicStore.seismicDataMap.values())
+  console.log('当前数据:', data)
+  return data
 })
 
 function getCardStyle(shindo: string) {
@@ -106,8 +120,22 @@ function formatTime(timeStr: string) {
   })
 }
 
-onMounted(() => {
+function initWebSocketWithDebug() {
   ws = initWebSocket()
+  console.log('WebSocket 初始化')
+  
+  ws.onopen = () => {
+    console.log('WebSocket 连接已建立')
+  }
+  
+  ws.onerror = (error) => {
+    console.error('WebSocket 错误:', error)
+  }
+}
+
+onMounted(() => {
+  initWebSocketWithDebug()
+  console.log('初始数据:', seismicDataArray.value)
 })
 
 onUnmounted(() => {
@@ -122,30 +150,67 @@ function showStationDetail(data: any) {
   selectedStation.value = data
   stationDetailModal.value?.show()
 }
+
+function formatNumber(value: number): string {
+  if (value === undefined || value === null) return '0'
+  return Number(value).toFixed(3)
+}
+
+function formatIntensity(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === '') return '0'
+  return Math.round(Number(value)).toString()
+}
+
+watch(() => themeStore.isDark, (isDark) => {
+  document.documentElement.classList.toggle('dark', isDark)
+}, { immediate: true })
 </script>
 
 <style scoped lang="scss">
+/* 添加全局样式 */
+:global(body) {
+  margin: 0;
+  padding: 0;
+}
+
+:global(#app) {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-color);
+}
+
 .seismic-container {
   min-height: 100vh;
+  width: 100%;
   padding: 2rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   background: var(--bg-color);
-  color: var(--text-color);
   
   &.dark {
-    --bg-color: #1a1a1a;
-    --text-color: #ffffff;
-    --card-bg: #2a2a2a;
+    --bg-color: #121212;
+    --card-bg: #1E1E1E;
+    --text-color: rgba(255, 255, 255, 0.9);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    
+    /* 确保滚动容器也使用深色背景 */
+    &, & > * {
+      background: var(--bg-color);
+    }
   }
+}
+
+/* 添加全局深色模式样式 */
+:global(html.dark) {
+  background: #121212;
   
-  --bg-color: #ffffff;
-  --text-color: #1a1a1a;
-  --card-bg: #f5f5f5;
+  body, #app {
+    background: #121212;
+  }
 }
 
 .stations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 1.5rem;
   max-width: 1000px;
   margin: 0 auto;
@@ -178,15 +243,20 @@ function showStationDetail(data: any) {
     .region {
       font-size: 1.5rem;
       margin: 0;
+      color: var(--text-color);
+      transition: color 0.3s ease;
     }
     
     .update-time {
       font-size: 0.9rem;
       opacity: 0.8;
+      color: var(--text-secondary);
+      transition: color 0.3s ease;
     }
   }
 
-  .shindo-display {
+  .shindo-display,
+  .intensity-display {
     grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
@@ -194,13 +264,17 @@ function showStationDetail(data: any) {
     padding: 1rem;
     border-radius: 0.5rem;
     margin-bottom: 1rem;
+    min-height: 80px;
     
-    .shindo-label {
+    .shindo-label,
+    .intensity-label {
       font-size: 0.9rem;
       margin-bottom: 0.3rem;
+      opacity: 0.9;
     }
     
-    .shindo-value {
+    .shindo-value,
+    .intensity-value {
       font-size: 2rem;
       font-weight: bold;
     }
@@ -219,13 +293,24 @@ function showStationDetail(data: any) {
       border-radius: 0.5rem;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
+      color: var(--text-color);
+      transition: all 0.3s ease;
       
       .icon {
         font-size: 1.2rem;
+        color: var(--text-color);
+        transition: color 0.3s ease;
       }
       
-      span {
-        font-size: 1rem;
+      h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+        color: var(--text-color);
+        transition: color 0.3s ease;
       }
     }
   }
@@ -252,14 +337,16 @@ function showStationDetail(data: any) {
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.1);
       
       &:hover {
-        background: var(--card-hover);
+        background: rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
       }
       
       .icon {
         font-size: 1.2rem;
+        color: var(--text-color);
       }
       
       span {
@@ -356,6 +443,26 @@ function showStationDetail(data: any) {
       &:hover {
         background: rgba(255, 255, 255, 0.15);
       }
+    }
+  }
+}
+
+.seismic-card {
+  .card-header {
+    .region {
+      transition: color 0.3s ease;
+    }
+    
+    .update-time {
+      transition: color 0.3s ease;
+    }
+  }
+  
+  .data-item {
+    transition: all 0.3s ease;
+    
+    h4, .icon {
+      transition: color 0.3s ease;
     }
   }
 }
