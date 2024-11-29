@@ -12,22 +12,22 @@ export function getShindoStyle(shindo: string): ShindoStyle {
       background: '#4a0099',
       border: '#3a0077'
     },
-    '6+': {
+    '6強': {
       color: '#ffffff',
       background: '#ff3399',
       border: '#cc297a'
     },
-    '6-': {
+    '6弱': {
       color: '#ffffff',
       background: '#ff4444',
       border: '#cc3636'
     },
-    '5+': {
+    '5強': {
       color: '#ffffff',
       background: '#ff9933',
       border: '#cc7a29'
     },
-    '5-': {
+    '5弱': {
       color: '#ffffff',
       background: '#ffcc33',
       border: '#cca329'
@@ -64,6 +64,6 @@ export function getShindoStyle(shindo: string): ShindoStyle {
 
 export function isSignificantShindo(shindo: string): boolean {
   // 震度3以上视为显著地震
-  const significantLevels = ['3', '4', '5-', '5+', '6-', '6+', '7']
+  const significantLevels = ['3', '4', '5弱', '5強', '6弱', '6強', '7']
   return significantLevels.includes(shindo)
 } 
