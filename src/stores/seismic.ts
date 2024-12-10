@@ -53,7 +53,7 @@ export const useSeismicStore = defineStore('seismic', () => {
   const seismicDataMap = ref<Map<string, SeismicData>>(new Map())
   
   function updateSeismicData(data: SeismicData) {
-    console.log('更新数据:', data)
+    // console.log('更新数据:', data)
     seismicDataMap.value.set(data.type, {
       ...data,
       region: data.region || '未知地区',
@@ -68,7 +68,7 @@ export const useSeismicStore = defineStore('seismic', () => {
       Intensity: data.Intensity,
       update_at: data.update_at
     })
-    console.log('更新后的数据Map:', seismicDataMap.value)
+    // console.log('更新后的数据Map:', seismicDataMap.value)
   }
 
   return {

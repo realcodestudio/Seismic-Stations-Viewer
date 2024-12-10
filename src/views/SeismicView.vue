@@ -89,7 +89,7 @@ let ws: WebSocket
 
 const seismicDataArray = computed(() => {
   const data = Array.from(seismicStore.seismicDataMap.values())
-  console.log('当前数据:', data)
+  // console.log('当前数据:', data)
   return data
 })
 

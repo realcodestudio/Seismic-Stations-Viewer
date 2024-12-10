@@ -1,7 +1,18 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
-})
+  base: '/ssv', // 如果部署在子路径，请更改为实际路径
+  build: {
+    outDir: 'dist', // 打包输出目录
+    assetsDir: 'assets', // 静态资源目录
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
+  },
+});
