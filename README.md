@@ -5,6 +5,9 @@
  ###  This project was developed independently and is not managed by the Wolfx Project.
 ![test](https://github.com/user-attachments/assets/ee4583a2-4f34-4b84-928b-8ef19962fdc7)
 
+## Demo Sites
+- https://wolfx.jp/ssv
+
 ## How to run?
 - Download the codes from Releases
 - Open in VSCode
