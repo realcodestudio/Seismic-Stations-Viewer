@@ -11,5 +11,6 @@
 - Install “Vite” Extension.
 - Run these cmds in the terminal in turn.
   > cd Seismic-Stations-Viewer<br>
-  > npm install<br>
-  > npm run dev<br>
+  > npm install -g pnpm<br>
+  > pnpm install<br>
+  > pnpm run dev<br>

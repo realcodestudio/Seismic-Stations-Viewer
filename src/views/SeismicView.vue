@@ -65,7 +65,6 @@
       <p>由 <a href="https://x.com/realcodestudio" target="_blank" rel="noopener noreferrer">RCBS</a> 制作，数据来源于<a href="https://wolfx.jp/" target="_blank" rel="noopener noreferrer">Wolfx.jp</a></p>
     </footer>
 
-    <DisclaimerModal ref="disclaimerModal" />
     <StationDetailModal 
       ref="stationDetailModal"
       :stationType="selectedStation?.type || null"
@@ -74,6 +73,7 @@
 </template>
 
 <script setup lang="ts">
+import { CSSProperties } from 'vue';
 import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useThemeStore } from '../stores/theme'
@@ -81,7 +81,6 @@ import { useSeismicStore } from '../stores/seismic'
 import { initWebSocket } from '../services/websocket'
 import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
 import { getIntensityStyle } from '../utils/intensityUtils'
-import DisclaimerModal from '../components/DisclaimerModal.vue'
 import StationDetailModal from '../components/StationDetailModal.vue'
 
 const themeStore = useThemeStore()
@@ -94,22 +93,13 @@ const seismicDataArray = computed(() => {
   return data
 })
 
-function getCardStyle(shindo: string) {
-  const style = getShindoStyle(shindo)
+function getCardStyle(shindo: string): CSSProperties {
+  const style = getShindoStyle(shindo); // 假设 getShindoStyle 返回一个包含颜色、边框的对象
   return {
-    borderColor: style.border,
+    borderColor: style.borderColor || '#ccc',
     borderWidth: isSignificantShindo(shindo) ? '3px' : '1px',
-    borderStyle: 'solid'
-  }
-}
-
-function getShindoDisplayStyle(shindo: string) {
-  const style = getShindoStyle(shindo)
-  return {
-    color: style.color,
-    background: style.background,
-    borderColor: style.border
-  }
+    borderStyle: 'solid',
+  };
 }
 
 function formatTime(timeStr: string) {
@@ -121,16 +111,20 @@ function formatTime(timeStr: string) {
 }
 
 function initWebSocketWithDebug() {
-  ws = initWebSocket()
-  console.log('WebSocket 初始化')
-  
+  ws = initWebSocket();
+
   ws.onopen = () => {
-    console.log('WebSocket 连接已建立')
-  }
-  
+    console.log('WebSocket 已连接');
+  };
+
   ws.onerror = (error) => {
-    console.error('WebSocket 错误:', error)
-  }
+    console.error('WebSocket 错误:', error);
+  };
+
+  ws.onclose = () => {
+    console.warn('WebSocket 已关闭，尝试重新连接...');
+    setTimeout(initWebSocketWithDebug, 5000); // 5秒后重新连接
+  };
 }
 
 onMounted(() => {
@@ -142,7 +136,6 @@ onUnmounted(() => {
   ws?.close()
 })
 
-const disclaimerModal = ref()
 const stationDetailModal = ref()
 const selectedStation = ref()
 
@@ -152,13 +145,13 @@ function showStationDetail(data: any) {
 }
 
 function formatNumber(value: number): string {
-  if (value === undefined || value === null) return '0'
-  return Number(value).toFixed(3)
+  if (isNaN(value) || value === undefined || value === null) return '0';
+  return Number(value).toFixed(3);
 }
 
 function formatIntensity(value: string | number | null | undefined): string {
-  if (value === null || value === undefined || value === '') return '0'
-  return Math.round(Number(value)).toString()
+  if (!value || isNaN(Number(value))) return '0';
+  return Math.round(Number(value)).toString();
 }
 
 watch(() => themeStore.isDark, (isDark) => {
@@ -171,6 +164,7 @@ watch(() => themeStore.isDark, (isDark) => {
 :global(body) {
   margin: 0;
   padding: 0;
+  --bg-color: #ffffff; /* 默认背景色 */
 }
 
 :global(#app) {

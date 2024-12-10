@@ -1,66 +1,64 @@
-interface ShindoStyle {
-  color: string;
-  background: string;
-  border: string;
-}
+import { CSSProperties } from 'vue';
 
-export function getShindoStyle(shindo: string): ShindoStyle {
+export function getShindoStyle(shindo: string): CSSProperties {
   // JMA震度等级对应的样式
-  const styles: Record<string, ShindoStyle> = {
+  const styles: Record<string, CSSProperties> = {
     '7': {
       color: '#ffffff',
-      background: '#4a0099',
-      border: '#3a0077'
+      backgroundColor: '#4a0099',
+      borderColor: '#3a0077',
     },
     '6強': {
       color: '#ffffff',
-      background: '#ff3399',
-      border: '#cc297a'
+      backgroundColor: '#ff3399',
+      borderColor: '#cc297a',
     },
     '6弱': {
       color: '#ffffff',
-      background: '#ff4444',
-      border: '#cc3636'
+      backgroundColor: '#ff4444',
+      borderColor: '#cc3636',
     },
     '5強': {
       color: '#ffffff',
-      background: '#ff9933',
-      border: '#cc7a29'
+      backgroundColor: '#ff9933',
+      borderColor: '#cc7a29',
     },
     '5弱': {
       color: '#ffffff',
-      background: '#ffcc33',
-      border: '#cca329'
+      backgroundColor: '#ffcc33',
+      borderColor: '#cca329',
     },
     '4': {
       color: '#000000',
-      background: '#ffff33',
-      border: '#cccc29'
+      backgroundColor: '#ffff33',
+      borderColor: '#cccc29',
     },
     '3': {
       color: '#000000',
-      background: '#33ff33',
-      border: '#29cc29'
+      backgroundColor: '#33ff33',
+      borderColor: '#29cc29',
     },
     '2': {
       color: '#000000',
-      background: '#33ccff',
-      border: '#29a3cc'
+      backgroundColor: '#33ccff',
+      borderColor: '#29a3cc',
     },
     '1': {
       color: '#000000',
-      background: '#cccccc',
-      border: '#a3a3a3'
+      backgroundColor: '#cccccc',
+      borderColor: '#a3a3a3',
     },
     '0': {
       color: '#000000',
-      background: '#ffffff',
-      border: '#cccccc'
-    }
-  }
+      backgroundColor: '#ffffff',
+      borderColor: '#cccccc',
+    },
+  };
 
-  return styles[shindo] || styles['0']
+  // 如果传入的震度等级不存在，则返回默认样式
+  return styles[shindo] || styles['0'];
 }
+
 
 export function isSignificantShindo(shindo: string): boolean {
   // 震度3以上视为显著地震
