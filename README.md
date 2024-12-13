@@ -6,9 +6,9 @@
 <h3 align="center">Seismic Station Viewer for the Wolfx SeisJS API. </h3>
 
 <h4 align="center">
-<a href=wolfx.jp/ssv>Demo Sites</a> | 
-<a href=wolfx.jp>To Wolfx</a> |
-<a href=x.com/realcodestudio>Follow RCBS</a>
+<a href=https://wolfx.jp/ssv>Demo Sites</a> | 
+<a href=https://wolfx.jp>To Wolfx</a> |
+<a href=https://x.com/realcodestudio>Follow RCBS</a>
 
 <div align="center">
 <h4 align="center"> 🚨 Wolfx SeisJS is an open-source earthquake detection and monitoring application developed by the <a href=https://github.com/WolfxProject>Wolfx Project</a>, a nonprofit organization. </h3>
