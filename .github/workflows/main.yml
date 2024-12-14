@@ -1,0 +1,24 @@
+name: GitHub Actions Build and Deploy Demo        # 大标题
+on:
+  push:
+    branches:
+      - master                                   # 监听哪个分支的哪个动作
+permissions:
+  contents: write                                # 设置权限，可写，也可以不用配置，v4版本新增的
+jobs:
+  build-and-deploy:                              # 其中一个任务的名称，ID
+    runs-on: ubuntu-latest                       # 这个任务运行所需的环境
+    steps:
+      - name: Checkout 🛎️                        # 第一步：获取源码
+        uses: actions/checkout@v3                # 使用的工具
+
+      - name: Install and Build 🔧               # 第二步：下载依赖和构建
+        run: |
+          yarn install
+          yarn build
+
+      - name: Deploy 🚀                         # 第三步：部署
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist                         # 部署的目录
+          branch: gh-pages                     # 部署到哪个分支
