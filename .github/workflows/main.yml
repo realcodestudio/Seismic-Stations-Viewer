@@ -17,7 +17,7 @@ jobs:
           npm -v
           npm i
           npm run build
-          echo 'www.bousai.cn' > CNAME
+          echo 'bousai.cn' > CNAME
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
