@@ -49,9 +49,9 @@ export function getShindoStyle(shindo: string): CSSProperties {
       borderColor: '#a3a3a3',
     },
     '0': {
-      color: '#000000',
-      backgroundColor: '#ffffff',
-      borderColor: '#cccccc',
+      color: '#ffffff',
+      backgroundColor: '#3e3e3e',
+      borderColor: '#ffffff',
     },
   };
 
