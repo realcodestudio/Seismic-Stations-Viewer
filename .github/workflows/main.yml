@@ -18,7 +18,6 @@ jobs:
           npm i
           npm run build
           echo 'www.bousai.cn' > CNAME
-          git push -f git@github.com:realcodestudio/realcodestudio.github.io.git main
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
