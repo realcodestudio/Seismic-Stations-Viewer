@@ -15,9 +15,10 @@ jobs:
         run: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
           npm -v
+          echo 'bousai.cn' > CNAME
           npm i
           npm run build
-          echo 'bousai.cn' > CNAME
+          echo 'realcodestudio.github.io' > CNAME
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
