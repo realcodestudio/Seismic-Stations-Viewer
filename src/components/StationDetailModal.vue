@@ -2,7 +2,7 @@
   <div v-if="show" class="station-modal" @click="closeModal">
     <div class="modal-content" @click.stop>
       <div class="modal-header">
-        <h2>{{ currentData?.region || '测站详情' }}</h2>
+        <h2>{{ currentData?.region || $t('station_details') }}</h2>
         <button class="close-btn" @click="closeModal">
           <Icon icon="mdi:close" />
         </button>
@@ -14,7 +14,7 @@
                :key="key" 
                class="data-item"
                :title="formatValue(value, key)">
-            <span class="label">{{ formatLabel(key) }}:</span>
+            <span class="label">{{ $t(key) }}:</span>
             <span class="value">{{ formatValue(value, key) }}</span>
           </div>
         </div>
@@ -28,6 +28,9 @@ import { ref, computed, watchEffect } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useSeismicStore } from '../stores/seismic'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   stationType: string | null
@@ -59,43 +62,43 @@ const processedData = computed(() => {
 // 格式化标签名
 function formatLabel(key: string): string {
   const labelMap: Record<string, string> = {
-    type: '测站统一标识符',
-    region: '地区',
-    latitude: '纬度',
-    longitude: '经度',
-    systemInfo: '系统信息',
-    version: '版本',
-    PGV: 'PGV',
-    PGV_EW: 'PGV东西',
-    PGV_NS: 'PGV南北',
-    PGV_UD: 'PGV上下',
-    PGA: 'PGA',
-    PGA_EW: 'PGA东西',
-    PGA_NS: 'PGA南北',
-    PGA_UD: 'PGA上下',
-    Max_PGA: '最大PGA',
-    Max_PGA_EW: '最大PGA东西',
-    Max_PGA_NS: '最大PGA南北',
-    Max_PGA_UD: '最大PGA上下',
-    Max_PGV: '最大PGV',
-    Max_PGV_EW: '最大PGV东西',
-    Max_PGV_NS: '最大PGV南北',
-    Max_PGV_UD: '最大PGV上下',
-    Shindo: 'JMA震度',
-    CalcShindo: '计测震度',
-    Max_Shindo: '最大JMA震度',
-    Max_CalcShindo: '最大计测震度',
-    High_Precision: '高精度测站',
-    private: '私有',
-    update_at: '更新时间',
-    create_at: '创建时间',
-    Intensity: '实时烈度',
-    Max_Intensity: '最大烈度',
-    cityName: '城市',
-    countryName: '国家',
-    is_desktop: '桌面端',
-    PGD: 'PGD',
-    Max_PGD: '最大PGD'
+    type: t('type'),
+    region: t('region'),
+    latitude: t('latitude'),
+    longitude: t('longitude'),
+    systemInfo: t('system_info'),
+    version: t('version'),
+    PGV: t('PGV'),
+    PGV_EW: t('PGV_EW'),
+    PGV_NS: t('PGV_NS'),
+    PGV_UD: t('PGV_UD'),
+    PGA: t('PGA'),
+    PGA_EW: t('PGA_EW'),
+    PGA_NS: t('PGA_NS'),
+    PGA_UD: t('PGA_UD'),
+    Max_PGA: t('Max_PGA'),
+    Max_PGA_EW: t('Max_PGA_EW'),
+    Max_PGA_NS: t('Max_PGA_NS'),
+    Max_PGA_UD: t('Max_PGA_UD'),
+    Max_PGV: t('Max_PGV'),
+    Max_PGV_EW: t('Max_PGV_EW'),
+    Max_PGV_NS: t('Max_PGV_NS'),
+    Max_PGV_UD: t('Max_PGV_UD'),
+    Shindo: t('Shindo'),
+    CalcShindo: t('CalcShindo'),
+    Max_Shindo: t('Max_Shindo'),
+    Max_CalcShindo: t('Max_CalcShindo'),
+    High_Precision: t('High_Precision'),
+    private: t('private'),
+    update_at: t('update_at'),
+    create_at: t('create_at'),
+    Intensity: t('Intensity'),
+    Max_Intensity: t('Max_Intensity'),
+    cityName: t('cityName'),
+    countryName: t('countryName'),
+    is_desktop: t('is_desktop'),
+    PGD: t('PGD'),
+    Max_PGD: t('Max_PGD')
   }
   
   return labelMap[key] || key
@@ -115,7 +118,7 @@ function formatValue(value: any, key: string): string {
   }
   
   if (typeof value === 'boolean') {
-    return value ? '是' : '否'
+    return value ? t('yes') : t('no')
   }
   
   if (typeof value === 'string' && (value.includes('at') || value.includes('time'))) {

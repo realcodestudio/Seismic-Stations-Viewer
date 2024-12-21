@@ -12,58 +12,63 @@
            :class="{ 'significant': isSignificantShindo(data.Shindo) }">
         <div class="card-header">
             
-          <h1 class="region"><Icon icon="mdi:map-marker" />{{ data.region }}</h1>
+          <h1 class="region"><Icon icon="mdi:map-marker" />{{ $t('region', { region: data.region }) }}</h1>
             
-          <span class="update-time">测站信息更新于<br><Icon icon="mdi:clock" />{{ formatTime(data.update_at) }}</span>
+          <span class="update-time">{{ $t('update_time', { time: formatTime(data.update_at) }) }}</span>
             
         </div>
         
         <div class="data-grid">
           <div class="shindo-display"
                :style="getShindoStyle(data.Shindo || '0')">
-            <h1 class="shindo-label">实时震度</h1>
+            <h1 class="shindo-label">{{ $t('real_time_shindo') }}</h1>
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
           </div>
           
           <div class="intensity-display"
                :style="getIntensityStyle(formatIntensity(data.Intensity))">
-            <h1 class="intensity-label">实时烈度</h1>
+            <h1 class="intensity-label">{{ $t('real_time_intensity') }}</h1>
             <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
           
           <div class="data-item">
             <h2><Icon icon="mdi:waveform" /></h2>
-            <h4>PGA: {{ formatNumber(data.PGA) }}</h4>
+            <h4>{{ $t('PGA') }}: {{ formatNumber(data.PGA) }}</h4>
           </div>
           
           <div class="data-item">
             <h2><Icon icon="mdi:calculator" /></h2>
-            <h4>计测震度: {{ formatNumber(data.CalcShindo) }}</h4>
+            <h4>{{ $t('calc_shindo') }}: {{ formatNumber(data.CalcShindo) }}</h4>
           </div>
           
           <div class="data-item">
             <h2><Icon icon="mdi:format-vertical-align-top" /></h2>
-            <h4>最大震度: {{ data.Max_Shindo }}</h4>
+            <h4>{{ $t('max_shindo') }}: {{ data.Max_Shindo }}</h4>
           </div>
           
           <div class="data-item">
             <h2><Icon icon="mdi:format-vertical-align-top" /></h2>
-            <h4>最大烈度: {{ data.Max_Intensity }}</h4>
+            <h4>{{ $t('max_intensity') }}: {{ data.Max_Intensity }}</h4>
           </div>
         </div>
 
         <div class="card-footer">
           <button class="detail-btn" @click="showStationDetail(data)">
             <Icon icon="mdi:information" class="icon" />
-          
+            {{ $t('details') }}
           </button>
         </div>
       </div>
     </div>
 
     <footer class="footer">
-      <p><b>由 <a href="https://x.com/realcodestudio" target="_blank" rel="noopener noreferrer">RCBS</a> 制作，<a href="https://wolfx.jp/" target="_blank" rel="noopener noreferrer">Wolfx.jp</a>提供技术支持。</b></p>
-      <p><b><a href="https://acg.kr/ssv" target="_blank" rel="noopener noreferrer">The Github repository of this project. </a>  v3.0.0(1215)</b></p>
+      <div class="language-toggle">
+        <button @click="changeLanguage('zh')">中文</button>
+        <button @click="changeLanguage('en')">English</button>
+        <button @click="changeLanguage('ja')">日本語</button>
+      </div>
+      <p><b>{{ $t('footer_text') }}</b></p>
+      <p><b><a href="https://acg.kr/ssv" target="_blank" rel="noopener noreferrer">The Github repository of this project. </a>  v3.1.0(1221)</b></p>
     </footer>
 
     <StationDetailModal 
@@ -83,6 +88,7 @@ import { initWebSocket } from '../services/websocket'
 import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
 import { getIntensityStyle } from '../utils/intensityUtils'
 import StationDetailModal from '../components/StationDetailModal.vue'
+import { useI18n } from 'vue-i18n'
 
 const themeStore = useThemeStore()
 const seismicStore = useSeismicStore()
@@ -158,6 +164,12 @@ function formatIntensity(value: string | number | null | undefined): string {
 watch(() => themeStore.isDark, (isDark) => {
   document.documentElement.classList.toggle('dark', isDark)
 }, { immediate: true })
+
+const { t, locale } = useI18n()
+
+function changeLanguage(lang: string) {
+  locale.value = lang
+}
 </script>
 
 <style scoped lang="scss">
@@ -382,6 +394,27 @@ watch(() => themeStore.isDark, (isDark) => {
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 90;
 
+  .language-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 1rem; /* 设置按钮之间的间隔 */
+    margin-bottom: 0.5rem; /* 设置按钮与文本之间的间隔 */
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-color);
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
   p {
     margin: 0;
     font-size: 0.9rem;
@@ -392,7 +425,7 @@ watch(() => themeStore.isDark, (isDark) => {
     color: #00ffb3;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: color 0.3s;
 
     &:hover {
       color: #ff008c;
