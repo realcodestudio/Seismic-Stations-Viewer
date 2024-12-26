@@ -30,3 +30,11 @@
   > npm install -g pnpm<br>
   > pnpm install<br>
   > pnpm run dev<br>
+
+
+## How to build?
+- Open in VSCode
+- Run these cmds in the terminal in turn.
+  > cd Seismic-Stations-Viewer<br>
+  > pnpm install<br>
+  > pnpm build<br>

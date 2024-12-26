@@ -165,7 +165,7 @@ watch(() => themeStore.isDark, (isDark) => {
   document.documentElement.classList.toggle('dark', isDark)
 }, { immediate: true })
 
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 
 function changeLanguage(lang: string) {
   locale.value = lang
