@@ -3,7 +3,7 @@
  </div>
 <h1 align="center">Seismic Stations Viewer 🌏</h1>
 
-<h3 align="center">Seismic Stations ViewerはWolfx SeisJS APIを使用するプロジェクトです。 このプロジェクトにより、Wolfx SeisJS APIに接続された地震観測所データを簡単に表示することができます。</h3>
+<h3 align="center">Seismic Stations ViewerはWolfx SeisJS APIを使用するプロジェクトです。 このプロジェクトにより、Wolfx SeisJS APIに接続された地震観測点データを簡単に表示することができます。</h3>
 
 <h4 align="center">
 <a href=https://wolfx.jp/ssv>サイト例</a> | 
