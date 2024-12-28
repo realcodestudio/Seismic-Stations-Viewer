@@ -11,22 +11,17 @@
            :style="getCardStyle(data.Shindo)"
            :class="{ 'significant': isSignificantShindo(data.Shindo) }">
         <div class="card-header">
-            
           <h1 class="region"><Icon icon="mdi:map-marker" />{{ $t('region', { region: data.region }) }}</h1>
-            
           <span class="update-time">{{ $t('update_time', { time: formatTime(data.update_at) }) }}</span>
-            
         </div>
         
         <div class="data-grid">
-          <div class="shindo-display"
-               :style="getShindoStyle(data.Shindo || '0')">
+          <div class="shindo-display" :style="getShindoStyle(data.Shindo || '0')">
             <h1 class="shindo-label">{{ $t('real_time_shindo') }}</h1>
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
           </div>
           
-          <div class="intensity-display"
-               :style="getIntensityStyle(formatIntensity(data.Intensity))">
+          <div class="intensity-display" :style="getIntensityStyle(formatIntensity(data.Intensity))">
             <h1 class="intensity-label">{{ $t('real_time_intensity') }}</h1>
             <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
@@ -61,15 +56,23 @@
       </div>
     </div>
 
-    <footer class="footer">
+    <footer class="footer" :class="{ 'collapsed': isFooterCollapsed }">
       <div class="language-toggle">
         <button @click="changeLanguage('zh')">中文</button>
         <button @click="changeLanguage('en')">English</button>
         <button @click="changeLanguage('ja')">日本語</button>
       </div>
-      <p><b>{{ $t('footer_text') }}</b></p>
-      <p><b><a href="https://acg.kr/ssv" target="_blank" rel="noopener noreferrer">The Github repository of this project. </a>  v3.1.0(1221)</b></p>
+      <transition name="fade">
+        <div v-if="!isFooterCollapsed">
+          <p><b>{{ $t('footer_text') }}</b></p>
+          <p><b><a href="https://acg.kr/ssv" target="_blank" rel="noopener noreferrer">{{ $t('github_link') }}</a>  {{ version }}</b></p>
+        </div>
+      </transition>
     </footer>
+
+    <button class="toggle-footer" @click="toggleFooter">
+      <Icon :icon="isFooterCollapsed ? 'mdi:chevron-up' : 'mdi:chevron-down'" />
+    </button>
 
     <StationDetailModal 
       ref="stationDetailModal"
@@ -170,6 +173,13 @@ const { locale } = useI18n()
 function changeLanguage(lang: string) {
   locale.value = lang
 }
+
+const isFooterCollapsed = ref(true);
+const version = ref('v3.1.2(241228)'); //底部版本号修改
+
+function toggleFooter() {
+  isFooterCollapsed.value = !isFooterCollapsed.value;
+}
 </script>
 
 <style scoped lang="scss">
@@ -253,6 +263,19 @@ function changeLanguage(lang: string) {
       margin: 0;
       color: var(--text-color);
       transition: color 0.3s ease;
+
+      /* 使文本换行并自动缩小字体 */
+      white-space: normal; /* 允许换行 */
+      overflow-wrap: break-word; /* 允许单词换行 */
+      min-width: 0; /* 允许缩小 */
+
+      @media (max-width: 768px) {
+        font-size: 1.5rem; /* 在小屏幕上缩小字体 */
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.2rem; /* 在更小屏幕上进一步缩小字体 */
+      }
     }
     
     .update-time {
@@ -393,12 +416,17 @@ function changeLanguage(lang: string) {
   background: var(--card-bg);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 90;
+  transition: transform 0.3s ease;
+
+  &.collapsed {
+    transform: translateY(100%);
+  }
 
   .language-toggle {
     display: flex;
     justify-content: center;
-    gap: 1rem; /* 设置按钮之间的间隔 */
-    margin-bottom: 0.5rem; /* 设置按钮与文本之间的间隔 */
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 
     button {
       padding: 0.5rem 1rem;
@@ -414,23 +442,29 @@ function changeLanguage(lang: string) {
       }
     }
   }
+}
 
-  p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-color);
+.toggle-footer {
+  position: fixed;
+  right: 1rem;
+  bottom: 7rem;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.7rem;
+  cursor: pointer;
+  transition: color 0.3s;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
   }
+}
 
-  a {
-    color: #00ffb3;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s;
-
-    &:hover {
-      color: #ff008c;
-    }
-  }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
 }
 
 @media (max-width: 768px) {

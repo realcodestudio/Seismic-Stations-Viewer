@@ -43,5 +43,6 @@
   "max_shindo": "最大震度",
   "max_intensity": "最大烈度",
   "details": "详情",
-  "footer_text": "由RCBS制作，由Wolfx.jp提供技术支持。"
+  "footer_text": "由RCBS制作，由Wolfx.jp提供技术支持。",
+  "github_link": "SSV的Github仓库 "
 }

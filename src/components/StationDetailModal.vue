@@ -14,7 +14,7 @@
                :key="key" 
                class="data-item"
                :title="formatValue(value, key)">
-            <span class="label">{{ $t(key) }}:</span>
+            <span class="label">{{ formatLabel(key) }}:</span>
             <span class="value">{{ formatValue(value, key) }}</span>
           </div>
         </div>
@@ -58,6 +58,51 @@ const processedData = computed(() => {
       return acc
     }, {} as Record<string, any>)
 })
+
+// 格式化标签名
+function formatLabel(key: string): string {
+  const labelMap: Record<string, string> = {
+    type: t('type'),
+    region: t('region'),
+    latitude: t('latitude'),
+    longitude: t('longitude'),
+    systemInfo: t('system_info'),
+    version: t('version'),
+    PGV: t('PGV'),
+    PGV_EW: t('PGV_EW'),
+    PGV_NS: t('PGV_NS'),
+    PGV_UD: t('PGV_UD'),
+    PGA: t('PGA'),
+    PGA_EW: t('PGA_EW'),
+    PGA_NS: t('PGA_NS'),
+    PGA_UD: t('PGA_UD'),
+    Max_PGA: t('Max_PGA'),
+    Max_PGA_EW: t('Max_PGA_EW'),
+    Max_PGA_NS: t('Max_PGA_NS'),
+    Max_PGA_UD: t('Max_PGA_UD'),
+    Max_PGV: t('Max_PGV'),
+    Max_PGV_EW: t('Max_PGV_EW'),
+    Max_PGV_NS: t('Max_PGV_NS'),
+    Max_PGV_UD: t('Max_PGV_UD'),
+    Shindo: t('Shindo'),
+    CalcShindo: t('CalcShindo'),
+    Max_Shindo: t('Max_Shindo'),
+    Max_CalcShindo: t('Max_CalcShindo'),
+    High_Precision: t('High_Precision'),
+    private: t('private'),
+    update_at: t('update_at'),
+    create_at: t('create_at'),
+    Intensity: t('Intensity'),
+    Max_Intensity: t('Max_Intensity'),
+    cityName: t('cityName'),
+    countryName: t('countryName'),
+    is_desktop: t('is_desktop'),
+    PGD: t('PGD'),
+    Max_PGD: t('Max_PGD')
+  }
+  
+  return labelMap[key] || key
+}
 
 // 格式化数值
 function formatValue(value: any, key: string): string {

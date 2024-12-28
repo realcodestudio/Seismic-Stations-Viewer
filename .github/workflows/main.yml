@@ -15,7 +15,7 @@ jobs:
         run: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
           npm -v
-          echo 'ssv.bousai.cn' > CNAME
+          echo 'bousai.cn' > CNAME
           npm i
           npm run build
           echo 'realcodestudio.github.io' > CNAME
