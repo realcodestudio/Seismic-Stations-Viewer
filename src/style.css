@@ -28,6 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: 'OPPO Sans', sans-serif;
 }
 
 h1 {
@@ -75,18 +76,25 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
-  
   }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color: #213547;
-    background-color: #00000;
+    background-color: #000000;
   }
   a:hover {
     color: #747bff;
   }
   button {
     background-color: #f9f9f9;
-    
   }
+}
+
+@font-face {
+    font-family: 'Google Sans';
+    src: url('./assets/fonts/ProductSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
