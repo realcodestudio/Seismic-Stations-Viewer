@@ -4,8 +4,118 @@
       <Icon :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'" />
     </div>
     
+    <div class="settings-toggle" @click="toggleSettings">
+      <Icon icon="mdi:cog" />
+    </div>
+    
+    <div class="settings-panel" :class="{ 'show': showSettings }">
+      <div class="settings-header">
+        <h3>{{ $t('settings') }}</h3>
+        <button class="close-btn" @click="toggleSettings">
+          <Icon icon="mdi:close" />
+        </button>
+      </div>
+      <div class="settings-content">
+        <div class="alert-section">
+          <label>{{ $t('alert_settings') }}</label>
+          <div class="alert-control">
+            <div class="threshold-select">
+              <select 
+                v-model="selectedShindo"
+                @change="saveAlertSettings"
+                :disabled="!alertEnabled"
+              >
+                <option 
+                  v-for="option in shindoOptions" 
+                  :key="option.value" 
+                  :value="option.value"
+                >
+                  {{ $t(option.label) }}
+                </option>
+              </select>
+            </div>
+            <label class="toggle-switch">
+              <input 
+                type="checkbox" 
+                v-model="alertEnabled"
+                @change="saveAlertSettings"
+              >
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="refresh-section">
+          <label>{{ $t('auto_refresh_settings') }}</label>
+          <div class="refresh-control">
+            <label class="toggle-switch">
+              <input 
+                type="checkbox" 
+                v-model="autoRefreshEnabled"
+                @change="saveAutoRefreshSetting"
+              >
+              <span class="slider"></span>
+            </label>
+            <span class="refresh-text">{{ $t('background_auto_refresh') }}</span>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <label>{{ $t('filter_by_type') }}</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              v-model="stationTypeFilter"
+              :placeholder="$t('enter_station_type')"
+            />
+            <span v-if="showNoMatchError" class="error-emoji">❌</span>
+          </div>
+        </div>
+
+        <div class="language-section">
+          <label>{{ $t('language') }}</label>
+          <div class="language-buttons">
+            <button 
+              v-for="lang in ['zh', 'en', 'ja']" 
+              :key="lang"
+              @click="changeLanguage(lang)"
+              :class="{ 'active': locale === lang }"
+            >
+              {{ languageNames[lang] }}
+            </button>
+          </div>
+        </div>
+
+        <div class="version-section">
+          <a href="https://acg.kr/ssv" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="github-link"
+             :title="$t('github_link')">
+            <Icon icon="mdi:github" />
+          </a>
+          <div class="website-links">
+            <a href="https://wolfx.jp" 
+               target="_blank" 
+               rel="noopener noreferrer">
+              Wolfx.jp
+            </a>
+            <a href="https://bousai.cn" 
+               target="_blank" 
+               rel="noopener noreferrer">
+              bousai.cn
+            </a>
+          </div>
+          <div class="version-info">
+            <Icon icon="vscode-icons:file-type-vue" class="project-icon" />
+            <span class="version">{{ version }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="stations-grid">
-      <div v-for="data in seismicDataArray" 
+      <div v-for="data in filteredSeismicData" 
            :key="data.type" 
            class="seismic-card"
            :style="getCardStyle(data.Shindo)"
@@ -55,24 +165,6 @@
         </div>
       </div>
     </div>
-
-    <footer class="footer" :class="{ 'collapsed': isFooterCollapsed }">
-      <div class="language-toggle">
-        <button @click="changeLanguage('zh')">中文</button>
-        <button @click="changeLanguage('en')">English</button>
-        <button @click="changeLanguage('ja')">日本語</button>
-      </div>
-      <transition name="fade">
-        <div v-if="!isFooterCollapsed">
-          <p><b>{{ $t('footer_text') }}</b></p>
-          <p><b><a href="https://acg.kr/ssv" target="_blank" rel="noopener noreferrer">{{ $t('github_link') }}</a>  {{ version }}</b></p>
-        </div>
-      </transition>
-    </footer>
-
-    <button class="toggle-footer" @click="toggleFooter">
-      <Icon :icon="isFooterCollapsed ? 'mdi:chevron-up' : 'mdi:chevron-down'" />
-    </button>
 
     <StationDetailModal 
       ref="stationDetailModal"
@@ -170,16 +262,150 @@ watch(() => themeStore.isDark, (isDark) => {
 
 const { locale } = useI18n()
 
+const version = ref('v3.1.2(241228)')
+
+const languageNames = {
+  zh: '中文 (简体)',
+  en: 'English (US)',
+  ja: '日本語'
+}
+
 function changeLanguage(lang: string) {
   locale.value = lang
 }
 
-const isFooterCollapsed = ref(true);
-const version = ref('v3.1.2(241228)'); //底部版本号修改
+const showSettings = ref(false)
+const stationTypeFilter = ref('')
 
-function toggleFooter() {
-  isFooterCollapsed.value = !isFooterCollapsed.value;
+function toggleSettings() {
+  showSettings.value = !showSettings.value
 }
+
+const filteredSeismicData = computed(() => {
+  if (!stationTypeFilter.value) {
+    return seismicDataArray.value
+  }
+  return seismicDataArray.value.filter(data => 
+    data.type === stationTypeFilter.value
+  )
+})
+
+const showNoMatchError = computed(() => {
+  return stationTypeFilter.value && stationTypeFilter.value.length > 0 && filteredSeismicData.value.length === 0
+})
+
+// 定义震度等级选项
+const shindoOptions = [
+  { value: 3.0, label: 'shindo_3' },
+  { value: 4.0, label: 'shindo_4' },
+  { value: 4.5, label: 'shindo_5-' },
+  { value: 5.0, label: 'shindo_5+' },
+  { value: 5.5, label: 'shindo_6-' },
+  { value: 6.0, label: 'shindo_6+' },
+  { value: 7.0, label: 'shindo_7' }
+]
+
+// 警报设置状态
+const alertEnabled = ref(false)
+const selectedShindo = ref(4.0) // 默认震度4
+const alertSound = new Audio('/alert.mp3')
+
+// 修改震度监听逻辑
+watch(() => seismicDataArray.value, (newData) => {
+  if (!alertEnabled.value) return
+  
+  // 如果有输入测站序列号，则只检查该测站
+  if (stationTypeFilter.value) {
+    const targetStation = newData.find(station => station.type === stationTypeFilter.value)
+    if (targetStation) {
+      const shindo = parseFloat(targetStation.Shindo)
+      if (!isNaN(shindo) && shindo >= selectedShindo.value) {
+        alertSound.play().catch(err => console.error('播放警报失败:', err))
+      }
+    }
+    return
+  }
+  
+  // 如果没有输入测站序列号，则检查所有测站
+  newData.forEach(station => {
+    const shindo = parseFloat(station.Shindo)
+    if (!isNaN(shindo) && shindo >= selectedShindo.value) {
+      alertSound.play().catch(err => console.error('播放警报失败:', err))
+    }
+  })
+}, { deep: true })
+
+// 保存设置到本地存储
+function saveAlertSettings() {
+  localStorage.setItem('alertSettings', JSON.stringify({
+    enabled: alertEnabled.value,
+    threshold: selectedShindo.value
+  }))
+}
+
+// 初始化时读取本地存储的设置
+onMounted(() => {
+  const savedSettings = localStorage.getItem('alertSettings')
+  if (savedSettings) {
+    const settings = JSON.parse(savedSettings)
+    alertEnabled.value = settings.enabled
+    selectedShindo.value = settings.threshold
+  }
+})
+
+// 添加自动刷新设置
+const autoRefreshEnabled = ref(false)
+let refreshInterval: number | null = null
+
+// 自动刷新函数
+const startAutoRefresh = () => {
+  if (refreshInterval) return
+  
+  refreshInterval = window.setInterval(() => {
+    // 检查 WebSocket 连接状态
+    if (ws.value?.readyState !== WebSocket.OPEN) {
+      console.log('WebSocket连接已断开，尝试重新连接...')
+      initWebSocket() // 重新初始化WebSocket连接
+    }
+  }, 60000) // 10分钟间隔
+}
+
+const stopAutoRefresh = () => {
+  if (refreshInterval) {
+    clearInterval(refreshInterval)
+    refreshInterval = null
+  }
+}
+
+// 监听自动刷新设置变化
+watch(autoRefreshEnabled, (newValue) => {
+  if (newValue) {
+    startAutoRefresh()
+  } else {
+    stopAutoRefresh()
+  }
+})
+
+// 保存设置
+const saveAutoRefreshSetting = () => {
+  localStorage.setItem('autoRefreshEnabled', autoRefreshEnabled.value.toString())
+}
+
+// 初始化时读取设置
+onMounted(() => {
+  const savedSetting = localStorage.getItem('autoRefreshEnabled')
+  if (savedSetting !== null) {
+    autoRefreshEnabled.value = savedSetting === 'true'
+    if (autoRefreshEnabled.value) {
+      startAutoRefresh()
+    }
+  }
+})
+
+// 组件卸载时清理定时器
+onUnmounted(() => {
+  stopAutoRefresh()
+})
 </script>
 
 <style scoped lang="scss">
@@ -206,6 +432,7 @@ function toggleFooter() {
   &.dark {
     --bg-color: #121212;
     --card-bg: #a1a1a12f;
+    --card-bg-rgb: 161, 161, 161;
     --text-color: rgba(255, 255, 255, 0.9);
     --text-secondary: rgba(255, 255, 255, 0.7);
     
@@ -213,6 +440,10 @@ function toggleFooter() {
     &, & > * {
       background: var(--bg-color);
     }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.8rem;
   }
 }
 
@@ -227,11 +458,17 @@ function toggleFooter() {
 
 .stations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 0.9fr));
-  gap: 1.9rem;
-  max-width: 1000;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  gap: 1.5rem;
+  justify-content: center;
+  max-width: 1400px;
   margin: 0 auto;
   margin-bottom: 4rem;
+
+  @media (max-width: 768px) {
+    gap: 1.5rem;
+    padding: 0 0.5rem;
+  }
 }
 
 .seismic-card {
@@ -243,6 +480,7 @@ function toggleFooter() {
   box-shadow: 0 4px 6px rgba(167, 167, 167, 0.61);
   transition: all 0.35s ease;
   border-radius: 2.5rem;
+  min-height: auto;
   
   &.significant {
     transform: scale(1.02);
@@ -315,15 +553,15 @@ function toggleFooter() {
   .data-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 0.8rem;
     
     .data-item {
       display: flex;
       align-items: center;
-      gap: auto; 
-      max-height: 40px;
-      padding: 0.8rem;
-      border-radius: 1.5rem;
+      gap: 0.5rem;
+      max-height: 35px;
+      padding: 0.5rem;
+      border-radius: 1rem;
       background: rgba(255, 255, 255, 0.13);
       backdrop-filter: blur(10px);
       color: var(--text-color);
@@ -337,7 +575,7 @@ function toggleFooter() {
       
       h4 {
         margin: 0;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -384,6 +622,18 @@ function toggleFooter() {
       
       span {
         line-height: 1;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    
+    .data-grid {
+      gap: 0.6rem;
+      
+      .data-item {
+        padding: 0.4rem 0.6rem;
       }
     }
   }
@@ -529,6 +779,411 @@ function toggleFooter() {
     h4, .icon {
       transition: color 0.3s ease;
     }
+  }
+}
+
+.settings-toggle {
+  position: fixed;
+  top: 2rem;
+  right: 4rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0.25rem;
+  border-radius: 75%;
+  background: var(--card-bg);
+  transition: all 0.3s ease;
+  z-index: 100;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100vh;
+  background: rgba(var(--card-bg-rgb), 0.5);
+  backdrop-filter: blur(120px) saturate(180%);
+  -webkit-backdrop-filter: blur(120px) saturate(180%);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  
+  &.show {
+    right: 0;
+  }
+
+  .settings-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    
+    h3 {
+      margin: 0;
+      color: var(--text-color);
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-color);
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s;
+      
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .settings-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    .version-section {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem;
+      
+      // GitHub 图标链接
+      .github-link {
+        color: var(--text-color);
+        font-size: 1.8rem;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+      }
+      
+      // 网站链接容器
+      .website-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        
+        a {
+          color: var(--text-color);
+          text-decoration: none;
+          opacity: 0.8;
+          font-size: 0.9rem;
+          transition: opacity 0.3s;
+          
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+      
+      // 版本信息
+      .version-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        .project-icon {
+          font-size: 1.2rem;
+          color: var(--text-color);
+          opacity: 0.8;
+        }
+        
+        .version {
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .alert-section {
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+        font-weight: 500;
+        text-align: left;
+        padding-left: 0.5rem;
+      }
+
+      .alert-control {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.8rem;
+        
+        .threshold-select {
+          flex: 1;
+          
+          select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            
+            &:disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+            
+            &:focus {
+              outline: none;
+              border-color: rgba(255, 255, 255, 0.3);
+            }
+            
+            option {
+              background: var(--card-bg);
+              color: var(--text-color);
+            }
+          }
+        }
+
+        // 开关按钮样式保持不变
+        .toggle-switch {
+          position: relative;
+          display: inline-block;
+          width: 50px;
+          height: 24px;
+          flex-shrink: 0;
+
+          input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+
+            &:checked + .slider {
+              background-color: #2196F3;
+              
+              &:before {
+                transform: translateX(26px);
+              }
+            }
+          }
+
+          .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+
+            &:before {
+              position: absolute;
+              content: "";
+              height: 16px;
+              width: 16px;
+              left: 4px;
+              bottom: 4px;
+              background-color: white;
+              transition: .4s;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+
+    .filter-section,
+    .language-section {
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+        font-weight: 500;
+        text-align: left;
+        padding-left: 0.5rem;
+      }
+    }
+
+    .language-section {
+      .language-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+
+        button {
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.5rem;
+          background: rgba(255, 255, 255, 0.1);
+          color: var(--text-color);
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+
+          &.active {
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .filter-section {
+      .input-wrapper {
+        position: relative;
+        width: 100%;
+        
+        input {
+          width: 100%;
+          padding: 0.8rem 2rem 0.8rem 1rem;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 0.8rem;
+          background: var(--bg-color);
+          color: var(--text-color);
+          font-size: 1rem;
+          letter-spacing: 0.5px;
+          
+          &:focus {
+            outline: none;
+            border-color: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+          }
+
+          &::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+          }
+        }
+        
+        .error-emoji {
+          position: absolute;
+          right: 0.8rem;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 1.2rem;
+          pointer-events: none;
+        }
+      }
+    }
+
+    .refresh-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        display: block;
+        color: var(--text-color);
+        font-weight: 500;
+        text-align: left;
+        padding-left: 0.5rem;
+      }
+
+      .refresh-control {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.8rem;
+
+        .refresh-text {
+          color: var(--text-color);
+          font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+          position: relative;
+          display: inline-block;
+          width: 50px;
+          height: 24px;
+          flex-shrink: 0;
+
+          input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+
+            &:checked + .slider {
+              background-color: #2196F3;
+              
+              &:before {
+                transform: translateX(26px);
+              }
+            }
+          }
+
+          .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+
+            &:before {
+              position: absolute;
+              content: "";
+              height: 16px;
+              width: 16px;
+              left: 4px;
+              bottom: 4px;
+              background-color: white;
+              transition: .4s;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    right: -100%;
   }
 }
 </style>

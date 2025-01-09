@@ -191,7 +191,9 @@ defineExpose({ show: showModal })
       justify-content: space-between;
       align-items: center;
       padding: 1rem 1.5rem;
-      background: var(--card-bg);
+      background: rgba(var(--card-bg-rgb), 0.5);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       z-index: 1;
       
@@ -244,9 +246,7 @@ defineExpose({ show: showModal })
             color: var(--text-color);
             opacity: 0.8;
             max-width: 50%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            word-break: break-all;
           }
         }
       }

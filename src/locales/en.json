@@ -1,5 +1,5 @@
 {
-    "type": "Type",
+    "type": "Serial Number",
     "region": "{region}",
     "latitude": "Latitude",
     "longitude": "Longitude",
@@ -44,5 +44,19 @@
     "max_intensity": "Max Intensity",
     "details": "Details",
     "footer_text": "Created by RCBS, Powered by Wolfx.jp.",
-    "github_link": "The Github repository of SSV. "
+    "github_link": "The Github repository of SSV. ",
+    "settings": "Settings",
+    "filter_by_type": "ONLY SHOW",
+    "enter_station_type": "Please type the seismic station serial number.",
+    "language":"Display Languages",
+    "alert_settings": "Alarm Tone Threshold Settings",
+    "auto_refresh_settings": "WebSocket Background Auto-Refresh",
+    "background_auto_refresh": "Automatically refreshes at 10-minute intervals",
+    "shindo_3": "Shindo 3 or higher",
+    "shindo_4": "Shindo 4 or higher",
+    "shindo_5-": "Shindo 5- or higher",
+    "shindo_5+": "Shindo 5+ or higher",
+    "shindo_6-": "Shindo 6- or higher",
+    "shindo_6+": "Shindo 6+ or higher",
+    "shindo_7": "Only Shindo 7"
   }
