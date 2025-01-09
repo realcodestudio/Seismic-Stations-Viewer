@@ -187,7 +187,55 @@ import { useI18n } from 'vue-i18n'
 
 const themeStore = useThemeStore()
 const seismicStore = useSeismicStore()
-let ws: WebSocket
+
+// 1. 语言名称类型定义
+interface LanguageNames {
+  [key: string]: string;
+}
+
+const languageNames: LanguageNames = {
+  zh: '简体中文',
+  en: 'English',
+  ja: '日本語'
+}
+
+// 2. WebSocket 相关
+// 删除之前的 let ws: WebSocket 声明
+const ws = ref<WebSocket | null>(null)
+
+// 语言切换函数
+const changeLanguage = (lang: string) => {
+  locale.value = lang
+}
+
+// 自动刷新相关函数
+const startAutoRefresh = () => {
+  if (refreshInterval) return
+  
+  refreshInterval = window.setInterval(() => {
+    if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+      console.log('WebSocket连接已断开，尝试重新连接...')
+      initWebSocket()
+    }
+  }, 600000)
+}
+
+const stopAutoRefresh = () => {
+  if (refreshInterval) {
+    clearInterval(refreshInterval)
+    refreshInterval = null
+  }
+}
+
+
+
+// 组件卸载时清理
+onUnmounted(() => {
+  stopAutoRefresh()
+  if (ws.value) {
+    ws.value.close()
+  }
+})
 
 const seismicDataArray = computed(() => {
   const data = Array.from(seismicStore.seismicDataMap.values())
@@ -212,31 +260,11 @@ function formatTime(timeStr: string) {
   })
 }
 
-function initWebSocketWithDebug() {
-  ws = initWebSocket();
-
-  ws.onopen = () => {
-    console.log('WebSocket 已连接');
-  };
-
-  ws.onerror = (error) => {
-    console.error('WebSocket 错误:', error);
-  };
-
-  ws.onclose = () => {
-    console.warn('WebSocket 已关闭，尝试重新连接...');
-    setTimeout(initWebSocketWithDebug, 5000); // 5秒后重新连接
-  };
-}
-
 onMounted(() => {
-  initWebSocketWithDebug()
+  initWebSocket()
   console.log('初始数据:', seismicDataArray.value)
 })
 
-onUnmounted(() => {
-  ws?.close()
-})
 
 const stationDetailModal = ref()
 const selectedStation = ref()
@@ -262,17 +290,7 @@ watch(() => themeStore.isDark, (isDark) => {
 
 const { locale } = useI18n()
 
-const version = ref('v3.1.2(241228)')
-
-const languageNames = {
-  zh: '中文 (简体)',
-  en: 'English (US)',
-  ja: '日本語'
-}
-
-function changeLanguage(lang: string) {
-  locale.value = lang
-}
+const version = ref('v3.3.0(250109)')
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
@@ -356,26 +374,6 @@ onMounted(() => {
 // 添加自动刷新设置
 const autoRefreshEnabled = ref(false)
 let refreshInterval: number | null = null
-
-// 自动刷新函数
-const startAutoRefresh = () => {
-  if (refreshInterval) return
-  
-  refreshInterval = window.setInterval(() => {
-    // 检查 WebSocket 连接状态
-    if (ws.value?.readyState !== WebSocket.OPEN) {
-      console.log('WebSocket连接已断开，尝试重新连接...')
-      initWebSocket() // 重新初始化WebSocket连接
-    }
-  }, 60000) // 10分钟间隔
-}
-
-const stopAutoRefresh = () => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
-    refreshInterval = null
-  }
-}
 
 // 监听自动刷新设置变化
 watch(autoRefreshEnabled, (newValue) => {
