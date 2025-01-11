@@ -290,7 +290,7 @@ watch(() => themeStore.isDark, (isDark) => {
 
 const { locale } = useI18n()
 
-const version = ref('v3.3.0(250109)')
+const version = ref('v3.3.2(250111)')
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
