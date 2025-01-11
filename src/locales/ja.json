@@ -55,7 +55,7 @@
   "language":"言語設定",
   "alert_settings": "アラーム音のしきい値設定",
   "auto_refresh_settings": "WebSocketバックグラウンド自動更新",
-  "background_auto_refresh": "10分間隔で自動更新スイッチ",
+  "background_auto_refresh": "10分間隔で自動更新",
   "shindo_3": "震度3以上",
   "shindo_4": "震度4以上",
   "shindo_5-": "震度5弱以上",

@@ -52,7 +52,7 @@
   "language": "语言设定",
   "alert_settings": "警报音阈值设置",
   "auto_refresh_settings": "WebSocket 背景自动刷新",
-  "background_auto_refresh": "时隔10分钟自动刷新开关",
+  "background_auto_refresh": "每10分钟自动刷新测站列表",
   "shindo_3": "震度3以上",
   "shindo_4": "震度4以上",
   "shindo_5-": "震度5弱以上",
