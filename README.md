@@ -41,4 +41,4 @@
 - Run these cmds in the terminal in turn.
   > cd Seismic-Stations-Viewer<br>
   > pnpm install<br>
-  > pnpm build<br>
+  > pnpm run build<br>
