@@ -7,7 +7,6 @@ interface SeismicData {
   region: string               // 地区名称
   latitude: number             // 纬度
   longitude: number            // 经度
-  systemInfo: string           // 系统信息
   version: string              // 版本号
   
   // PGV 相关数据
@@ -59,7 +58,6 @@ export const useSeismicStore = defineStore('seismic', () => {
       region: data.region || '未知地区',
       latitude: Number(data.latitude) || 0,
       longitude: Number(data.longitude) || 0,
-      systemInfo: data.systemInfo,
       version: data.version,
       PGA: Number(data.PGA.toFixed(3)),
       CalcShindo: data.CalcShindo,

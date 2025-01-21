@@ -66,7 +66,6 @@ function formatLabel(key: string): string {
     region: t('region'),
     latitude: t('latitude'),
     longitude: t('longitude'),
-    systemInfo: t('system_info'),
     version: t('version'),
     PGV: t('PGV'),
     PGV_EW: t('PGV_EW'),
@@ -109,12 +108,13 @@ function formatValue(value: any, key: string): string {
   if (value === null || value === undefined) return '-'
   
   if (typeof value === 'number') {
-    // 对经度和纬度只保留3位小数
-    if (key === 'latitude' || key === 'longitude') {
-      return value.toFixed(3)
+    if (key === 'latitude' || key === 'longitude' || key === 'CalcShindo' || key === 'Max_Shindo' || key === 'Intensity' || key === 'Max_Intensity') {
+      return value.toFixed(2)
+    } else if (key === 'version') {
+      return value.toFixed(0)
     }
-    // 其他数值保留10位小数
-    return value.toFixed(10)
+    // 其他数值保留5位小数
+    return value.toFixed(5)
   }
   
   if (typeof value === 'boolean') {
