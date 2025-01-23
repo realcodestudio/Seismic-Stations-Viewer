@@ -23,6 +23,7 @@
 
 ## 示例页面
 - https://wolfx.jp/ssv
+- https://ssv.bousai.cn
 
 ## 如何运行？
 - 从"Releases"下载源码。
@@ -41,4 +42,4 @@
 - 依次使用终端运行以下命令。
   > cd Seismic-Stations-Viewer<br>
   > pnpm install<br>
-  > pnpm build<br>
+  > pnpm run build<br>
