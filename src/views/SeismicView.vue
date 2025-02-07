@@ -422,6 +422,7 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
 <style scoped lang="scss">
 /* 添加全局样式 */
 :global(body) {
+  font-family: 'Google Sans', sans-serif;
   margin: 0;
   padding: 0;
   
