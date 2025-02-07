@@ -68,6 +68,17 @@
               v-model="stationTypeFilter"
               :placeholder="$t('enter_station_type')"
             />
+          </div>
+        </div>
+
+        <div class="filter-section" v-if="stationTypeFilter">
+          <label>{{ $t('custom_station_name') }}</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              v-model="customStationName[stationTypeFilter]"
+              :placeholder="$t('enter_custom_station_name')"
+            />
             <span v-if="showNoMatchError" class="error-emoji">❌</span>
           </div>
         </div>
@@ -121,7 +132,7 @@
            :style="getCardStyle(data.Shindo)"
            :class="{ 'significant': isSignificantShindo(data.Shindo) }">
         <div class="card-header">
-          <h1 class="region"><Icon icon="mdi:map-marker" />{{ $t('region', { region: data.region }) }}</h1>
+          <h1 class="region"><Icon icon="mdi:map-marker" />{{ customStationName[data.type] || $t('region', { region: data.region }) }}</h1>
           <span class="update-time">{{ $t('update_time', { time: formatTime(data.update_at) }) }}</span>
         </div>
         
@@ -290,7 +301,7 @@ watch(() => themeStore.isDark, (isDark) => {
 
 const { locale } = useI18n()
 
-const version = ref('v3.3.2(250111)')
+const version = ref('v3.4(250207)')
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
@@ -404,6 +415,8 @@ onMounted(() => {
 onUnmounted(() => {
   stopAutoRefresh()
 })
+
+const customStationName = ref<Record<string, string>>({}) // 修改为对象以存储每个UUID的名称
 </script>
 
 <style scoped lang="scss">
@@ -478,6 +491,8 @@ onUnmounted(() => {
   box-shadow: 0 4px 6px rgba(167, 167, 167, 0.61);
   transition: all 0.35s ease;
   border-radius: 2.5rem;
+  min-width: 300px;
+  max-width: 400px;
   min-height: auto;
   
   &.significant {
@@ -500,11 +515,11 @@ onUnmounted(() => {
       color: var(--text-color);
       transition: color 0.3s ease;
 
-      /* 使文本换行并自动缩小字体 */
-      white-space: normal; /* 允许换行 */
-      overflow-wrap: break-word; /* 允许单词换行 */
-      min-width: 0; /* 允许缩小 */
-
+      /* 使文本不换行 */
+      white-space: nowrap; /* 取消换行 */
+      overflow: hidden; /* 隐藏溢出文本 */
+      text-overflow: ellipsis; /* 溢出文本显示省略号 */
+      
       @media (max-width: 768px) {
         font-size: 1.5rem; /* 在小屏幕上缩小字体 */
       }
@@ -524,27 +539,30 @@ onUnmounted(() => {
 
   .shindo-display,
   .intensity-display {
-    grid-column: 0 ;
-    display: grid;
-    flex-direction: row;
-    align-items: center;
+    display: flex; /* 使用flex布局 */
+    flex-direction: column; /* 垂直排列 */
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
     padding: 1rem;
     border-radius: 1.2rem;
     margin-bottom: 1rem;
-    min-height: 20px;
-    max-width: auto;
+    flex: 1; /* 使每个组件占据相同的宽度 */
+    min-width: 150px; /* 设置最小宽度 */
+    max-width: auto; /* 设置最大宽度 */
     
     .shindo-label,
     .intensity-label {
       font-size: 0.9rem;
       margin-bottom: 0.3rem;
       opacity: 0.9;
+      white-space: nowrap; /* 取消换行 */
     }
     
     .shindo-value,
     .intensity-value {
-      font-size: 2rem;
+      font-size: 3rem;
       font-weight: bold;
+      white-space: nowrap; /* 取消换行 */
     }
   }
   
@@ -554,32 +572,24 @@ onUnmounted(() => {
     gap: 0.8rem;
     
     .data-item {
+      flex: 1; /* 使数据项占据相同的宽度 */
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      max-height: 35px;
+      align-items: center; /* 垂直居中 */
       padding: 0.5rem;
-      border-radius: 1rem;
-      background: rgba(255, 255, 255, 0.13);
-      backdrop-filter: blur(10px);
-      color: var(--text-color);
-      transition: all 0.3s ease;
-      
-      .icon {
-        font-size: 1.2rem;
-        color: var(--text-color);
-        transition: color 0.3s ease;
+      border-radius: 0.8rem; /* 增加圆角 */
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 0.5rem;
+      text-align: left; /* 文字左对齐 */
+
+      h2 {
+        color: var(--text-color); /* 确保图标颜色与主题一致 */
+        font-size: 1.5rem; /* 调整图标大小 */
+        margin-right: 0.9rem; /* 添加右边距以分隔图标和文字 */
       }
       
       h4 {
-        margin: 0;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 150px;
-        color: var(--text-color);
-        transition: color 0.3s ease;
+        margin: 0; /* 去掉默认的上下边距 */
+        color: var(--text-color); /* 确保文字颜色与主题一致 */
       }
     }
   }
@@ -602,7 +612,7 @@ onUnmounted(() => {
       border-radius: 2rem;
       background: var(--card-bg);
       color: var(--text-color);
-      font-size: 0.9rem;
+      font-size: 0rem;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -1183,5 +1193,11 @@ onUnmounted(() => {
     width: 100%;
     right: -100%;
   }
+}
+
+/* 具体图标的样式 */
+.icon {
+  color: var(--icon-color); /* 设置图标颜色 */
+  transition: color 0.3s ease; /* 添加过渡效果 */
 }
 </style>
