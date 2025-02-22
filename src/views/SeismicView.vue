@@ -281,6 +281,10 @@ const stationDetailModal = ref()
 const selectedStation = ref()
 
 function showStationDetail(data: any) {
+  // 如果 countryName 是台湾，则替换为中国台湾
+  if (data.countryName === '台湾') {
+    data.countryName = '中国台湾';
+  }
   selectedStation.value = data
   stationDetailModal.value?.show()
 }
@@ -311,13 +315,19 @@ function toggleSettings() {
 }
 
 const filteredSeismicData = computed(() => {
+  const data = seismicDataArray.value.map(station => {
+    if (station.countryName === '台湾') {
+      station.countryName = '中国台湾省';
+    }
+    return station;
+  });
+
   if (!stationTypeFilter.value) {
-    return seismicDataArray.value
+    return data;
   }
-  return seismicDataArray.value.filter(data => 
-    data.type === stationTypeFilter.value
-  )
-})
+
+  return data.filter(station => station.type === stationTypeFilter.value);
+});
 
 const showNoMatchError = computed(() => {
   return stationTypeFilter.value && stationTypeFilter.value.length > 0 && filteredSeismicData.value.length === 0
@@ -1202,3 +1212,4 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
   transition: color 0.3s ease; /* 添加过渡效果 */
 }
 </style>
+`

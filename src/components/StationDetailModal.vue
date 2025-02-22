@@ -151,7 +151,6 @@ watchEffect(() => {
 const closeModal = () => {
   show.value = false
 }
-
 // 添加显式的 show 方法
 function showModal() {
   show.value = true
