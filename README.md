@@ -9,9 +9,8 @@
 <h3 align="center">Seismic Stations Viewer is a project that uses the Wolfx SeisJS API. The project allows you to easily view data from stations connected to the Wolfx SeisJS API.</h3>
 
 <h4 align="center">
-<a href=https://wolfx.jp/ssv>Demo Sites</a> | 
 <a href=https://wolfx.jp>To Wolfx</a> |
-<a href=https://x.com/realcodestudio>Follow RCBS</a> |
+<a href=https://x.com/realcodestudio>Follow @RCBS</a> |
 <a href=zh.md>简体字中国语</a> |
 <a href=zht.md>繁體字中國語</a> |  
 <a href=ja.md>日本語</a>
