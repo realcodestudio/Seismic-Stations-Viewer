@@ -302,7 +302,15 @@ watch(() => themeStore.isDark, (isDark) => {
 
 const { locale } = useI18n()
 
-const version = ref('v3.4.2(250207)') // 修改版本号
+////
+////
+////
+////
+const version = ref('v3.4.3(250223)') // 修改版本号
+////
+////
+////
+////
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
