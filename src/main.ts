@@ -4,17 +4,19 @@ import App from './App.vue'
 import './style.css'
 import { createI18n } from 'vue-i18n'
 import en from './locales/en.json'
-import zh from './locales/zh.json'
+import zhs from './locales/zhs.json'
+import zht from './locales/zht.json'
 import ja from './locales/ja.json'
 
 const messages = {
   en,
-  zh,
+  zhs,
+  zht,
   ja,
 }
 
 const i18n = createI18n({
-  locale: 'zh',
+  locale: 'zhs',
   messages,
 })
 
