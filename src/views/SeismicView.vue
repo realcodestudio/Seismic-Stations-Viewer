@@ -87,7 +87,7 @@
           <label>{{ $t('language') }}</label>
           <div class="language-buttons">
             <button 
-              v-for="lang in ['zh', 'en', 'ja']" 
+              v-for="lang in ['zhs', 'zht','en', 'ja']" 
               :key="lang"
               @click="changeLanguage(lang)"
               :class="{ 'active': locale === lang }"
@@ -205,7 +205,8 @@ interface LanguageNames {
 }
 
 const languageNames: LanguageNames = {
-  zh: '简体中文',
+  zhs: '简体中文',
+  zht: '繁體中文',
   en: 'English',
   ja: '日本語'
 }
@@ -281,12 +282,8 @@ const stationDetailModal = ref()
 const selectedStation = ref()
 
 function showStationDetail(data: any) {
-  // 如果 countryName 是台湾，则替换为中国台湾
-  if (data.countryName === '台湾') {
-    data.countryName = '中国台湾';
-  }
-  selectedStation.value = data
-  stationDetailModal.value?.show()
+  selectedStation.value = data 
+  stationDetailModal.value?.show() // 显示详情弹窗
 }
 
 function formatNumber(value: number): string {
@@ -305,7 +302,7 @@ watch(() => themeStore.isDark, (isDark) => {
 
 const { locale } = useI18n()
 
-const version = ref('v3.4.2(250222)')
+const version = ref('v3.4.2(250207)') // 修改版本号
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
@@ -316,10 +313,16 @@ function toggleSettings() {
 
 const filteredSeismicData = computed(() => {
   const data = seismicDataArray.value.map(station => {
-    if (station.countryName === '台湾') {
-      station.countryName = '中国台湾省';
+    if ('countryName' in station && station.countryName === '台湾') {
+      station.countryName = '中国台湾';
     }
+    //地区名替换
+    // else if ('countryName' in station && station.countryName === '香港') {
+    //   station.countryName = 'example 香港特别行政区';
+    // }
+    
     return station;
+    
   });
 
   if (!stationTypeFilter.value) {
@@ -1212,4 +1215,3 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
   transition: color 0.3s ease; /* 添加过渡效果 */
 }
 </style>
-`
