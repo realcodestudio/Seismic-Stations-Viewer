@@ -30,8 +30,6 @@
     "create_at": "文件创建时间",
     "Intensity": "烈度",
     "Max_Intensity": "最大烈度",
-    "cityName": "所在城市",
-    "countryName": "所在国家与地区",
     "is_desktop": "桌面端",
     "PGD": "PGD",
     "Max_PGD": "最大 PGD",

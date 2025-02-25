@@ -10,10 +10,7 @@
 
       <div class="modal-body" v-if="currentData">
         <div class="data-grid">
-          <div v-for="(value, key) in processedData" 
-               :key="key" 
-               class="data-item"
-               :title="formatValue(value, key)">
+          <div v-for="(value, key) in processedData" :key="key" class="data-item" :title="formatValue(value, key)">
             <span class="label">{{ formatLabel(key) }}:</span>
             <span class="value">{{ formatValue(value, key) }}</span>
           </div>
@@ -49,7 +46,7 @@ const currentData = computed(() => {
 // 处理展示数据
 const processedData = computed(() => {
   if (!currentData.value) return {}
-  
+
   const data = { ...currentData.value }
   return Object.entries(data)
     .sort(([a], [b]) => a.localeCompare(b))
@@ -93,20 +90,18 @@ function formatLabel(key: string): string {
     create_at: t('create_at'),
     Intensity: t('Intensity'),
     Max_Intensity: t('Max_Intensity'),
-    cityName: t('cityName'),
-    countryName: t('countryName'),
     is_desktop: t('is_desktop'),
     PGD: t('PGD'),
     Max_PGD: t('Max_PGD')
   }
-  
+
   return labelMap[key] || key
 }
 
 // 格式化数值
 function formatValue(value: any, key: string): string {
   if (value === null || value === undefined) return '-'
-  
+
   if (typeof value === 'number') {
     if (key === 'latitude' || key === 'longitude' || key === 'CalcShindo' || key === 'Max_Shindo' || key === 'Intensity' || key === 'Max_Intensity') {
       return value.toFixed(2)
@@ -116,11 +111,11 @@ function formatValue(value: any, key: string): string {
     // 其他数值保留5位小数
     return value.toFixed(5)
   }
-  
+
   if (typeof value === 'boolean') {
     return value ? t('yes') : t('no')
   }
-  
+
   if (typeof value === 'string' && (value.includes('at') || value.includes('time'))) {
     try {
       const date = new Date(value)
@@ -136,7 +131,7 @@ function formatValue(value: any, key: string): string {
       return value
     }
   }
-  
+
   return String(value)
 }
 
@@ -195,7 +190,7 @@ defineExpose({ show: showModal })
       -webkit-backdrop-filter: blur(40px) saturate(180%);
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       z-index: 1;
-      
+
       h2 {
         margin: 0;
         color: var(--text-color);
@@ -257,7 +252,7 @@ defineExpose({ show: showModal })
   .station-modal {
     .modal-content {
       width: 95%;
-      
+
       .modal-body {
         .data-grid {
           grid-template-columns: 1fr;

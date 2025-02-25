@@ -76,6 +76,6 @@ export function getIntensityStyle(intensity: string): CSSProperties {
 
 export function isSignificantIntensity(Intensity: string): boolean {
   // 烈度3以上视为显著地震
-  const significantLevels = ['3', '4', '5', '6', '7', '8', '9','10','11','12']
+  const significantLevels = ['3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
   return significantLevels.includes(Intensity)
 } 
