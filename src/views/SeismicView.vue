@@ -276,7 +276,7 @@ const { locale } = useI18n()
 ////
 ////
 ////
-const version = ref('v3.4.4(250225)') // 修改版本号
+const version = ref('v3.4.5(250313)') // 修改版本号
 ////
 ////
 ////

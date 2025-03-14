@@ -52,8 +52,7 @@ export const useSeismicStore = defineStore('seismic', () => {
   const seismicDataMap = ref<Map<string, SeismicData>>(new Map())
 
   function updateSeismicData(data: SeismicData) {
-    // 利用对象解构过滤掉 countryName, cityName, reverse 字段喵～
-    const { countryName, cityName, reverse, ...restData } = data as any;
+    const { reverse, ...restData } = data as any;
 
     const updatedData = {
       ...restData,
