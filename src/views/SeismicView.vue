@@ -276,7 +276,7 @@ const { locale } = useI18n()
 ////
 ////
 ////
-const version = ref('v3.4.5(250314)') // 修改版本号
+const version = ref('v3.4.6(250314)') // 修改版本号
 ////
 ////
 ////
@@ -316,7 +316,7 @@ const shindoOptions = [
 // 警报设置状态
 const alertEnabled = ref(false)
 const selectedShindo = ref(4.0) // 默认震度4
-const alertSound = new Audio('/alert.mp3')
+const alertSound = new Audio('./alert.mp3')
 
 // 修改震度监听逻辑
 watch(() => seismicDataArray.value, (newData) => {
