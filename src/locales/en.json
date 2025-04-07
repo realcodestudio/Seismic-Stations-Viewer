@@ -1,6 +1,6 @@
 {
   "type": "UUID",
-  "region": "Station Location",
+  "region": "{region}",
   "latitude": "Latitude",
   "longitude": "Longitude",
   "version": "Version",

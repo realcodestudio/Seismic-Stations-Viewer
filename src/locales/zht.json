@@ -1,6 +1,6 @@
 {
   "type": "UUID",
-  "region": "測站所在地",
+  "region": "{region}",
   "latitude": "緯度",
   "longitude": "經度",
   "version": "版本",

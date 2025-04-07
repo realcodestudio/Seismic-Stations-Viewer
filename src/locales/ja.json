@@ -1,6 +1,6 @@
 {
   "type": "UUID",
-  "region": "観測所の所在地",
+  "region": "{region}",
   "latitude": "緯度",
   "longitude": "経度",
   "version": "バージョン",
