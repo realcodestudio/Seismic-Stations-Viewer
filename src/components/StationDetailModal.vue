@@ -76,7 +76,6 @@ function formatLabel(key: string): string {
     Max_CalcShindo: t('Max_CalcShindo'),
     Intensity: t('Intensity'),
     Max_Intensity: t('Max_Intensity'),
-
     LPGM: t('LPGM'),
     Max_LPGM: t('Max_LPGM'),
     Sva30: t('Sva30'),
@@ -95,9 +94,11 @@ function formatValue(value: any, key: string): string {
   if (value === null || value === undefined) return '-'
 
   if (typeof value === 'number') {
-    if (key === 'latitude' || key === 'longitude' || key === 'CalcShindo' || key === 'Max_Shindo' || key === 'Intensity' || key === 'Max_Intensity') {
+    if (key === 'latitude' || key === 'longitude') {
+      return value.toFixed(1)
+    } else if (key === 'CalcShindo' || key === 'Max_Shindo' || key === 'Max_CalcShindo' || key === 'Intensity' || key === 'Max_Intensity') {
       return value.toFixed(2)
-    } else if (key === 'version') {
+    } else if (key === 'version' || key === 'LPGM' || key === 'Max_LPGM') {
       return value.toFixed(0)
     }
     // 其他数值保留6位小数
