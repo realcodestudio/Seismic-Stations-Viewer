@@ -64,35 +64,27 @@ function formatLabel(key: string): string {
     latitude: t('latitude'),
     longitude: t('longitude'),
     version: t('version'),
-    PGV: t('PGV'),
-    PGV_EW: t('PGV_EW'),
-    PGV_NS: t('PGV_NS'),
-    PGV_UD: t('PGV_UD'),
     PGA: t('PGA'),
-    PGA_EW: t('PGA_EW'),
-    PGA_NS: t('PGA_NS'),
-    PGA_UD: t('PGA_UD'),
+    PGV: t('PGV'),
+    PGD: t('PGD'),
     Max_PGA: t('Max_PGA'),
-    Max_PGA_EW: t('Max_PGA_EW'),
-    Max_PGA_NS: t('Max_PGA_NS'),
-    Max_PGA_UD: t('Max_PGA_UD'),
     Max_PGV: t('Max_PGV'),
-    Max_PGV_EW: t('Max_PGV_EW'),
-    Max_PGV_NS: t('Max_PGV_NS'),
-    Max_PGV_UD: t('Max_PGV_UD'),
+    Max_PGD: t('Max_PGD'),
     Shindo: t('Shindo'),
-    CalcShindo: t('CalcShindo'),
     Max_Shindo: t('Max_Shindo'),
+    CalcShindo: t('CalcShindo'),
     Max_CalcShindo: t('Max_CalcShindo'),
-    High_Precision: t('High_Precision'),
-    private: t('private'),
-    update_at: t('update_at'),
-    create_at: t('create_at'),
     Intensity: t('Intensity'),
     Max_Intensity: t('Max_Intensity'),
+
+    LPGM: t('LPGM'),
+    Max_LPGM: t('Max_LPGM'),
+    Sva30: t('Sva30'),
+    Max_Sva30: t('Max_Sva30'),
     is_desktop: t('is_desktop'),
-    PGD: t('PGD'),
-    Max_PGD: t('Max_PGD')
+    High_Precision: t('High_Precision'),
+    update_at: t('update_at'),
+    create_at: t('create_at'),
   }
 
   return labelMap[key] || key
@@ -108,8 +100,8 @@ function formatValue(value: any, key: string): string {
     } else if (key === 'version') {
       return value.toFixed(0)
     }
-    // 其他数值保留5位小数
-    return value.toFixed(5)
+    // 其他数值保留6位小数
+    return value.toFixed(6)
   }
 
   if (typeof value === 'boolean') {

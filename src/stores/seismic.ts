@@ -9,25 +9,13 @@ interface SeismicData {
   longitude: number            // 经度
   version: string              // 版本号
 
-  // PGV 相关数据
-  PGV: number                  // PGV 综合值
-  PGV_EW: number              // PGV 东西方向
-  PGV_NS: number              // PGV 南北方向
-  PGV_UD: number              // PGV 上下方向
-  Max_PGV: number             // 最大 PGV 综合值
-  Max_PGV_EW: number          // 最大 PGV 东西方向
-  Max_PGV_NS: number          // 最大 PGV 南北方向
-  Max_PGV_UD: number          // 最大 PGV 上下方向
-
   // PGA 相关数据
   PGA: number                  // PGA 综合值
-  PGA_EW: number              // PGA 东西方向
-  PGA_NS: number              // PGA 南北方向
-  PGA_UD: number              // PGA 上下方向
   Max_PGA: number             // 最大 PGA 综合值
-  Max_PGA_EW: number          // 最大 PGA 东西方向
-  Max_PGA_NS: number          // 最大 PGA 南北方向
-  Max_PGA_UD: number          // 最大 PGA 上下方向
+
+  // PGV 相关数据
+  PGV: number                  // PGV 综合值
+  Max_PGV: number             // 最大 PGV 综合值
 
   // 震度相关数据
   Shindo: string              // 震度
@@ -39,9 +27,15 @@ interface SeismicData {
   Intensity: string            // 烈度
   Max_Intensity: string        // 最大烈度
 
+  // 长周期地震动相关数据
+  LPGM: number            // 长周期地震动阶级
+  Max_LPGM: number        // 最大长周期地震动阶级
+  Sva30: number            // 加速度反应谱值
+  Max_Sva30: number        // 最大加速度反应谱值
+
   // 其他信息
+  is_desktop: boolean          // 是否为桌面端
   High_Precision: boolean      // 是否高精度
-  private: boolean            // 是否私有
 
   // 时间信息
   update_at: string           // 更新时间
