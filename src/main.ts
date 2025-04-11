@@ -6,6 +6,7 @@ import { createI18n } from 'vue-i18n'
 import en from './locales/en.json'
 import zhs from './locales/zhs.json'
 import zht from './locales/zht.json'
+import ko from './locales/ko.json'
 import ja from './locales/ja.json'
 
 const messages = {
@@ -13,6 +14,7 @@ const messages = {
   zhs,
   zht,
   ja,
+  ko
 }
 
 const i18n = createI18n({

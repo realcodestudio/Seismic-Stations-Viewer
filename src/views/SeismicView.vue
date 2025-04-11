@@ -44,6 +44,73 @@
           </div>
         </div>
 
+        <div class="display-section">
+          <label>{{ $t('display_settings') }}</label>
+          <div class="display-options">
+            <div class="display-option">
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="displaySettings.pga" @change="saveDisplaySettings">
+                <span class="slider"></span>
+              </label>
+              <span class="option-text">PGA</span>
+            </div>
+            
+            <div class="display-option">
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="displaySettings.measuredIntensity" @change="saveDisplaySettings">
+                <span class="slider"></span>
+              </label>
+              <span class="option-text">{{ $t('calc_shindo') }}</span>
+            </div>
+
+            <div class="display-option">
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="displaySettings.maxJMAShindo" @change="saveDisplaySettings">
+                <span class="slider"></span>
+              </label>
+              <span class="option-text">{{ $t('max_shindo') }}</span>
+            </div>
+
+            <div class="display-option">
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="displaySettings.maxCSISIntensity" @change="saveDisplaySettings">
+                <span class="slider"></span>
+              </label>
+              <span class="option-text">{{ $t('max_intensity') }}</span>
+            </div>
+
+            
+        <div class="display-section">
+          <label>{{ $t('RT_display_settings') }}</label>
+          
+            <div class="RT-display-option">
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="displaySettings.longPeriod" @change="saveDisplaySettings">
+                <span class="slider"></span>
+              </label>
+              <span class="option-text">{{ $t('realtime_LPGM') }}</span>
+              
+            <div class="RT-display-option">
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="displaySettings.realTimeJMA" @change="saveDisplaySettings">
+                <span class="slider"></span>
+              </label>
+              <span class="option-text">{{ $t('real_time_shindo') }}</span>
+            </div>
+
+            <div class="RT-display-option">
+              <label class="toggle-switch">
+                <input type="checkbox" v-model="displaySettings.realTimeCSIS" @change="saveDisplaySettings">
+                <span class="slider"></span>
+              </label>
+              <span class="option-text">{{ $t('real_time_intensity') }}</span>
+            </div>
+          </div>
+
+            </div>
+          </div>
+        </div>
+
         <div class="filter-section">
           <label>{{ $t('filter_by_type') }}</label>
           <div class="input-wrapper">
@@ -63,7 +130,7 @@
         <div class="language-section">
           <label>{{ $t('language') }}</label>
           <div class="language-buttons">
-            <button v-for="lang in ['zhs', 'zht', 'en', 'ja']" :key="lang" @click="changeLanguage(lang)"
+            <button v-for="lang in ['zhs', 'zht', 'en', 'ja', 'ko']" :key="lang" @click="changeLanguage(lang)"
               :class="{ 'active': locale === lang }">
               {{ languageNames[lang] }}
             </button>
@@ -102,23 +169,23 @@
         </div>
 
         <div class="data-grid">
-          <div class="shindo-display" :style="getShindoStyle(data.Shindo || '0')">
+          <div v-if="displaySettings.realTimeJMA" class="shindo-display" :style="getShindoStyle(data.Shindo || '0')">
             <h1 class="shindo-label">{{ $t('real_time_shindo') }}</h1>
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
           </div>
 
-          <div class="intensity-display" :style="getIntensityStyle(formatIntensity(data.Intensity))">
+          <div v-if="displaySettings.realTimeCSIS" class="intensity-display" :style="getIntensityStyle(formatIntensity(data.Intensity))">
             <h1 class="intensity-label">{{ $t('real_time_intensity') }}</h1>
             <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
 
-          <div class="LPGM-display" :style="getLPGMStyle(String(data.LPGM || '0'))">
-            <h1 class="LPGM-label">{{ $t('LPGM') }}</h1>
+          <div v-if="displaySettings.longPeriod" class="LPGM-display" :style="getLPGMStyle(String(data.LPGM || '0'))">
+            <h1 class="LPGM-label">{{ $t('realtime_LPGM') }}</h1>
             <span class="LPGM-value">{{ data.LPGM || '0' }}</span>
           </div>
           
           <div class="data-box-grid">
-            <div class="data-box">
+            <div v-if="displaySettings.pga" class="data-box">
               <div class="data-box-content">
                 <div class="label-text">
                   <Icon icon="mdi:waveform" />
@@ -128,7 +195,7 @@
               </div>
             </div>
 
-            <div class="data-box">
+            <div v-if="displaySettings.measuredIntensity" class="data-box">
               <div class="data-box-content">
                 <div class="label-text">
                   <Icon icon="mdi:calculator" />
@@ -138,7 +205,7 @@
               </div>
             </div>
 
-            <div class="data-box">
+            <div v-if="displaySettings.maxJMAShindo" class="data-box">
               <div class="data-box-content">
                 <div class="label-text">
                   <Icon icon="mdi:format-vertical-align-top" />
@@ -148,7 +215,7 @@
               </div>
             </div>
 
-            <div class="data-box">
+            <div v-if="displaySettings.maxCSISIntensity" class="data-box">
               <div class="data-box-content">
                 <div class="label-text">
                   <Icon icon="mdi:format-vertical-align-top" />
@@ -198,7 +265,8 @@ const languageNames: LanguageNames = {
   zhs: '简体中文',
   zht: '繁體中文',
   en: 'English',
-  ja: '日本語'
+  ja: '日本語',
+  ko: '한국어'
 }
 
 // 2. WebSocket 相关
@@ -298,7 +366,7 @@ const { locale } = useI18n()
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v3.5.1') // 修改版本号
+const version = ref('v4.0.1') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -307,6 +375,18 @@ const version = ref('v3.5.1') // 修改版本号
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
+
+// 添加显示设置的响应式状态
+const displaySettings = ref({
+  pga: true,
+  measuredIntensity: true,
+  maxJMAShindo: true,
+  maxCSISIntensity: true,
+  // 添加顶部实时数据的显示控制
+  realTimeJMA: true,
+  realTimeCSIS: true,
+  longPeriod: true
+})
 
 function toggleSettings() {
   showSettings.value = !showSettings.value
@@ -419,6 +499,19 @@ onUnmounted(() => {
 })
 
 const customStationName = ref<Record<string, string>>({}) // 修改为对象以存储每个UUID的名称
+
+// 保存显示设置到本地存储
+const saveDisplaySettings = () => {
+  localStorage.setItem('displaySettings', JSON.stringify(displaySettings.value))
+}
+
+// 初始化时读取本地存储的显示设置
+onMounted(() => {
+  const savedSettings = localStorage.getItem('displaySettings')
+  if (savedSettings) {
+    displaySettings.value = JSON.parse(savedSettings)
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -554,6 +647,29 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
     grid-template-columns: repeat(3, 1fr);
     gap: 0.8rem;
     margin-bottom: 1rem;
+    width: 100%;
+
+    &:empty {
+      display: none;
+    }
+
+    // 当只有一个子元素时
+    &:has(> :only-child) {
+      grid-template-columns: 1fr;
+      > div {
+        grid-column: 1 / -1;
+        max-width: none;
+        width: 100%;
+      }
+    }
+
+    // 当有两个子元素时
+    &:has(> :nth-child(2):last-child) {
+      grid-template-columns: repeat(2, 1fr);
+      > div {
+        width: 100%;
+      }
+    }
 
     .shindo-display,
     .intensity-display,
@@ -562,43 +678,75 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 1rem 0.8rem;
-      border-radius: 1.2rem;
-      min-width: 0;
-      width: 100%;
-      grid-column: span 1;
+      padding: 1.2rem 0.75rem;
+      border-radius: 1.52rem;
       background: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.487);
       transition: all 0.3s ease;
       min-height: 120px;
+      width: 100%;
+      overflow: hidden;
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.292);
         background: rgba(255, 255, 255, 0.08);
       }
 
       .shindo-label,
       .intensity-label,
       .LPGM-label {
-        font-size: 0.7rem;
-        margin-bottom: 0.5rem;
+        font-size: 0.75rem;
+        margin-bottom: 0.7rem;
         opacity: 0.8;
-        white-space: normal;
         text-align: center;
-        line-height: 1.2;
         min-height: 2.4em;
         display: flex;
         align-items: center;
         justify-content: center;
+       
+        width: auto;
+        line-height: 1.2;
+        padding: 0 0.3rem;
+
+        // 处理长文本
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: break-word;
       }
 
       .shindo-value,
       .intensity-value,
       .LPGM-value {
-        font-size: 2.8rem;
+        font-size: 2.2rem;
         font-weight: bold;
         white-space: nowrap;
+        line-height: 1.2;
+      }
+    }
+
+    @media (max-width: 768px) {
+      gap: 0.6rem;
+      
+      .shindo-display,
+      .intensity-display,
+      .LPGM-display {
+        padding: 0.9rem 0.01rem;
+        min-width: 100px;
+
+        .shindo-label,
+        .intensity-label,
+        .LPGM-label {
+          font-size: 0.7rem;
+        }
+
+        .shindo-value,
+        .intensity-value,
+        .LPGM-value {
+          font-size: 2.8rem;
+        }
       }
     }
 
@@ -613,6 +761,10 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
 
       .data-box {
         min-height: 85px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.126);
+        border-radius: 1.2rem;
+        justify-content: center;
+        padding: 0.5rem 1.3rem;
 
         .data-box-content {
           .label-text {
@@ -621,7 +773,7 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
             gap: 0.4rem;
             color: var(--text-color);
             opacity: 0.8;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             margin: 0;
             width: 100%;
             min-height: 2.4em;
@@ -881,8 +1033,8 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
 .settings-panel {
   position: fixed;
   top: 0;
-  right: -400px;
-  width: 400px;
+  right: -700px;
+  width: 700px;
   height: 100vh;
   background: rgba(var(--card-bg-rgb), 0.5);
   backdrop-filter: blur(120px) saturate(180%);
@@ -1254,6 +1406,85 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
               transition: .4s;
               border-radius: 50%;
             }
+          }
+        }
+      }
+    }
+    .RT-display-section,
+    .display-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      label {
+        display: block;
+        color: var(--text-color);
+        font-weight: 500;
+        text-align: left;
+        padding-left: 0.5rem;
+        word-wrap: break-word;
+      }
+
+      .display-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        
+        .RT-display-option, 
+        .display-option {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            flex-shrink: 0;
+
+            input {
+              opacity: 0;
+              width: 0;
+              height: 0;
+
+              &:checked+.slider {
+                background-color: #2196F3;
+
+                &:before {
+                  transform: translateX(26px);
+                }
+              }
+            }
+
+            .slider {
+              position: absolute;
+              cursor: pointer;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background-color: #ccc;
+              transition: .4s;
+              border-radius: 24px;
+
+              &:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+              }
+            }
+          }
+
+          .option-text {
+            color: var(--text-color);
+            font-size: 0.9rem;
           }
         }
       }
