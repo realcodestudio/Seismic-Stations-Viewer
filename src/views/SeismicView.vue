@@ -112,6 +112,11 @@
             <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
 
+          <div class="LPGM-display" :style="getLPGMStyle(data.LPGM || '0')"> <!-- Ensure getLPGMStyle is defined -->
+            <h1 class="LPGM-label">{{ $t('LPGM') }}</h1>
+            <span class="LPGM-value">{{ data.LPGM || '0' }}</span>
+          </div>
+
           <div class="data-item">
             <h2>
               <Icon icon="mdi:waveform" />
@@ -163,6 +168,7 @@ import { useSeismicStore } from '../stores/seismic'
 import { initWebSocket } from '../services/websocket'
 import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
 import { getIntensityStyle } from '../utils/intensityUtils'
+import { getLPGMStyle } from '../utils/lpgmUtils'
 import StationDetailModal from '../components/StationDetailModal.vue'
 import { useI18n } from 'vue-i18n'
 
@@ -539,7 +545,7 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
     margin-bottom: 1rem;
     flex: 1;
     /* 使每个组件占据相同的宽度 */
-    min-width: 150px;
+    min-width: 80px;
     /* 设置最小宽度 */
     max-width: auto;
     /* 设置最大宽度 */
@@ -555,6 +561,42 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
 
     .shindo-value,
     .intensity-value {
+      font-size: 3rem;
+      font-weight: bold;
+      white-space: nowrap;
+      /* 取消换行 */
+    }
+  }
+
+  .LPGM-display {
+    display: flex;
+    /* 使用flex布局 */
+    flex-direction: column;
+    /* 垂直排列 */
+    align-items: center;
+    /* 垂直居中 */
+    justify-content: center;
+    /* 水平居中 */
+    padding: 1rem;
+    border-radius: 1.2rem;
+    margin-bottom: 1rem;
+    flex: 1;
+    /* 使每个组件占据相同的宽度 */
+    min-width: 80px;
+    /* 设置最小宽度 */
+    max-width: auto;
+    /* 设置最大宽度 */
+
+    .LPGM-label {
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+      opacity: 0.9;
+      white-space: nowrap;
+      /* 取消换行 */
+    }
+
+
+    .LPGM-value {
       font-size: 3rem;
       font-weight: bold;
       white-space: nowrap;
