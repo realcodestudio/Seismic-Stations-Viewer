@@ -112,37 +112,51 @@
             <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
 
-          <div class="LPGM-display" :style="getLPGMStyle(data.LPGM || '0')"> <!-- Ensure getLPGMStyle is defined -->
+          <div class="LPGM-display" :style="getLPGMStyle(String(data.LPGM || '0'))">
             <h1 class="LPGM-label">{{ $t('LPGM') }}</h1>
             <span class="LPGM-value">{{ data.LPGM || '0' }}</span>
           </div>
+          
+          <div class="data-box-grid">
+            <div class="data-box">
+              <div class="data-box-content">
+                <div class="label-text">
+                  <Icon icon="mdi:waveform" />
+                  <span>{{ $t('PGA') }}</span>
+                </div>
+                <h4>{{ formatNumber(data.PGA) }}</h4>
+              </div>
+            </div>
 
-          <div class="data-item">
-            <h2>
-              <Icon icon="mdi:waveform" />
-            </h2>
-            <h4>{{ $t('PGA') }}: {{ formatNumber(data.PGA) }}</h4>
-          </div>
+            <div class="data-box">
+              <div class="data-box-content">
+                <div class="label-text">
+                  <Icon icon="mdi:calculator" />
+                  <span>{{ $t('calc_shindo') }}</span>
+                </div>
+                <h4>{{ formatNumber(data.CalcShindo) }}</h4>
+              </div>
+            </div>
 
-          <div class="data-item">
-            <h2>
-              <Icon icon="mdi:calculator" />
-            </h2>
-            <h4>{{ $t('calc_shindo') }}: {{ formatNumber(data.CalcShindo) }}</h4>
-          </div>
+            <div class="data-box">
+              <div class="data-box-content">
+                <div class="label-text">
+                  <Icon icon="mdi:format-vertical-align-top" />
+                  <span>{{ $t('max_shindo') }}</span>
+                </div>
+                <h4>{{ data.Max_Shindo }}</h4>
+              </div>
+            </div>
 
-          <div class="data-item">
-            <h2>
-              <Icon icon="mdi:format-vertical-align-top" />
-            </h2>
-            <h4>{{ $t('max_shindo') }}: {{ data.Max_Shindo }}</h4>
-          </div>
-
-          <div class="data-item">
-            <h2>
-              <Icon icon="mdi:format-vertical-align-top" />
-            </h2>
-            <h4>{{ $t('max_intensity') }}: {{ data.Max_Intensity }}</h4>
+            <div class="data-box">
+              <div class="data-box-content">
+                <div class="label-text">
+                  <Icon icon="mdi:format-vertical-align-top" />
+                  <span>{{ $t('max_intensity') }}</span>
+                </div>
+                <h4>{{ data.Max_Intensity }}</h4>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -278,15 +292,18 @@ watch(() => themeStore.isDark, (isDark) => {
 
 const { locale } = useI18n()
 
-////
-////
-////
-////
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
 const version = ref('v3.5.1') // 修改版本号
-////
-////
-////
-////
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
@@ -457,14 +474,16 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
 
 .stations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 440px));
   gap: 1.5rem;
   justify-content: center;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
   margin-bottom: 4rem;
+  padding: 0 1rem;
 
   @media (max-width: 768px) {
+    grid-template-columns: 1fr;
     gap: 1.5rem;
     padding: 0 0.5rem;
   }
@@ -474,14 +493,14 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
   position: relative;
   padding-bottom: 3rem;
   padding: 1.5rem;
-  border-radius: 1rem;
+  border-radius: 2.5rem;
   background: var(--card-bg);
   box-shadow: 0 4px 6px rgba(167, 167, 167, 0.61);
   transition: all 0.35s ease;
-  border-radius: 2.5rem;
-  min-width: 300px;
-  max-width: 400px;
+  min-width: 340px;
+  max-width: 440px;
   min-height: auto;
+  margin: 0 auto;
 
   &.significant {
     transform: scale(1.02);
@@ -530,113 +549,111 @@ const customStationName = ref<Record<string, string>>({}) // 修改为对象以�
     }
   }
 
-  .shindo-display,
-  .intensity-display {
-    display: flex;
-    /* 使用flex布局 */
-    flex-direction: column;
-    /* 垂直排列 */
-    align-items: center;
-    /* 垂直居中 */
-    justify-content: center;
-    /* 水平居中 */
-    padding: 1rem;
-    border-radius: 1.2rem;
-    margin-bottom: 1rem;
-    flex: 1;
-    /* 使每个组件占据相同的宽度 */
-    min-width: 80px;
-    /* 设置最小宽度 */
-    max-width: auto;
-    /* 设置最大宽度 */
-
-    .shindo-label,
-    .intensity-label {
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
-      opacity: 0.9;
-      white-space: nowrap;
-      /* 取消换行 */
-    }
-
-    .shindo-value,
-    .intensity-value {
-      font-size: 3rem;
-      font-weight: bold;
-      white-space: nowrap;
-      /* 取消换行 */
-    }
-  }
-
-  .LPGM-display {
-    display: flex;
-    /* 使用flex布局 */
-    flex-direction: column;
-    /* 垂直排列 */
-    align-items: center;
-    /* 垂直居中 */
-    justify-content: center;
-    /* 水平居中 */
-    padding: 1rem;
-    border-radius: 1.2rem;
-    margin-bottom: 1rem;
-    flex: 1;
-    /* 使每个组件占据相同的宽度 */
-    min-width: 80px;
-    /* 设置最小宽度 */
-    max-width: auto;
-    /* 设置最大宽度 */
-
-    .LPGM-label {
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
-      opacity: 0.9;
-      white-space: nowrap;
-      /* 取消换行 */
-    }
-
-
-    .LPGM-value {
-      font-size: 3rem;
-      font-weight: bold;
-      white-space: nowrap;
-      /* 取消换行 */
-    }
-  }
-
   .data-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.8rem;
+    margin-bottom: 1rem;
 
-    .data-item {
-      flex: 1;
-      /* 使数据项占据相同的宽度 */
+    .shindo-display,
+    .intensity-display,
+    .LPGM-display {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      /* 垂直居中 */
-      padding: 0.5rem;
-      border-radius: 0.8rem;
-      /* 增加圆角 */
-      background: rgba(255, 255, 255, 0.1);
-      margin-bottom: 0.5rem;
-      text-align: left;
-      /* 文字左对齐 */
+      justify-content: center;
+      padding: 1rem 0.8rem;
+      border-radius: 1.2rem;
+      min-width: 0;
+      width: 100%;
+      grid-column: span 1;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      min-height: 120px;
 
-      h2 {
-        color: var(--text-color);
-        /* 确保图标颜色与主题一致 */
-        font-size: 1.5rem;
-        /* 调整图标大小 */
-        margin-right: 0.9rem;
-        /* 添加右边距以分隔图标和文字 */
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background: rgba(255, 255, 255, 0.08);
       }
 
-      h4 {
-        margin: 0;
-        /* 去掉默认的上下边距 */
-        color: var(--text-color);
-        /* 确保文字颜色与主题一致 */
+      .shindo-label,
+      .intensity-label,
+      .LPGM-label {
+        font-size: 0.7rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.8;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+        min-height: 2.4em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .shindo-value,
+      .intensity-value,
+      .LPGM-value {
+        font-size: 2.8rem;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+    }
+
+    .data-box-grid {
+      grid-column: span 3;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0 0.5rem;
+
+      .data-box {
+        min-height: 85px;
+
+        .data-box-content {
+          .label-text {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.75rem;
+            margin: 0;
+            width: 100%;
+            min-height: 2.4em;
+            line-height: 1.2;
+
+            .icon {
+              font-size: 1rem;
+              flex-shrink: 0;
+            }
+
+            span {
+              white-space: normal;
+              text-align: left;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+            }
+          }
+
+          h4 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 100%;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
       }
     }
   }

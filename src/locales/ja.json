@@ -29,7 +29,7 @@
   "real_time_intensity": "リアルタイムCSIS烈度",
   "calc_shindo": "計測震度",
   "max_shindo": "最大震度",
-  "max_intensity": "最大烈度",
+  "max_intensity": "最大CSIS烈度",
   "details": "",
   "footer_text": "RCBS製作、Wolfx.jpによる技術支援。",
   "github_link": "SSVのGithubリポジトリ",

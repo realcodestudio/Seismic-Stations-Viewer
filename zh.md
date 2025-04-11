@@ -8,7 +8,7 @@
 
 <h4 align="center">
 <a href=https://wolfx.jp>Wolfx 官方网页</a> |
-<a href=https://x.com/realcodestudio>关注 @RCBS</a> |
+<a href=https://x.com/realcodestudio>关注 X@RCBS</a> |
 <a href=README.md>ENGLISH</a> |
 <a href=zht.md>繁體中文</a> |
 <a href=ja.md>日本語</a>
