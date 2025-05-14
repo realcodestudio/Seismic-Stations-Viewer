@@ -51,10 +51,10 @@ export const useSeismicStore = defineStore('seismic', () => {
     const updatedData = {
       ...restData,
       region: restData.region || '未知地区',
-      latitude: Number(restData.latitude) || 0,
-      longitude: Number(restData.longitude) || 0,
+      latitude: restData.latitude || 0,
+      longitude: restData.longitude || 0,
       version: restData.version,
-      PGA: Number(restData.PGA.toFixed(3)),
+      PGA: restData.PGA,
       CalcShindo: restData.CalcShindo,
       Shindo: restData.Shindo,
       Max_Shindo: restData.Max_Shindo,

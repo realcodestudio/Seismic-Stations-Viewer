@@ -711,6 +711,7 @@ onMounted(() => {
 
         // 处理长文本
         display: -webkit-box;
+        line-clamp: 2;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
@@ -788,6 +789,7 @@ onMounted(() => {
               white-space: normal;
               text-align: left;
               display: -webkit-box;
+              line-clamp: 2;
               -webkit-line-clamp: 2;
               -webkit-box-orient: vertical;
               overflow: hidden;
