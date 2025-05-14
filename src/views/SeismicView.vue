@@ -253,6 +253,19 @@ import { getLPGMStyle } from '../utils/lpgmUtils'
 import StationDetailModal from '../components/StationDetailModal.vue'
 import { useI18n } from 'vue-i18n'
 
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+const version = ref('v4.0.2') // 修改版本号
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+////版本号！！！
+
 const themeStore = useThemeStore()
 const seismicStore = useSeismicStore()
 
@@ -359,19 +372,6 @@ watch(() => themeStore.isDark, (isDark) => {
 }, { immediate: true })
 
 const { locale } = useI18n()
-
-////版本号！！！
-////版本号！！！
-////版本号！！！
-////版本号！！！
-////版本号！！！
-////版本号！！！
-const version = ref('v4.0.1') // 修改版本号
-////版本号！！！
-////版本号！！！
-////版本号！！！
-////版本号！！！
-////版本号！！！
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
