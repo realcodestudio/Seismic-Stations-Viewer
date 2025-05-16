@@ -55,5 +55,5 @@
   "custom_station_name": "カスタム観測点表示名",
   "enter_custom_station_name": "この観測点の表示名を変更するために入力してください",
   "display_settings": "データ表示スイッチ",
-  "RT_display_settings": "レベルデータ表示スイッチ"
+  "RT_display_settings": "レベルデータ表示設定"
 }

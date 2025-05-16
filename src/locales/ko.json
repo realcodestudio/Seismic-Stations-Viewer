@@ -55,5 +55,5 @@
   "custom_station_name": "사용자 지정 관측소 표시 이름",
   "enter_custom_station_name": "표시 이름을 수정하려면 입력하세요",
   "display_settings": "데이터 표시 전환",
-  "RT_display_settings": "등급 데이터 표시 전환"
+  "RT_display_settings": "레벨 데이터 표시 설정"
 }

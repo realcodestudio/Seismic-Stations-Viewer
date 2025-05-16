@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 interface SeismicData {
   // 基本信息
@@ -43,6 +44,7 @@ interface SeismicData {
 }
 
 export const useSeismicStore = defineStore('seismic', () => {
+  const { t } = useI18n()
   const seismicDataMap = ref<Map<string, SeismicData>>(new Map())
 
   function updateSeismicData(data: SeismicData) {
@@ -50,7 +52,7 @@ export const useSeismicStore = defineStore('seismic', () => {
 
     const updatedData = {
       ...restData,
-      region: restData.region || '未知地区',
+      region: restData.region || data.type.slice(-6),
       latitude: restData.latitude || 0,
       longitude: restData.longitude || 0,
       version: restData.version,
