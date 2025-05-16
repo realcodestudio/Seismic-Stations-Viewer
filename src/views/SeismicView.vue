@@ -236,6 +236,11 @@
       </div>
     </div>
 
+    <div v-if="filteredSeismicData.length === 0" class="no-station-hint">
+      <Icon icon="mdi:map-marker-off" style="font-size: 3rem; color: #bbb; margin-bottom: 1rem;" />
+      <div class="hint-text">{{ $t('no_station_available') }}</div>
+    </div>
+
     <StationDetailModal ref="stationDetailModal" :stationType="selectedStation?.type || null" />
   </div>
 </template>
@@ -372,6 +377,20 @@ watch(() => themeStore.isDark, (isDark) => {
 }, { immediate: true })
 
 const { locale } = useI18n()
+
+// 监听语言变化，自动设置 <html lang="...">
+watch(locale, (newLang) => {
+  // 你可以根据项目的语言代码做映射
+  // 例如 zhs -> zh-CN, zht -> zh-TW, en -> en, ja -> ja, ko -> ko
+  const langMap: Record<string, string> = {
+    zhs: 'zh-CN',
+    zht: 'zh-TW',
+    en: 'en',
+    ja: 'ja',
+    ko: 'ko'
+  }
+  document.documentElement.lang = langMap[newLang] || newLang
+}, { immediate: true })
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
@@ -1525,5 +1544,19 @@ onMounted(() => {
   /* 设置图标颜色 */
   transition: color 0.3s ease;
   /* 添加过渡效果 */
+}
+
+.no-station-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #bbb;
+  font-size: 1.3rem;
+  opacity: 0.8;
+  .hint-text {
+    margin-top: 0.5rem;
+  }
 }
 </style>

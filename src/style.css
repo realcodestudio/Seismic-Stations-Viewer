@@ -98,3 +98,17 @@ button:focus-visible {
     font-weight: normal;
     font-style: normal;
 }
+
+.no-station-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #bbb;
+  font-size: 1.3rem;
+  opacity: 0.8;
+  .hint-text {
+    margin-top: 0.5rem;
+  }
+}
