@@ -142,6 +142,11 @@
             :title="$t('github_link')">
             <Icon icon="mdi:github" />
           </a>
+
+          <button @click="goToCreateStation" style="background: #2196f3; color: #fff; border: none; border-radius: 300px; padding: 10px 20px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px rgba(33,150,243,0.15); transition: background 0.2s;">
+            {{ $t('create_station') }}
+          </button>
+
           <div class="website-links">
             <a href="https://wolfx.jp" target="_blank" rel="noopener noreferrer">
               Wolfx.jp
@@ -309,7 +314,7 @@ onMounted(() => {
 })
 
 // 监听语言变化
-watch(locale, (newLang) => {
+watch(locale, (newLang: string) => {
   document.documentElement.lang = langMap[newLang] || newLang
 }, { immediate: true })
 
@@ -394,7 +399,7 @@ function formatIntensity(value: string | number | null | undefined): string {
   return Math.round(Number(value)).toString();
 }
 
-watch(() => themeStore.isDark, (isDark) => {
+watch(() => themeStore.isDark, (isDark: boolean) => {
   document.documentElement.classList.toggle('dark', isDark)
 }, { immediate: true })
 
@@ -467,12 +472,12 @@ const selectedShindo = ref(4.0) // 默认震度4
 const alertSound = new Audio('./alert.mp3')
 
 // 修改震度监听逻辑
-watch(() => seismicDataArray.value, (newData) => {
+watch(() => seismicDataArray.value, (newData: any[]) => {
   if (!alertEnabled.value) return
 
   // 如果有输入测站序列号，则只检查该测站
   if (stationTypeFilter.value) {
-    const targetStation = newData.find(station => station.type === stationTypeFilter.value)
+    const targetStation = newData.find((station: any) => station.type === stationTypeFilter.value)
     if (targetStation) {
       const shindo = parseFloat(targetStation.Shindo)
       if (!isNaN(shindo) && shindo >= selectedShindo.value) {
@@ -483,7 +488,7 @@ watch(() => seismicDataArray.value, (newData) => {
   }
 
   // 如果没有输入测站序列号，则检查所有测站
-  newData.forEach(station => {
+  newData.forEach((station: any) => {
     const shindo = parseFloat(station.Shindo)
     if (!isNaN(shindo) && shindo >= selectedShindo.value) {
       alertSound.play().catch(err => console.error('播放警报失败:', err))
@@ -514,7 +519,7 @@ const autoRefreshEnabled = ref(false)
 let refreshInterval: number | null = null
 
 // 监听自动刷新设置变化
-watch(autoRefreshEnabled, (newValue) => {
+watch(autoRefreshEnabled, (newValue: boolean) => {
   if (newValue) {
     startAutoRefresh()
   } else {
@@ -557,6 +562,10 @@ onMounted(() => {
     displaySettings.value = JSON.parse(savedSettings)
   }
 })
+
+function goToCreateStation() {
+  window.open('https://wolfx.jp/seisjs', '_blank');
+}
 </script>
 
 <style scoped lang="scss">

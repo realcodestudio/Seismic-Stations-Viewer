@@ -56,5 +56,6 @@
   "enter_custom_station_name": "输入以修改该测站显示名称",
   "display_settings": "数据显示开关",
   "RT_display_settings": "等级数据显示开关",
-  "no_station_available": "当前没有任何可以显示的测站"
+  "no_station_available": "当前没有任何可以显示的测站",
+  "create_station": "在移动设备上创建测站"
 }

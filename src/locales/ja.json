@@ -56,5 +56,6 @@
   "enter_custom_station_name": "この観測点の表示名を変更するために入力してください",
   "display_settings": "データ表示スイッチ",
   "RT_display_settings": "レベルデータ表示設定",
-  "no_station_available": "現在表示できる観測点はありません"
+  "no_station_available": "現在表示できる観測点はありません",
+  "create_station": "モバイル端末で観測点を作成"
 }

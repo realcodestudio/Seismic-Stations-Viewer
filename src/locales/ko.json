@@ -56,5 +56,6 @@
   "enter_custom_station_name": "표시 이름을 수정하려면 입력하세요",
   "display_settings": "데이터 표시 전환",
   "RT_display_settings": "레벨 데이터 표시 설정",
-  "no_station_available": "현재 표시할 수 있는 관측소가 없습니다"
+  "no_station_available": "현재 표시할 수 있는 관측소가 없습니다",
+  "create_station": "모바일 기기에서 측정소 생성"
 }

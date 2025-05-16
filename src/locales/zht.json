@@ -56,5 +56,6 @@
   "enter_custom_station_name": "輸入以修改該測站顯示名稱",
   "display_settings": "數值顯示開關",
   "RT_display_settings": "等級數值顯示開關",
-  "no_station_available": "目前沒有任何可顯示的測站"
+  "no_station_available": "目前沒有任何可顯示的測站",
+  "create_station": "在行動裝置上創建測站"
 }
