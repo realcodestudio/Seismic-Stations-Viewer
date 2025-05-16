@@ -291,6 +291,28 @@ const languageNames: LanguageNames = {
 // 删除之前的 let ws: WebSocket 声明
 const ws = ref<WebSocket | null>(null)
 
+const { locale } = useI18n()
+
+// 语言映射
+const langMap: Record<string, string> = {
+  zhs: 'zh-CN',  // 简体中文
+  zht: 'zh-TW',  // 繁体中文
+  en: 'en',      // 英文
+  ja: 'ja',      // 日文
+  ko: 'ko'       // 韩文
+}
+
+// 设置初始语言
+onMounted(() => {
+  const currentLang = locale.value
+  document.documentElement.lang = langMap[currentLang] || currentLang
+})
+
+// 监听语言变化
+watch(locale, (newLang) => {
+  document.documentElement.lang = langMap[newLang] || newLang
+}, { immediate: true })
+
 // 语言切换函数
 const changeLanguage = (lang: string) => {
   locale.value = lang
@@ -374,22 +396,6 @@ function formatIntensity(value: string | number | null | undefined): string {
 
 watch(() => themeStore.isDark, (isDark) => {
   document.documentElement.classList.toggle('dark', isDark)
-}, { immediate: true })
-
-const { locale } = useI18n()
-
-// 监听语言变化，自动设置 <html lang="...">
-watch(locale, (newLang) => {
-  // 你可以根据项目的语言代码做映射
-  // 例如 zhs -> zh-CN, zht -> zh-TW, en -> en, ja -> ja, ko -> ko
-  const langMap: Record<string, string> = {
-    zhs: 'zh-CN',
-    zht: 'zh-TW',
-    en: 'en',
-    ja: 'ja',
-    ko: 'ko'
-  }
-  document.documentElement.lang = langMap[newLang] || newLang
 }, { immediate: true })
 
 const showSettings = ref(false)
