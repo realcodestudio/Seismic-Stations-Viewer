@@ -392,13 +392,33 @@ function toggleSettings() {
   showSettings.value = !showSettings.value
 }
 
+const now = ref(Date.now())
+let timer: number | null = null
+
+onMounted(() => {
+  timer = window.setInterval(() => {
+    now.value = Date.now()
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (timer) clearInterval(timer)
+})
+
+function parseUpdateAt(str: string): number {
+  return new Date(str.replace(/-/g, '/')).getTime()
+}
+
+const EXPIRE_SECONDS = 25 // 约25秒后自动隐藏update_time长时间未更新测站
+
 const filteredSeismicData = computed(() => {
-  if (!stationTypeFilter.value) {
-    return seismicDataArray.value
-  }
-  return seismicDataArray.value.filter(data =>
-    data.type === stationTypeFilter.value
-  )
+  let arr = !stationTypeFilter.value
+    ? seismicDataArray.value
+    : seismicDataArray.value.filter(data => data.type === stationTypeFilter.value)
+  return arr.filter(data => {
+    const updateTime = parseUpdateAt(data.update_at)
+    return now.value - updateTime < EXPIRE_SECONDS * 1000
+  })
 })
 
 const showNoMatchError = computed(() => {
