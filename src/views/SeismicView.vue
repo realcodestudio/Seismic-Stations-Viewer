@@ -7,6 +7,9 @@
     <div class="settings-toggle" @click="toggleSettings">
       <Icon icon="mdi:cog" />
     </div>
+    <div class="wave-icon" @click="toggleStationData">
+      <Icon icon="mdi:waveform" />
+    </div>
 
     <div class="settings-panel" :class="{ 'show': showSettings }">
       <div class="settings-header">
@@ -173,7 +176,7 @@
           <span class="update-time">{{ $t('update_time', { time: formatTime(data.update_at) }) }}</span>
         </div>
 
-        <div class="data-grid">
+        <div v-if="showStationData" class="data-grid">
           <div v-if="displaySettings.realTimeJMA" class="shindo-display" :style="getShindoStyle(data.Shindo || '0')">
             <h1 class="shindo-label">{{ $t('real_time_shindo') }}</h1>
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
@@ -232,6 +235,8 @@
           </div>
         </div>
 
+        <PgaWaveformChart v-if="!showStationData" :pga-history="data.pgaHistory" />
+
         <div class="card-footer">
           <button class="detail-btn" @click="showStationDetail(data)">
             <Icon icon="mdi:information" class="icon" />
@@ -262,6 +267,7 @@ import { getIntensityStyle } from '../utils/intensityUtils'
 import { getLPGMStyle } from '../utils/lpgmUtils'
 import StationDetailModal from '../components/StationDetailModal.vue'
 import { useI18n } from 'vue-i18n'
+import PgaWaveformChart from '../components/PgaWaveformChart.vue'
 
 ////版本号！！！
 ////版本号！！！
@@ -566,6 +572,14 @@ onMounted(() => {
 function goToCreateStation() {
   window.open('https://wolfx.jp/seisjs', '_blank');
 }
+
+// 修改 showCards 数据属性名称
+const showStationData = ref(true);
+
+// 修改 toggleCards 函数名称
+const toggleStationData = () => {
+  showStationData.value = !showStationData.value;
+};
 </script>
 
 <style scoped lang="scss">
@@ -1084,6 +1098,16 @@ function goToCreateStation() {
   &:hover {
     transform: scale(1.1);
   }
+}
+
+.wave-icon {
+  position: fixed;
+  top: 2rem;
+  right: 7rem;
+  font-size: 1.5rem;
+  padding: 0.25rem;
+  z-index: 100;
+  color: var(--text-color);
 }
 
 .settings-panel {
