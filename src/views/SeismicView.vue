@@ -883,8 +883,8 @@ onMounted(() => {
       padding: 0 0.5rem;
 
       .data-box {
-        min-height: 20px;
-        box-shadow: 0 2px 8px rgba(110, 110, 110, 0.959);
+        min-height: 30px;
+        box-shadow: 0 2px 8px rgba(134, 134, 134, 0.287);
         border-radius: 1.2rem;
         justify-content: center;
         padding: 0.5rem 1.3rem;
