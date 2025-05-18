@@ -56,6 +56,11 @@
   "enter_custom_station_name": "Enter to Change the Station Display Name",
   "display_settings": "Data display ON/OFF",
   "RT_display_settings": "Level Data Display Settings",
-  "no_station_available": "No stations available to display",
-  "create_station": "Create a station on mobile device"
+  "no_station_available": "No stations available. Please check settings or network.",
+  "create_station": "Create Station",
+  "waveform_accuracy_warning_title": "Waveform Accuracy Warning",
+  "waveform_accuracy_warning_message": "Please be aware that waveform data may contain inaccuracies due to factors such as network latency or data processing, and is for reference only. This data should not be used for any professional evaluation or decision-making purposes.",
+  "agree": "Agree",
+  "cancel": "Cancel",
+  "dont_show_waveform_warning_again": "Don't show this warning again"
 }

@@ -49,6 +49,7 @@ const processedData = computed(() => {
 
   const data = { ...currentData.value }
   return Object.entries(data)
+    .filter(([key]) => key !== 'pgaHistory')
     .sort(([a], [b]) => a.localeCompare(b))
     .reduce((acc, [key, value]) => {
       acc[key] = value

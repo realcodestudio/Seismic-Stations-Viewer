@@ -56,6 +56,11 @@
   "enter_custom_station_name": "輸入以修改該測站顯示名稱",
   "display_settings": "數值顯示開關",
   "RT_display_settings": "等級數值顯示開關",
-  "no_station_available": "目前沒有任何可顯示的測站",
-  "create_station": "在行動裝置上創建測站"
+  "no_station_available": "暫無可用測站，請檢查設定或網路",
+  "create_station": "建立測站",
+  "waveform_accuracy_warning_title": "波形準確性警告",
+  "waveform_accuracy_warning_message": "請注意，波形數據可能因網路延遲或數據處理等因素而存在一定的不準確性，僅供參考。此數據不應用於任何專業評估或決策目的。",
+  "agree": "同意",
+  "cancel": "取消",
+  "dont_show_waveform_warning_again": "不再彈出此提示"
 }

@@ -3,12 +3,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onUnmounted } from 'vue';
+import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 import * as echarts from 'echarts';
 import type { ECharts, EChartsOption } from 'echarts';
 
 const props = defineProps<{
   pgaHistory: { time: number, value: number }[];
+  isDark: boolean;
 }>();
 
 const chartContainer = ref<HTMLElement | null>(null);
@@ -43,6 +44,14 @@ const renderChart = (history: { time: number, value: number }[]) => {
 
   const { diffData, timeLabels } = calculatePgaDiff(history);
 
+  // 根据是否是夜间模式设置颜色
+  const axisColor = props.isDark ? '#555' : '#666';
+  const textColor = props.isDark ? '#bbb' : '#666';
+  const splitLineColor = props.isDark ? '#333' : '#555';
+  const waveformColor = props.isDark ? '#ff9933' : '#1e90ff';
+  const areaGradientColorStart = props.isDark ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 153, 51, 0.2)';
+  const areaGradientColorEnd = props.isDark ? 'rgba(0, 0, 0, 0)' : 'rgba(255, 153, 51, 0)';
+
   const option: EChartsOption = {
     backgroundColor: 'transparent', // 背景透明
     grid: {
@@ -55,15 +64,15 @@ const renderChart = (history: { time: number, value: number }[]) => {
     xAxis: {
       type: 'category',
       data: timeLabels,
-      axisLine: { show: true, lineStyle: { color: '#ccc' } }, // 坐标轴线颜色
-      axisLabel: { color: '#ccc' }, // 坐标轴文字颜色
+      axisLine: { show: true, lineStyle: { color: axisColor } }, // 坐标轴线颜色
+      axisLabel: { color: textColor }, // 坐标轴文字颜色
       axisTick: { show: false }, // 不显示刻度线
     },
     yAxis: {
       type: 'value',
-      axisLine: { show: true, lineStyle: { color: '#ccc' } }, // 坐标轴线颜色
-      axisLabel: { color: '#ccc' }, // 坐标轴文字颜色
-      splitLine: { show: true, lineStyle: { type: 'dashed', color: '#555' } }, // 网格线样式
+      axisLine: { show: true, lineStyle: { color: axisColor } }, // 坐标轴线颜色
+      axisLabel: { color: textColor }, // 坐标轴文字颜色
+      splitLine: { show: true, lineStyle: { type: 'dashed', color: splitLineColor } }, // 网格线样式
     },
     series: [
       {
@@ -73,19 +82,19 @@ const renderChart = (history: { time: number, value: number }[]) => {
         showSymbol: false,
         data: diffData,
         lineStyle: {
-          color: '#fff', // 波形颜色
-          width: 1,
+          color: waveformColor, // 波形颜色
+          width: 2, // 增加线条粗细
         },
         areaStyle: {
           opacity: 0.2,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: 'rgba(255, 255, 255, 0.2)'
+              color: areaGradientColorStart
             },
             {
               offset: 1,
-              color: 'rgba(255, 255, 255, 0)'
+              color: areaGradientColorEnd
             }
           ])
         },
@@ -95,7 +104,7 @@ const renderChart = (history: { time: number, value: number }[]) => {
       trigger: 'axis',
       formatter: function (params: any) {
         params = params[0];
-        return `${params.name}<br/>PGA Diff: ${params.value.toFixed(6)}`;
+        return `${params.name}<br/>PGA (cm/s^2): ${params.value.toFixed(6)}`;
       },
     },
   };
@@ -127,7 +136,7 @@ onUnmounted(() => {
 
 <style scoped>
 .waveform-chart {
-  width: 100%;
+  width: 90%;
   height: 150px; /* 根据需要调整高度 */
 }
 </style>

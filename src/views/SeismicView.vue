@@ -235,7 +235,22 @@
           </div>
         </div>
 
-        <PgaWaveformChart v-if="!showStationData" :pga-history="data.pgaHistory" />
+        <div v-if="!showStationData" class="simplified-data-grid">
+          <div class="simplified-data-item">
+            <span class="label">{{ $t('real_time_shindo') }}</span>
+            <span class="value">{{ data.Shindo || '0' }}</span>
+          </div>
+          <div class="simplified-data-item">
+            <span class="label">{{ $t('real_time_intensity') }}</span>
+            <span class="value">{{ formatIntensity(data.Intensity) }}</span>
+          </div>
+          <div class="simplified-data-item">
+            <span class="label">{{ $t('PGA') }}</span>
+            <span class="value">{{ formatNumber(data.PGA) }}</span>
+          </div>
+        </div>
+
+        <PgaWaveformChart v-if="!showStationData" :pga-history="data.pgaHistory" :is-dark="themeStore.isDark" />
 
         <div class="card-footer">
           <button class="detail-btn" @click="showStationDetail(data)">
@@ -252,6 +267,7 @@
     </div>
 
     <StationDetailModal ref="stationDetailModal" :stationType="selectedStation?.type || null" />
+    <WaveformWarningModal :isVisible="showWarningModal" @agree="handleWarningAgreed" @cancel="handleWarningCanceled" :is-dark="themeStore.isDark" />
   </div>
 </template>
 
@@ -268,6 +284,7 @@ import { getLPGMStyle } from '../utils/lpgmUtils'
 import StationDetailModal from '../components/StationDetailModal.vue'
 import { useI18n } from 'vue-i18n'
 import PgaWaveformChart from '../components/PgaWaveformChart.vue'
+import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 
 ////版本号！！！
 ////版本号！！！
@@ -275,7 +292,7 @@ import PgaWaveformChart from '../components/PgaWaveformChart.vue'
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.0.4') // 修改版本号
+const version = ref('v4.0.5') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -575,11 +592,48 @@ function goToCreateStation() {
 
 // 修改 showCards 数据属性名称
 const showStationData = ref(true);
+const showWarningModal = ref(false); // 控制警告弹窗显示
 
 // 修改 toggleCards 函数名称
 const toggleStationData = () => {
-  showStationData.value = !showStationData.value;
+  const dontShowAgain = localStorage.getItem('dontShowWaveformWarning') === 'true';
+
+  if (showStationData.value) { // 如果当前显示的是详细数据，点击切换到波形图
+    if (dontShowAgain) { // 如果用户勾选了不再提示，直接切换
+      showStationData.value = !showStationData.value; 
+    } else { // 否则显示警告弹窗
+      showWarningModal.value = true;
+    }
+  } else {
+    showStationData.value = !showStationData.value; // 如果当前显示的是波形图，直接切换到详细数据
+  }
 };
+
+// 处理警告弹窗同意事件
+const handleWarningAgreed = (dontShowAgain: boolean) => { // 接收复选框状态参数
+  showWarningModal.value = false; // 隐藏警告弹窗
+  if (dontShowAgain) { // 如果用户勾选了不再提示
+    localStorage.setItem('dontShowWaveformWarning', 'true'); // 在本地存储中记录
+  }
+  showStationData.value = !showStationData.value; // 执行切换到波形图的逻辑
+};
+
+// 处理警告弹窗取消事件
+const handleWarningCanceled = () => {
+  showWarningModal.value = false; // 隐藏警告弹窗
+};
+
+// 组件挂载时读取本地存储的状态
+onMounted(() => {
+  const savedSetting = localStorage.getItem('dontShowWaveformWarning');
+  if (savedSetting === 'true') {
+    // 如果用户之前勾选了不再提示，则直接切换到波形图
+    // 注意：这里不能直接修改 showStationData.value，因为此时图表可能还没有完全加载
+    // 更好的方法是在需要显示波形图时检查这个状态
+  }
+  initWebSocket();
+  console.log('初始数据:', seismicDataArray.value);
+});
 </script>
 
 <style scoped lang="scss">
@@ -658,8 +712,8 @@ const toggleStationData = () => {
   background: var(--card-bg);
   box-shadow: 0 4px 6px rgba(167, 167, 167, 0.61);
   transition: all 0.35s ease;
-  min-width: 340px;
-  max-width: 440px;
+  min-width: 400px;
+  max-width: 550px;
   min-height: auto;
   margin: 0 auto;
 
@@ -675,7 +729,7 @@ const toggleStationData = () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
 
     .region {
       font-size: 1.75rem;
@@ -829,8 +883,8 @@ const toggleStationData = () => {
       padding: 0 0.5rem;
 
       .data-box {
-        min-height: 85px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.126);
+        min-height: 20px;
+        box-shadow: 0 2px 8px rgba(110, 110, 110, 0.959);
         border-radius: 1.2rem;
         justify-content: center;
         padding: 0.5rem 1.3rem;
@@ -1104,10 +1158,17 @@ const toggleStationData = () => {
   position: fixed;
   top: 2rem;
   right: 7rem;
+  cursor: pointer;
   font-size: 1.5rem;
   padding: 0.25rem;
+  border-radius: 75%;
+  background: var(--card-bg);
+  transition: all 0.3s ease;
   z-index: 100;
-  color: var(--text-color);
+
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 .settings-panel {
@@ -1596,6 +1657,48 @@ const toggleStationData = () => {
   opacity: 0.8;
   .hint-text {
     margin-top: 0.5rem;
+  }
+}
+
+/* 添加简洁数据网格样式 */
+.simplified-data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  text-align: center;
+
+  .simplified-data-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.3rem;
+    }
+
+    .value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+  }
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+
+    .simplified-data-item {
+      .label {
+        font-size: 0.8rem;
+      }
+
+      .value {
+        font-size: 1.2rem;
+      }
+    }
   }
 }
 </style>

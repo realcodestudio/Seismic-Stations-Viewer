@@ -56,6 +56,11 @@
   "enter_custom_station_name": "この観測点の表示名を変更するために入力してください",
   "display_settings": "データ表示スイッチ",
   "RT_display_settings": "レベルデータ表示設定",
-  "no_station_available": "現在表示できる観測点はありません",
-  "create_station": "モバイル端末で観測点を作成"
+  "no_station_available": "表示できる観測点はありません。設定またはネットワークを確認してください。",
+  "create_station": "観測点を作成",
+  "waveform_accuracy_warning_title": "波形の精度に関する警告",
+  "waveform_accuracy_warning_message": "ネットワーク遅延やデータ処理などの要因により、波形データに不正確さが含まれる場合があり、あくまで参考としてご利用ください。このデータを専門的な評価や判断目的に使用しないでください。",
+  "agree": "同意",
+  "cancel": "キャンセル",
+  "dont_show_waveform_warning_again": "次回から表示しない"
 }

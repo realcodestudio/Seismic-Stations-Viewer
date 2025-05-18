@@ -56,6 +56,11 @@
   "enter_custom_station_name": "표시 이름을 수정하려면 입력하세요",
   "display_settings": "데이터 표시 전환",
   "RT_display_settings": "레벨 데이터 표시 설정",
-  "no_station_available": "현재 표시할 수 있는 관측소가 없습니다",
-  "create_station": "모바일 기기에서 측정소 생성"
+  "no_station_available": "표시할 수 있는 관측소가 없습니다. 설정 또는 네트워크를 확인하세요.",
+  "create_station": "관측소 만들기",
+  "waveform_accuracy_warning_title": "파형 정확도 경고",
+  "waveform_accuracy_warning_message": "네트워크 지연 또는 데이터 처리와 같은 요인으로 인해 파형 데이터에 약간의 부정확성이 있을 수 있으며, 참고용으로만 사용하십시오. 이 데이터를 전문적인 평가 또는 의사 결정 목적으로 사용해서는 안 됩니다.",
+  "agree": "동의",
+  "cancel": "취소",
+  "dont_show_waveform_warning_again": "다시는 이 알림을 표시하지 않음"
 }

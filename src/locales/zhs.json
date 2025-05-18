@@ -56,6 +56,11 @@
   "enter_custom_station_name": "输入以修改该测站显示名称",
   "display_settings": "数据显示开关",
   "RT_display_settings": "等级数据显示开关",
-  "no_station_available": "当前没有任何可以显示的测站",
-  "create_station": "在移动设备上创建测站"
+  "no_station_available": "暂无可用测站，请检查设置或网络",
+  "create_station": "创建测站",
+  "waveform_accuracy_warning_title": "波形准确性警告",
+  "waveform_accuracy_warning_message": "请注意，波形数据可能因网络延迟或数据处理等因素而存在一定的不准确性，仅供参考。此数据不应用于任何专业评估或决策目的。",
+  "agree": "同意",
+  "cancel": "取消",
+  "dont_show_waveform_warning_again": "不再弹出此提示"
 }
