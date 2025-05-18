@@ -40,10 +40,17 @@ const emit = defineEmits(['agree', 'cancel']);
 const dontShowAgain = ref(false);
 
 const agree = () => {
+  if (props.isVisible) {
+    console.log('Modal is visible');
+  }
   emit('agree', dontShowAgain.value);
 };
 
 const cancel = () => {
+  if (props.isDark) {
+    console.log('Modal is in dark mode');
+  }
+  console.log(t('cancel'));
   emit('cancel');
 };
 </script>
