@@ -10,17 +10,39 @@ interface SeismicData {
   version: string; // 版本号
 
   // PGA 相关数据
-  PGA: number; // PGA 综合值
-  Max_PGA: number; // 最大 PGA 综合值
+  PGA: number; // PGA 合成值
+  Max_PGA: number; // 最大 PGA 合成值
+  PGA_EW: number; // 东西向 PGA
+  Max_PGA_EW: number; // 东西向最大 PGA
+  PGA_NS: number; // 东西向 PGA
+  Max_PGA_NS: number; // 东西向最大 PGA
+  PGA_UD: number; // 东西向 PGA
+  Max_PGA_UD: number; // 东西向最大 PGA
 
   // PGV 相关数据
-  PGV: number; // PGV 综合值
-  Max_PGV: number; // 最大 PGV 综合值
+  PGV: number; // PGV 合成值
+  Max_PGV: number; // 最大 PGV 合成值
+  PGV_EW: number; // 东西向 PGV
+  Max_PGV_EW: number; // 东西向最大 PGV
+  PGV_NS: number; // 东西向 PGV
+  Max_PGV_NS: number; // 东西向最大 PGV
+  PGV_UD: number; // 东西向 PGV
+  Max_PGV_UD: number; // 东西向最大 PGV
+
+  // PGD 相关数据
+  PGD: number; // PGD 合成值
+  Max_PGD: number; // 最大 PGD 合成值
+  PGD_EW: number; // 东西向 PGD
+  Max_PGD_EW: number; // 东西向最大 PGD
+  PGD_NS: number; // 东西向 PGD
+  Max_PGD_NS: number; // 东西向最大 PGD
+  PGD_UD: number; // 东西向 PGD
+  Max_PGD_UD: number; // 东西向最大 PGD
 
   // 震度相关数据
   Shindo: string; // 震度
-  CalcShindo: number; // 计测震度
   Max_Shindo: string; // 最大震度
+  CalcShindo: number; // 计测震度
   Max_CalcShindo: number; // 最大计测震度
 
   // 烈度相关数据
@@ -36,6 +58,7 @@ interface SeismicData {
   // 其他信息
   is_desktop: boolean; // 是否为桌面端
   High_Precision: boolean; // 是否高精度
+  error_code: number[]; // 错误代码
 
   // 时间信息
   update_at: string; // 更新时间
@@ -68,13 +91,6 @@ export const useSeismicStore = defineStore("seismic", () => {
       region: restData.region || data.type.slice(-6),
       latitude: restData.latitude || 0,
       longitude: restData.longitude || 0,
-      version: restData.version,
-      PGA: restData.PGA,
-      CalcShindo: restData.CalcShindo,
-      Shindo: restData.Shindo,
-      Max_Shindo: restData.Max_Shindo,
-      Intensity: restData.Intensity,
-      update_at: restData.update_at,
       // 添加更新后的历史数据
       pgaHistory: pgaHistory,
     };

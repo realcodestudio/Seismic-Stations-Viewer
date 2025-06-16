@@ -295,7 +295,7 @@ import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.0.5') // 修改版本号
+const version = ref('v4.1.0') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
