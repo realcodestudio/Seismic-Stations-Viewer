@@ -138,6 +138,5 @@ onUnmounted(() => {
 .waveform-chart {
   width: 90%;
   height: 150px;
-  /* 根据需要调整高度 */
 }
 </style>

@@ -12,8 +12,7 @@
         <div class="data-grid">
           <div v-for="(value, key) in processedData" :key="key" class="data-item">
             <div class="item-icon">
-              <!-- Icon will go here -->
-              <Icon :icon="getIconForKey(key)" /> <!-- 使用 getIconForKey 函数获取图标 -->
+              <Icon :icon="getIconForKey(key)" />
             </div>
             <div class="item-content">
               <span class="label">{{ formatLabel(key) }}:</span>
