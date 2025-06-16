@@ -13,7 +13,6 @@
 <a href=zh.md>简体字中国語</a>
 <a href=zh.md>繁體字中国語</a>
 
-
 <div align="center">
 <h4 align="center"> 🚨 Wolfx SeisJSは、非営利団体<a href=https://wolfx.jp>Wolfx Project</a>によって開発されたオープンソースの地震検知・監視アプリケーションです。 </h3>
  
@@ -23,12 +22,14 @@
 </div>
 
 ## サイト例
+
 - https://wolfx.jp/ssv
 - https://ssv.bousai.cn
- 
+
 ## プロジェクトの実行
-- Releaseからコードをダウンロード。
-- VSCodeを使ってプロジェクトを開く。
+
+- Release からコードをダウンロード。
+- VSCode を使ってプロジェクトを開く。
 - Extension「Vite」を インストールしてください。（非必須）
 - ターミナルでこれらのコマンドを順に実行する。
   > cd Seismic-Stations-Viewer<br>

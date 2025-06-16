@@ -85,9 +85,11 @@ const cancel = () => {
   margin-top: 15px;
   margin-bottom: 15px;
   text-align: center;
+
   label {
     font-size: 0.8rem;
     color: var(--text-color);
+
     input[type="checkbox"] {
       margin-right: 5px;
     }

@@ -57,7 +57,7 @@
               </label>
               <span class="option-text">PGA</span>
             </div>
-            
+
             <div class="display-option">
               <label class="toggle-switch">
                 <input type="checkbox" v-model="displaySettings.measuredIntensity" @change="saveDisplaySettings">
@@ -82,33 +82,33 @@
               <span class="option-text">{{ $t('max_intensity') }}</span>
             </div>
 
-            
-        <div class="display-section">
-          <label>{{ $t('RT_display_settings') }}</label>
-          
-            <div class="RT-display-option">
-              <label class="toggle-switch">
-                <input type="checkbox" v-model="displaySettings.longPeriod" @change="saveDisplaySettings">
-                <span class="slider"></span>
-              </label>
-              <span class="option-text">{{ $t('realtime_LPGM') }}</span>
-              
-            <div class="RT-display-option">
-              <label class="toggle-switch">
-                <input type="checkbox" v-model="displaySettings.realTimeJMA" @change="saveDisplaySettings">
-                <span class="slider"></span>
-              </label>
-              <span class="option-text">{{ $t('real_time_shindo') }}</span>
-            </div>
 
-            <div class="RT-display-option">
-              <label class="toggle-switch">
-                <input type="checkbox" v-model="displaySettings.realTimeCSIS" @change="saveDisplaySettings">
-                <span class="slider"></span>
-              </label>
-              <span class="option-text">{{ $t('real_time_intensity') }}</span>
-            </div>
-          </div>
+            <div class="display-section">
+              <label>{{ $t('RT_display_settings') }}</label>
+
+              <div class="RT-display-option">
+                <label class="toggle-switch">
+                  <input type="checkbox" v-model="displaySettings.longPeriod" @change="saveDisplaySettings">
+                  <span class="slider"></span>
+                </label>
+                <span class="option-text">{{ $t('realtime_LPGM') }}</span>
+
+                <div class="RT-display-option">
+                  <label class="toggle-switch">
+                    <input type="checkbox" v-model="displaySettings.realTimeJMA" @change="saveDisplaySettings">
+                    <span class="slider"></span>
+                  </label>
+                  <span class="option-text">{{ $t('real_time_shindo') }}</span>
+                </div>
+
+                <div class="RT-display-option">
+                  <label class="toggle-switch">
+                    <input type="checkbox" v-model="displaySettings.realTimeCSIS" @change="saveDisplaySettings">
+                    <span class="slider"></span>
+                  </label>
+                  <span class="option-text">{{ $t('real_time_intensity') }}</span>
+                </div>
+              </div>
 
             </div>
           </div>
@@ -146,7 +146,8 @@
             <Icon icon="mdi:github" />
           </a>
 
-          <button @click="goToCreateStation" style="background: #2196f3; color: #fff; border: none; border-radius: 300px; padding: 10px 20px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px rgba(33,150,243,0.15); transition: background 0.2s;">
+          <button @click="goToCreateStation"
+            style="background: #2196f3; color: #fff; border: none; border-radius: 300px; padding: 10px 20px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px rgba(33,150,243,0.15); transition: background 0.2s;">
             {{ $t('create_station') }}
           </button>
 
@@ -182,7 +183,8 @@
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
           </div>
 
-          <div v-if="displaySettings.realTimeCSIS" class="intensity-display" :style="getIntensityStyle(formatIntensity(data.Intensity))">
+          <div v-if="displaySettings.realTimeCSIS" class="intensity-display"
+            :style="getIntensityStyle(formatIntensity(data.Intensity))">
             <h1 class="intensity-label">{{ $t('real_time_intensity') }}</h1>
             <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
@@ -191,7 +193,7 @@
             <h1 class="LPGM-label">{{ $t('realtime_LPGM') }}</h1>
             <span class="LPGM-value">{{ data.LPGM || '0' }}</span>
           </div>
-          
+
           <div class="data-box-grid">
             <div v-if="displaySettings.pga" class="data-box">
               <div class="data-box-content">
@@ -267,7 +269,8 @@
     </div>
 
     <StationDetailModal ref="stationDetailModal" :stationType="selectedStation?.type || null" />
-    <WaveformWarningModal :isVisible="showWarningModal" @agree="handleWarningAgreed" @cancel="handleWarningCanceled" :is-dark="themeStore.isDark" />
+    <WaveformWarningModal :isVisible="showWarningModal" @agree="handleWarningAgreed" @cancel="handleWarningCanceled"
+      :is-dark="themeStore.isDark" />
   </div>
 </template>
 
@@ -600,7 +603,7 @@ const toggleStationData = () => {
 
   if (showStationData.value) { // 如果当前显示的是详细数据，点击切换到波形图
     if (dontShowAgain) { // 如果用户勾选了不再提示，直接切换
-      showStationData.value = !showStationData.value; 
+      showStationData.value = !showStationData.value;
     } else { // 否则显示警告弹窗
       showWarningModal.value = true;
     }
@@ -778,7 +781,8 @@ onMounted(() => {
     // 当只有一个子元素时
     &:has(> :only-child) {
       grid-template-columns: 1fr;
-      > div {
+
+      >div {
         grid-column: 1 / -1;
         max-width: none;
         width: 100%;
@@ -788,7 +792,8 @@ onMounted(() => {
     // 当有两个子元素时
     &:has(> :nth-child(2):last-child) {
       grid-template-columns: repeat(2, 1fr);
-      > div {
+
+      >div {
         width: 100%;
       }
     }
@@ -826,7 +831,7 @@ onMounted(() => {
         display: flex;
         align-items: center;
         justify-content: center;
-       
+
         width: auto;
         line-height: 1.2;
         padding: 0 0.3rem;
@@ -852,7 +857,7 @@ onMounted(() => {
 
     @media (max-width: 768px) {
       gap: 0.6rem;
-      
+
       .shindo-display,
       .intensity-display,
       .LPGM-display {
@@ -1551,6 +1556,7 @@ onMounted(() => {
         }
       }
     }
+
     .RT-display-section,
     .display-section {
       display: flex;
@@ -1570,8 +1576,8 @@ onMounted(() => {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
-        
-        .RT-display-option, 
+
+        .RT-display-option,
         .display-option {
           display: flex;
           align-items: center;
@@ -1655,6 +1661,7 @@ onMounted(() => {
   color: #bbb;
   font-size: 1.3rem;
   opacity: 0.8;
+
   .hint-text {
     margin-top: 0.5rem;
   }

@@ -12,8 +12,8 @@
         <div class="data-grid">
           <div v-for="(value, key) in processedData" :key="key" class="data-item">
             <div class="item-icon">
-               <!-- Icon will go here -->
-               <Icon :icon="getIconForKey(key)" /> <!-- 使用 getIconForKey 函数获取图标 -->
+              <!-- Icon will go here -->
+              <Icon :icon="getIconForKey(key)" /> <!-- 使用 getIconForKey 函数获取图标 -->
             </div>
             <div class="item-content">
               <span class="label">{{ formatLabel(key) }}:</span>
@@ -266,8 +266,8 @@ defineExpose({ show: showModal })
           transition: all 0.2s ease-in-out;
 
           &:hover {
-             transform: translateY(-2px); // 鼠标悬停效果
-             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px); // 鼠标悬停效果
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
           }
 
           .item-icon {
@@ -314,24 +314,42 @@ defineExpose({ show: showModal })
       width: 98%;
 
       .modal-header {
-         padding: 1rem 1.2rem;
-         h2 { font-size: 1.5rem; }
-         .close-btn { font-size: 1.5rem; padding: 0.6rem;}
+        padding: 1rem 1.2rem;
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        .close-btn {
+          font-size: 1.5rem;
+          padding: 0.6rem;
+        }
       }
 
       .modal-body {
         padding: 1.2rem;
+
         .data-grid {
           grid-template-columns: 1fr; // 小屏幕下单列显示
           gap: 1rem;
 
           .data-item {
-             padding: 0.8rem 1rem;
-             .item-icon { font-size: 1.5rem; margin-right: 0.8rem; }
-             .item-content { 
-                .label { font-size: 0.8rem; }
-                .value { font-size: 1.1rem; }
-             }
+            padding: 0.8rem 1rem;
+
+            .item-icon {
+              font-size: 1.5rem;
+              margin-right: 0.8rem;
+            }
+
+            .item-content {
+              .label {
+                font-size: 0.8rem;
+              }
+
+              .value {
+                font-size: 1.1rem;
+              }
+            }
           }
         }
       }

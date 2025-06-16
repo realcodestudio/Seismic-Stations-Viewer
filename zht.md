@@ -13,7 +13,6 @@
 <a href=zh.md>简体中文</a> |
 <a href=ja.md>日本語</a>
 
-
 <div align="center">
 <h4 align="center"> 🚨 Wolfx SeisJS 是一個開放原始碼的地震監測應用程式，由 <a href=https://github.com/WolfxProject>Wolfx Project</a> 非營利組織開發。</h4>
  
@@ -22,25 +21,26 @@
   <image src="https://github.com/user-attachments/assets/8bf5b723-5976-4c0a-895a-56ce34550f38" />
 </div>
 
+## 演示站點
 
-## 演示站點  
-- https://wolfx.jp/ssv  
-- https://ssv.bousai.cn  
+- https://wolfx.jp/ssv
+- https://ssv.bousai.cn
 
-## 如何運行？  
-- 從 Releases 下載程式碼  
-- 在 VSCode 中開啟  
-- 安裝 "Vite" 擴充功能（可選）  
-- 依序在終端機中執行以下指令：  
+## 如何運行？
+
+- 從 Releases 下載程式碼
+- 在 VSCode 中開啟
+- 安裝 "Vite" 擴充功能（可選）
+- 依序在終端機中執行以下指令：
   > `cd Seismic-Stations-Viewer`<br>  
   > `npm install -g pnpm`<br>  
   > `pnpm install`<br>  
-  > `pnpm run dev`<br>  
+  > `pnpm run dev`<br>
 
-## 如何編譯？  
-- 在 VSCode 中開啟  
-- 依序在終端機中執行以下指令：  
+## 如何編譯？
+
+- 在 VSCode 中開啟
+- 依序在終端機中執行以下指令：
   > `cd Seismic-Stations-Viewer`<br>  
   > `pnpm install`<br>  
-  > `pnpm run build`<br>  
-
+  > `pnpm run build`<br>

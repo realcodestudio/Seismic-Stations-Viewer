@@ -28,7 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  font-family: 'Google Sans', sans-serif;
+  font-family: "Google Sans", sans-serif;
 }
 
 h1 {
@@ -93,10 +93,10 @@ button:focus-visible {
 }
 
 @font-face {
-    font-family: 'Google Sans';
-    src: url('./assets/fonts/ProductSans-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Google Sans";
+  src: url("./assets/fonts/ProductSans-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 .no-station-hint {
