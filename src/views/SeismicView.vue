@@ -138,6 +138,12 @@
               {{ languageNames[lang] }}
             </button>
           </div>
+          <div class="geoip-section">
+            <button @click="() => refreshGeoIP(true)" :disabled="isGeoIPDetecting" class="geoip-refresh-btn">
+              <Icon icon="mdi:refresh" :class="{ 'spinning': isGeoIPDetecting }" />
+              {{ isGeoIPDetecting ? '检测中...' : '重新检测位置' }}
+            </button>
+          </div>
         </div>
 
         <div class="version-section">
@@ -296,7 +302,7 @@ import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.1.0') // 修改版本号
+const version = ref('v4.1.1') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -312,9 +318,9 @@ interface LanguageNames {
 }
 
 const languageNames: LanguageNames = {
-  zhs: '简体中文',
-  zht: '繁體中文',
-  en: 'English',
+  zhs: '简体中文(中国)',
+  zht: '繁體中文(台灣)',
+  en: 'English(US)',
   ja: '日本語',
   ko: '한국어'
 }
@@ -349,6 +355,32 @@ watch(locale, (newLang: string) => {
 const changeLanguage = (lang: string) => {
   locale.value = lang
   // URL 更新会通过 locale 的 watcher 自动处理
+}
+
+// 手动刷新 GeoIP 检测
+const refreshGeoIP = async (forceRefresh = false) => {
+  if (forceRefresh) {
+    // 清除缓存，强制重新检测
+    localStorage.removeItem('geoip_cache')
+    localStorage.removeItem('geoip_cache_time')
+  }
+  
+  // 重新检测（使用缓存）
+  await detectUserLocation(true)
+}
+
+// 页面加载时的 GeoIP 检测（每次刷新都调用 API）
+const initGeoIP = async () => {
+  // 清除缓存，确保每次都调用 API
+  try {
+    localStorage.removeItem('geoip_cache')
+    localStorage.removeItem('geoip_cache_time')
+  } catch (error) {
+    console.warn('无法清除缓存:', error)
+  }
+  
+  // 调用 API 检测（不使用缓存）
+  await detectUserLocation(false)
 }
 
 // 自动刷新相关函数
@@ -403,7 +435,7 @@ function formatTime(timeStr: string) {
   })
 }
 
-onMounted(() => {
+onMounted(async () => {
   initWebSocket()
   console.log('初始数据:', seismicDataArray.value)
   
@@ -413,10 +445,10 @@ onMounted(() => {
     if (path !== '/' && path.length > 1) {
       const { uuid, customName, isWaveMode, showDetail, language } = safeParseURL(path)
       
-      // 设置语言
-      if (language && language !== locale.value) {
-        locale.value = language
-      }
+      // 暂时禁用 URL 语言设置
+      // if (language && language !== locale.value) {
+      //   locale.value = language
+      // }
       
       // 设置 UUID
       if (uuid && uuid.trim()) {
@@ -481,15 +513,16 @@ const showSettings = ref(false)
 const stationTypeFilter = ref('')
 
 // 从 URL 初始化测站过滤器和自定义名称
-onMounted(() => {
+onMounted(async () => {
+  // 处理 URL 参数
   const path = window.location.pathname
   if (path !== '/' && path.length > 1) {
     const { uuid, customName, isWaveMode, showDetail, language } = safeParseURL(path)
     
-    // 设置语言
-    if (language && language !== locale.value) {
-      locale.value = language
-    }
+    // 暂时禁用 URL 语言设置
+    // if (language && language !== locale.value) {
+    //   locale.value = language
+    // }
     
     // 设置 UUID
     if (uuid && uuid.trim()) {
@@ -513,6 +546,9 @@ onMounted(() => {
       pendingDetailUUID.value = uuid.trim()
     }
   }
+  
+  // 页面加载时自动执行一次位置检测（每次刷新都调用 API）
+  await initGeoIP()
 })
 
 // 监听测站过滤器变化，更新 URL
@@ -676,14 +712,29 @@ onUnmounted(() => {
 
 const customStationName = ref<Record<string, string>>({}) // 修改为对象以存储每个UUID的名称
 const pendingDetailUUID = ref<string | null>(null) // 待显示的详情 UUID
+const isGeoIPDetecting = ref(false) // 是否正在检测地理位置
 
 // 语言前缀映射
 const languagePrefixMap: Record<string, string> = {
   'cn': 'zhs',   // 简体中文
-  'tw': 'zht',   // 繁体中文
+  'tw': 'zht',   // 繁体中文（台湾）
   'kr': 'ko',    // 韩语
-  'en': 'en',    // 英语
+  'en': 'en',    // 英语（美国）
   'jp': 'ja'     // 日语
+}
+
+
+// 国家/地区代码到语言的映射（用于手动刷新功能）
+const countryLanguageMap: Record<string, string> = {
+  'CN': 'zhs',   // 中国大陆 - 简体中文
+  'HK': 'zht',   // 香港 - 繁体中文
+  'MO': 'zht',   // 澳门 - 繁体中文
+  'TW': 'zht',   // 台湾 - 繁体中文
+  'KR': 'ko',    // 韩国 - 韩语
+  'JP': 'ja',    // 日本 - 日语
+  'US': 'en',    // 美国 - 英语
+  'UK': 'en',    // 英国 - 英语
+  'EN': 'en'     // 英语国家代码 - 英语
 }
 
 // 安全的 URL 解析函数
@@ -706,12 +757,12 @@ const safeParseURL = (path: string): { uuid: string; customName: string; isWaveM
       pathToParse = pathToParse.substring(0, pathToParse.length - 7) // 移除 /detail
     }
     
-    // 检查语言前缀 - 优先检查第一个路径段
-    const pathParts = pathToParse.split('/')
-    if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
-      language = languagePrefixMap[pathParts[0]]
-      pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
-    }
+    // 暂时禁用语言前缀检查
+    // const pathParts = pathToParse.split('/')
+    // if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
+    //   language = languagePrefixMap[pathParts[0]]
+    //   pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
+    // }
     
     // 检查是否是波形模式
     if (pathToParse.startsWith('wave/')) {
@@ -748,12 +799,12 @@ const safeParseURL = (path: string): { uuid: string; customName: string; isWaveM
       pathToParse = pathToParse.substring(0, pathToParse.length - 7) // 移除 /detail
     }
     
-    // 检查语言前缀 - 优先检查第一个路径段
-    const pathParts = pathToParse.split('/')
-    if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
-      language = languagePrefixMap[pathParts[0]]
-      pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
-    }
+    // 暂时禁用语言前缀检查
+    // const pathParts = pathToParse.split('/')
+    // if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
+    //   language = languagePrefixMap[pathParts[0]]
+    //   pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
+    // }
     
     // 检查是否是波形模式
     if (pathToParse.startsWith('wave/')) {
@@ -786,22 +837,115 @@ const safeEncodeURIComponent = (str: string): string => {
   }
 }
 
+// 检测用户地理位置并设置语言（用于手动刷新）
+const detectUserLocation = async (useCache = false): Promise<void> => {
+  if (isGeoIPDetecting.value) return // 防止重复检测
+  
+  // 页面加载时跳过缓存检查，直接调用 GeoAPI
+  // 只有在手动刷新时才检查缓存
+  if (useCache) {
+    // 检查本地存储中是否有缓存的检测结果
+    let cachedGeoIP: string | null = null
+    let cacheTime: string | null = null
+    
+    try {
+      cachedGeoIP = localStorage.getItem('geoip_cache')
+      cacheTime = localStorage.getItem('geoip_cache_time')
+    } catch (error) {
+      console.warn('无法访问 localStorage，跳过缓存检查:', error)
+    }
+    
+    // 如果缓存存在且不超过24小时，使用缓存结果
+    if (cachedGeoIP && cacheTime) {
+      const cacheAge = Date.now() - parseInt(cacheTime)
+      const maxCacheAge = 24 * 60 * 60 * 1000 // 24小时
+      
+      if (cacheAge < maxCacheAge) {
+        try {
+          const cachedData = JSON.parse(cachedGeoIP)
+          const countryCode = cachedData.country_code
+          if (countryCode && countryLanguageMap[countryCode]) {
+            const detectedLanguage = countryLanguageMap[countryCode]
+            console.log(`使用缓存的 GeoIP 数据: ${countryCode}, 语言: ${detectedLanguage}`)
+            if (locale.value !== detectedLanguage) {
+              locale.value = detectedLanguage
+              console.log(`语言已更新为: ${detectedLanguage}`)
+            }
+            return
+          }
+        } catch (error) {
+          console.warn('缓存数据解析失败，重新检测:', error)
+        }
+      }
+    }
+  }
+  
+  isGeoIPDetecting.value = true
+  
+  try {
+    console.log('正在检测用户地理位置...')
+    const response = await fetch('https://api.wolfx.jp/geoip.php')
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    
+    const data = await response.json()
+    console.log('GeoIP 响应:', data)
+    
+    // 缓存检测结果
+    try {
+      localStorage.setItem('geoip_cache', JSON.stringify(data))
+      localStorage.setItem('geoip_cache_time', Date.now().toString())
+    } catch (error) {
+      console.warn('无法保存到 localStorage:', error)
+    }
+    
+    const countryCode = data.country_code
+    if (countryCode && countryLanguageMap[countryCode]) {
+      const detectedLanguage = countryLanguageMap[countryCode]
+      console.log(`检测到国家/地区: ${countryCode}, 设置语言: ${detectedLanguage}`)
+      
+      // 只有在当前语言不是检测到的语言时才更新
+      if (locale.value !== detectedLanguage) {
+        locale.value = detectedLanguage
+        console.log(`语言已更新为: ${detectedLanguage}`)
+      }
+    } else {
+      console.log(`未识别的国家/地区代码: ${countryCode}, 使用默认英语`)
+      if (locale.value !== 'en') {
+        locale.value = 'en'
+        console.log('语言已设置为默认英语')
+      }
+    }
+  } catch (error) {
+    console.error('GeoIP 检测失败:', error)
+    // 检测失败时使用默认英语
+    if (locale.value !== 'en') {
+      locale.value = 'en'
+      console.log('GeoIP 检测失败，使用默认英语')
+    }
+  } finally {
+    isGeoIPDetecting.value = false
+  }
+}
+
 // 生成包含语言前缀的 URL
 const generateURL = (uuid?: string, customName?: string, isWaveMode?: boolean, showDetail?: boolean): string => {
-  // 获取当前语言对应的前缀
-  const currentLang = locale.value
-  const langPrefix = Object.entries(languagePrefixMap).find(([_, lang]) => lang === currentLang)?.[0]
+  // 暂时禁用语言前缀功能
+  // const currentLang = locale.value
+  // const langPrefix = Object.entries(languagePrefixMap).find(([_, lang]) => lang === currentLang)?.[0]
   
   let url = ''
   
-  // 添加语言前缀（如果不是默认语言）
-  if (langPrefix && currentLang !== 'zhs') {
-    url += `/${langPrefix}`
-  }
+  // 暂时禁用语言前缀
+  // if (langPrefix && currentLang !== 'zhs') {
+  //   url += `/${langPrefix}`
+  // }
   
-  // 如果没有 UUID，只返回语言前缀
+  // 如果没有 UUID，只返回根路径
   if (!uuid || !uuid.trim()) {
-    return url || '/'
+    return '/'
   }
   
   // 添加波形模式前缀
@@ -871,20 +1015,20 @@ watch(seismicDataArray, (newData) => {
   }
 }, { deep: true, immediate: false })
 
-// 监听语言变化，更新 URL
-watch(locale, (newLang) => {
-  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
-    const currentUUID = stationTypeFilter.value.trim()
-    const customName = customStationName.value[currentUUID]
-    
-    const newUrl = generateURL(currentUUID, customName, !showStationData.value)
-    window.history.pushState({}, '', newUrl)
-  } else {
-    // 如果没有测站过滤器，只更新语言前缀
-    const newUrl = generateURL()
-    window.history.pushState({}, '', newUrl)
-  }
-}, { immediate: false })
+// 暂时禁用语言变化时的 URL 更新
+// watch(locale, (newLang) => {
+//   if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+//     const currentUUID = stationTypeFilter.value.trim()
+//     const customName = customStationName.value[currentUUID]
+//     
+//     const newUrl = generateURL(currentUUID, customName, !showStationData.value)
+//     window.history.pushState({}, '', newUrl)
+//   } else {
+//     // 如果没有测站过滤器，只更新语言前缀
+//     const newUrl = generateURL()
+//     window.history.pushState({}, '', newUrl)
+//   }
+// }, { immediate: false })
 
 // 监听波形模式变化，更新 URL
 watch(showStationData, (isDataMode) => {
@@ -1740,6 +1884,42 @@ onMounted(() => {
           &.active {
             background: rgba(255, 255, 255, 0.3);
             font-weight: bold;
+          }
+        }
+      }
+
+      .geoip-section {
+        margin-top: 1rem;
+        
+        .geoip-refresh-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.5rem;
+          background: rgba(255, 255, 255, 0.1);
+          color: var(--text-color);
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 0.9rem;
+
+          &:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+          }
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+
+          .spinning {
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
           }
         }
       }
