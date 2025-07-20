@@ -93,5 +93,7 @@
   "max_pga_components": "Maximum PGA Components",
   "max_pgv_components": "Maximum PGV Components",
   "max_pgd_components": "Maximum PGD Components",
-  "uuid_copied": "UUID copied to clipboard"
+  "uuid_copied": "UUID copied to clipboard",
+  "detecting_location": "Detecting...",
+  "redetect_location": "Redetect Location"
 }

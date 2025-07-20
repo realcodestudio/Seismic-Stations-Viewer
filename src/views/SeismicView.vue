@@ -141,7 +141,7 @@
           <div class="geoip-section">
             <button @click="() => refreshGeoIP(true)" :disabled="isGeoIPDetecting" class="geoip-refresh-btn">
               <Icon icon="mdi:refresh" :class="{ 'spinning': isGeoIPDetecting }" />
-              {{ isGeoIPDetecting ? '检测中...' : '重新检测位置' }}
+              {{ isGeoIPDetecting ? $t('detecting_location') : $t('redetect_location') }}
             </button>
           </div>
         </div>
@@ -302,7 +302,7 @@ import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.1.1') // 修改版本号
+const version = ref('v4.1.3') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！

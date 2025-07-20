@@ -93,5 +93,7 @@
   "max_pga_components": "最大 PGA 分量",
   "max_pgv_components": "最大 PGV 分量",
   "max_pgd_components": "最大 PGD 分量",
-  "uuid_copied": "UUID 已复制到剪贴板"
+  "uuid_copied": "UUID 已复制到剪贴板",
+  "detecting_location": "检测中...",
+  "redetect_location": "重新检测位置"
 }

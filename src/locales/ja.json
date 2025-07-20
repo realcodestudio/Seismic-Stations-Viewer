@@ -93,5 +93,7 @@
   "max_pga_components": "最大 PGA 成分",
   "max_pgv_components": "最大 PGV 成分",
   "max_pgd_components": "最大 PGD 成分",
-  "uuid_copied": "UUID がクリップボードにコピーされました"
+  "uuid_copied": "UUID がクリップボードにコピーされました",
+  "detecting_location": "検出中...",
+  "redetect_location": "位置を再検出"
 }
