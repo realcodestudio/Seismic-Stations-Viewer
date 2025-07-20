@@ -727,7 +727,6 @@ const safeParseURL = (path: string): { uuid: string; customName: string; isWaveM
     let uuid = ''
     let customName = ''
     let showDetail = false
-    let language = 'zhs' // 默认语言
     
     // 解析路径部分
     let pathToParse = fullPath
@@ -769,7 +768,6 @@ const safeParseURL = (path: string): { uuid: string; customName: string; isWaveM
     let uuid = ''
     let customName = ''
     let showDetail = false
-    let language = 'zhs' // 默认语言
     
     // 解析路径部分
     let pathToParse = rawPath
