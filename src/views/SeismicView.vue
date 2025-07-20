@@ -308,6 +308,7 @@ const version = ref('v4.1.3') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
+////版本号！！！
 
 const themeStore = useThemeStore()
 const seismicStore = useSeismicStore()
@@ -713,16 +714,6 @@ onUnmounted(() => {
 const customStationName = ref<Record<string, string>>({}) // 修改为对象以存储每个UUID的名称
 const pendingDetailUUID = ref<string | null>(null) // 待显示的详情 UUID
 const isGeoIPDetecting = ref(false) // 是否正在检测地理位置
-
-// 语言前缀映射
-const languagePrefixMap: Record<string, string> = {
-  'cn': 'zhs',   // 简体中文
-  'tw': 'zht',   // 繁体中文（台湾）
-  'kr': 'ko',    // 韩语
-  'en': 'en',    // 英语（美国）
-  'jp': 'ja'     // 日语
-}
-
 
 // 国家/地区代码到语言的映射（用于手动刷新功能）
 const countryLanguageMap: Record<string, string> = {
