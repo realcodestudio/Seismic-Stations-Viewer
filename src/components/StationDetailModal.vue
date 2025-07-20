@@ -9,14 +9,109 @@
       </div>
 
       <div class="modal-body" v-if="currentData">
-        <div class="data-grid">
-          <div v-for="(value, key) in processedData" :key="key" class="data-item">
-            <div class="item-icon">
-              <Icon :icon="getIconForKey(key)" />
+        <div class="panels-container">
+          <!-- 基本信息面板 -->
+          <div class="panel">
+            <div class="panel-header">
+              <Icon icon="mdi:information-outline" class="panel-icon" />
+              <h3>{{ $t('basic_info') }}</h3>
             </div>
-            <div class="item-content">
-              <span class="label">{{ formatLabel(key) }}:</span>
-              <span class="value">{{ formatValue(value, key) }}</span>
+            <div class="panel-content">
+              <div class="data-grid">
+                <div v-for="item in basicInfo" :key="item.key" class="data-item">
+                  <div class="item-icon">
+                    <Icon :icon="getIconForKey(item.key)" />
+                  </div>
+                  <div class="item-content">
+                    <span class="label">{{ item.label }}:</span>
+                    <span class="value">{{ formatValue(item.value, item.key) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 当前地震参数面板 -->
+          <div class="panel">
+            <div class="panel-header">
+              <Icon icon="mdi:waveform" class="panel-icon" />
+              <h3>{{ $t('current_parameters') }}</h3>
+            </div>
+            <div class="panel-content">
+              <div class="data-grid">
+                <div v-for="item in currentParameters" :key="item.key" class="data-item">
+                  <div class="item-icon">
+                    <Icon :icon="getIconForKey(item.key)" />
+                  </div>
+                  <div class="item-content">
+                    <span class="label">{{ item.label }}:</span>
+                    <span class="value">{{ formatValue(item.value, item.key) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 最大值记录面板 -->
+          <div class="panel">
+            <div class="panel-header">
+              <Icon icon="mdi:trending-up" class="panel-icon" />
+              <h3>{{ $t('maximum_records') }}</h3>
+            </div>
+            <div class="panel-content">
+              <div class="data-grid">
+                <div v-for="item in maximumRecords" :key="item.key" class="data-item">
+                  <div class="item-icon">
+                    <Icon :icon="getIconForKey(item.key)" />
+                  </div>
+                  <div class="item-content">
+                    <span class="label">{{ item.label }}:</span>
+                    <span class="value">{{ formatValue(item.value, item.key) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 方向分量面板 -->
+          <div class="panel">
+            <div class="panel-header">
+              <Icon icon="mdi:compass" class="panel-icon" />
+              <h3>{{ $t('directional_components') }}</h3>
+            </div>
+            <div class="panel-content">
+              <div class="data-grid">
+                <div v-for="item in directionalComponents" :key="item.key" class="data-item">
+                  <div class="item-icon">
+                    <Icon :icon="getIconForKey(item.key)" />
+                  </div>
+                  <div class="item-content">
+                    <span class="label">{{ item.label }}:</span>
+                    <span class="value">{{ formatValue(item.value, item.key) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 系统状态面板 -->
+          <div class="panel">
+            <div class="panel-header">
+              <Icon icon="mdi:cog" class="panel-icon" />
+              <h3>{{ $t('system_status') }}</h3>
+            </div>
+            <div class="panel-content">
+              <div class="data-grid">
+                <div v-for="item in systemStatus" :key="item.key" class="data-item">
+                  <div class="item-icon">
+                    <Icon :icon="getIconForKey(item.key)" />
+                  </div>
+                  <div class="item-content">
+                    <span class="label">{{ item.label }}:</span>
+                    <span class="value">{{ formatValue(item.value, item.key) }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -48,18 +143,84 @@ const currentData = computed(() => {
   return seismicDataMap.value.get(props.stationType)
 })
 
-// 处理展示数据
-const processedData = computed(() => {
-  if (!currentData.value) return {}
+// 数据分类处理
+const basicInfo = computed(() => {
+  if (!currentData.value) return []
+  const data = currentData.value
+  return [
+    { key: 'region', label: formatLabel('region'), value: data.region },
+    { key: 'latitude', label: formatLabel('latitude'), value: data.latitude },
+    { key: 'longitude', label: formatLabel('longitude'), value: data.longitude },
+    { key: 'type', label: formatLabel('type'), value: data.type }
+  ].filter(item => item.value !== undefined && item.value !== null)
+})
 
-  const data = { ...currentData.value }
-  return Object.entries(data)
-    .filter(([key]) => key !== 'pgaHistory')
-    .sort(([a], [b]) => a.localeCompare(b))
-    .reduce((acc, [key, value]) => {
-      acc[key] = value
-      return acc
-    }, {} as Record<string, any>)
+const currentParameters = computed(() => {
+  if (!currentData.value) return []
+  const data = currentData.value
+  return [
+    { key: 'PGA', label: formatLabel('PGA'), value: data.PGA },
+    { key: 'PGV', label: formatLabel('PGV'), value: data.PGV },
+    { key: 'PGD', label: formatLabel('PGD'), value: data.PGD },
+    { key: 'Shindo', label: formatLabel('Shindo'), value: data.Shindo },
+    { key: 'CalcShindo', label: formatLabel('CalcShindo'), value: data.CalcShindo },
+    { key: 'Intensity', label: formatLabel('Intensity'), value: data.Intensity },
+    { key: 'LPGM', label: formatLabel('LPGM'), value: data.LPGM },
+    { key: 'Sva30', label: formatLabel('Sva30'), value: data.Sva30 }
+  ].filter(item => item.value !== undefined && item.value !== null)
+})
+
+const maximumRecords = computed(() => {
+  if (!currentData.value) return []
+  const data = currentData.value
+  return [
+    { key: 'Max_PGA', label: formatLabel('Max_PGA'), value: data.Max_PGA },
+    { key: 'Max_PGV', label: formatLabel('Max_PGV'), value: data.Max_PGV },
+    { key: 'Max_PGD', label: formatLabel('Max_PGD'), value: data.Max_PGD },
+    { key: 'Max_Shindo', label: formatLabel('Max_Shindo'), value: data.Max_Shindo },
+    { key: 'Max_CalcShindo', label: formatLabel('Max_CalcShindo'), value: data.Max_CalcShindo },
+    { key: 'Max_Intensity', label: formatLabel('Max_Intensity'), value: data.Max_Intensity },
+    { key: 'Max_LPGM', label: formatLabel('Max_LPGM'), value: data.Max_LPGM },
+    { key: 'Max_Sva30', label: formatLabel('Max_Sva30'), value: data.Max_Sva30 }
+  ].filter(item => item.value !== undefined && item.value !== null)
+})
+
+const directionalComponents = computed(() => {
+  if (!currentData.value) return []
+  const data = currentData.value
+  return [
+    { key: 'PGA_EW', label: formatLabel('PGA_EW'), value: data.PGA_EW },
+    { key: 'PGA_NS', label: formatLabel('PGA_NS'), value: data.PGA_NS },
+    { key: 'PGA_UD', label: formatLabel('PGA_UD'), value: data.PGA_UD },
+    { key: 'PGV_EW', label: formatLabel('PGV_EW'), value: data.PGV_EW },
+    { key: 'PGV_NS', label: formatLabel('PGV_NS'), value: data.PGV_NS },
+    { key: 'PGV_UD', label: formatLabel('PGV_UD'), value: data.PGV_UD },
+    { key: 'PGD_EW', label: formatLabel('PGD_EW'), value: data.PGD_EW },
+    { key: 'PGD_NS', label: formatLabel('PGD_NS'), value: data.PGD_NS },
+    { key: 'PGD_UD', label: formatLabel('PGD_UD'), value: data.PGD_UD },
+    { key: 'Max_PGA_EW', label: formatLabel('Max_PGA_EW'), value: data.Max_PGA_EW },
+    { key: 'Max_PGA_NS', label: formatLabel('Max_PGA_NS'), value: data.Max_PGA_NS },
+    { key: 'Max_PGA_UD', label: formatLabel('Max_PGA_UD'), value: data.Max_PGA_UD },
+    { key: 'Max_PGV_EW', label: formatLabel('Max_PGV_EW'), value: data.Max_PGV_EW },
+    { key: 'Max_PGV_NS', label: formatLabel('Max_PGV_NS'), value: data.Max_PGV_NS },
+    { key: 'Max_PGV_UD', label: formatLabel('Max_PGV_UD'), value: data.Max_PGV_UD },
+    { key: 'Max_PGD_EW', label: formatLabel('Max_PGD_EW'), value: data.Max_PGD_EW },
+    { key: 'Max_PGD_NS', label: formatLabel('Max_PGD_NS'), value: data.Max_PGD_NS },
+    { key: 'Max_PGD_UD', label: formatLabel('Max_PGD_UD'), value: data.Max_PGD_UD }
+  ].filter(item => item.value !== undefined && item.value !== null)
+})
+
+const systemStatus = computed(() => {
+  if (!currentData.value) return []
+  const data = currentData.value
+  return [
+    { key: 'is_desktop', label: formatLabel('is_desktop'), value: data.is_desktop },
+    { key: 'High_Precision', label: formatLabel('High_Precision'), value: data.High_Precision },
+    { key: 'error_code', label: formatLabel('error_code'), value: data.error_code },
+    { key: 'version', label: formatLabel('version'), value: data.version },
+    { key: 'create_at', label: formatLabel('create_at'), value: data.create_at },
+    { key: 'update_at', label: formatLabel('update_at'), value: data.update_at }
+  ].filter(item => item.value !== undefined && item.value !== null)
 })
 
 // 格式化标签名
@@ -108,7 +269,7 @@ function formatLabel(key: string): string {
     High_Precision: t('High_Precision'),
     error_code: t('error_code'),
     update_at: t('update_at'),
-    create_at: t('create_at'),
+    create_at: t('create_at')
   }
 
   return labelMap[key] || key
@@ -199,7 +360,7 @@ function getIconForKey(key: string): string {
     High_Precision: 'mdi:crosshairs-gps',
     error_code: 'mdi:alert',
     update_at: 'mdi:update',
-    create_at: 'mdi:plus-circle-outline',
+    create_at: 'mdi:plus-circle-outline'
   };
   return iconMap[key] || 'mdi:information-outline'; // 默认图标
 }
@@ -238,12 +399,17 @@ defineExpose({ show: showModal })
   z-index: 1000;
   backdrop-filter: blur(20px);
 
+  // 夜间模式背景
+  :global(html.dark) & {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
   .modal-content {
-    background: var(--card-bg); // 使用变量适配夜间模式
-    border-radius: 1.5rem; // 更圆润的边角
-    max-width: 800px;
-    width: 95%; // 调整宽度
-    max-height: 95vh; // 调整高度
+    background: var(--card-bg);
+    border-radius: 1.5rem;
+    max-width: 1200px;
+    width: 95%;
+    max-height: 95vh;
     overflow-y: auto;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 
@@ -253,7 +419,7 @@ defineExpose({ show: showModal })
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.2rem 1.8rem; // 调整内边距
+      padding: 1.2rem 1.8rem;
       background: rgba(var(--card-bg-rgb), 0.7);
       backdrop-filter: blur(40px) saturate(180%);
       -webkit-backdrop-filter: blur(40px) saturate(180%);
@@ -262,16 +428,16 @@ defineExpose({ show: showModal })
 
       h2 {
         margin: 0;
-        color: var(--text-color); // 使用变量适配夜间模式
-        font-size: 1.8rem; // 调整字体大小
+        color: var(--text-color);
+        font-size: 1.8rem;
       }
 
       .close-btn {
         background: none;
         border: none;
-        font-size: 1.8rem; // 调整图标大小
+        font-size: 1.8rem;
         cursor: pointer;
-        color: var(--text-color); // 使用变量适配夜间模式
+        color: var(--text-color);
         padding: 0.8rem;
         display: flex;
         align-items: center;
@@ -286,51 +452,121 @@ defineExpose({ show: showModal })
     }
 
     .modal-body {
-      padding: 1.8rem; // 调整内边距
+      padding: 1.8rem;
 
-      .data-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); // 缩小卡片最小宽度
-        gap: 1.2rem;
+      .panels-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
 
-        .data-item {
-          display: flex; // 使用 flex 布局排列图标和内容
-          align-items: center;
-          padding: 1rem 1.2rem; // 调整内边距
-          background: var(--card-item-bg, rgba(255, 255, 255, 0.8)); // 卡片背景，增加变量以便夜间模式调整
-          border-radius: 0.8rem; // 卡片圆角
-          box-shadow: 0 2px 8px rgba(68, 68, 68, 0.782); // 卡片阴影
-          transition: all 0.2s ease-in-out;
+        .panel {
+          background: var(--card-item-bg, rgba(255, 255, 255, 0.8));
+          border-radius: 1rem;
+          box-shadow: 0 2px 8px rgba(68, 68, 68, 0.1);
+          overflow: hidden;
+          transition: all 0.3s ease;
 
           &:hover {
-            transform: translateY(-2px); // 鼠标悬停效果
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
           }
 
-          .item-icon {
-            flex-shrink: 0; // 防止图标缩小
-            font-size: 1.8rem; // 图标大小
-            margin-right: 1rem; // 图标与内容间距
-            color: var(--text-secondary); // 图标颜色，增加变量以便夜间模式调整
-          }
+          .panel-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, rgba(228, 52, 149, 0.362), rgba(81, 129, 239, 0.395));
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
-          .item-content {
-            flex-grow: 1; // 内容区域占据剩余空间
-
-            .label {
-              display: block;
-              font-size: 0.9rem; // 标签字体大小
-              color: var(--text-secondary); // 标签颜色，增加变量以便夜间模式调整
-              margin-bottom: 0.2rem;
-              opacity: 0.9;
+            .panel-icon {
+              font-size: 1.5rem;
+              color: #3b82f6;
+              margin-right: 0.8rem;
             }
 
-            .value {
-              display: block;
-              font-size: 1.2rem; // 数值字体大小
-              font-weight: bold;
-              color: var(--text-color); // 数值颜色，使用变量适配夜间模式
-              word-break: break-all; // 防止长文本溢出
+            h3 {
+              margin: 0;
+              color: var(--text-color);
+              font-size: 1.2rem;
+              font-weight: 600;
+            }
+          }
+
+          .panel-content {
+            padding: 1.5rem;
+
+            .data-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+              gap: 1rem;
+
+                              .data-item {
+                  display: flex;
+                  align-items: center;
+                  padding: 1rem 1.2rem;
+                  background: rgba(0, 0, 0, 0.057);
+                  border-radius: 0.8rem;
+                  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+                  transition: all 0.2s ease-in-out;
+
+                  &:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    background: rgba(255, 255, 255, 0.266);
+                  }
+
+                  // 夜间模式数据卡片样式
+                  :global(html.dark) & {
+                    background: rgba(60, 60, 60, 0.8);
+                    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+                    &:hover {
+                      background: rgba(70, 70, 70, 0.9);
+                      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                    }
+
+                    .item-content {
+                      .label {
+                        color: rgba(255, 255, 255, 0.7);
+                      }
+
+                      .value {
+                        color: rgba(255, 255, 255, 0.95);
+                      }
+                    }
+
+                    .item-icon {
+                      color: rgba(255, 255, 255, 0.6);
+                    }
+                  }
+
+                .item-icon {
+                  flex-shrink: 0;
+                  font-size: 1.5rem;
+                  margin-right: 1rem;
+                  color: var(--text-secondary);
+                }
+
+                .item-content {
+                  flex-grow: 1;
+
+                  .label {
+                    display: block;
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    margin-bottom: 0.2rem;
+                    opacity: 0.8;
+                  }
+
+                  .value {
+                    display: block;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: var(--text-color);
+                    word-break: break-all;
+                  }
+                }
+              }
             }
           }
         }
@@ -341,8 +577,21 @@ defineExpose({ show: showModal })
 
 // 夜间模式适配样式
 :global(html.dark) .station-modal .modal-content {
-  --card-item-bg: rgba(40, 40, 40, 0.8); // 夜间模式卡片背景
-  --text-secondary: rgba(255, 255, 255, 0.6); // 夜间模式次要文本颜色
+  --card-item-bg: rgba(30, 30, 30, 0.9);
+  --text-secondary: rgba(255, 255, 255, 0.176);
+
+  .panel {
+    background: rgba(40, 40, 40, 0.8);
+    
+    .panel-header {
+      background: linear-gradient(135deg, rgba(59, 131, 246, 0.319), rgb(132, 0, 255));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .panel-content {
+      // 数据卡片样式已在上面单独定义，这里不需要重复
+    }
+  }
 }
 
 @media (max-width: 768px) {
@@ -366,25 +615,48 @@ defineExpose({ show: showModal })
       .modal-body {
         padding: 1.2rem;
 
-        .data-grid {
-          grid-template-columns: 1fr; // 小屏幕下单列显示
+        .panels-container {
           gap: 1rem;
 
-          .data-item {
-            padding: 0.8rem 1rem;
+          .panel {
+            .panel-header {
+              padding: 0.8rem 1.2rem;
 
-            .item-icon {
-              font-size: 1.5rem;
-              margin-right: 0.8rem;
-            }
-
-            .item-content {
-              .label {
-                font-size: 0.8rem;
+              .panel-icon {
+                font-size: 1.3rem;
+                margin-right: 0.6rem;
               }
 
-              .value {
+              h3 {
                 font-size: 1.1rem;
+              }
+            }
+
+            .panel-content {
+              padding: 1.2rem;
+
+              .data-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+
+                .data-item {
+                  padding: 0.8rem 1rem;
+
+                  .item-icon {
+                    font-size: 1.3rem;
+                    margin-right: 0.8rem;
+                  }
+
+                  .item-content {
+                    .label {
+                      font-size: 0.8rem;
+                    }
+
+                    .value {
+                      font-size: 1rem;
+                    }
+                  }
+                }
               }
             }
           }

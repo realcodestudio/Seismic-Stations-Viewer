@@ -81,5 +81,10 @@
   "waveform_accuracy_warning_message": "请注意，波形数据可能因网络延迟或数据处理等因素而存在一定的不准确性，仅供参考。此数据不应用于任何专业评估或决策目的。",
   "agree": "同意",
   "cancel": "取消",
-  "dont_show_waveform_warning_again": "不再弹出此提示"
+  "dont_show_waveform_warning_again": "不再弹出此提示",
+  "basic_info": "基本信息",
+  "current_parameters": "当前地震参数",
+  "maximum_records": "最大值记录",
+  "directional_components": "方向分量",
+  "system_status": "系统状态"
 }

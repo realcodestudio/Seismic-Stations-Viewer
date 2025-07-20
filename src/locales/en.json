@@ -81,5 +81,10 @@
   "waveform_accuracy_warning_message": "Please note: waveform data may be inaccurate due to network delays or data processing issues. This information is for reference only and should not be used for professional assessment or decision-making.",
   "agree": "Agree",
   "cancel": "Cancel",
-  "dont_show_waveform_warning_again": "Do not show this warning again"
+  "dont_show_waveform_warning_again": "Do not show this warning again",
+  "basic_info": "Basic Information",
+  "current_parameters": "Current Seismic Parameters",
+  "maximum_records": "Maximum Records",
+  "directional_components": "Directional Components",
+  "system_status": "System Status"
 }
