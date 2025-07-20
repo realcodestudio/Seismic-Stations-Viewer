@@ -72,7 +72,7 @@
   "yes": "はい",
   "station_details": "観測点詳細情報",
   "custom_station_name": "観測点の表示名をカスタマイズ",
-  "enter_custom_station_name": "表示名を変更するには入力してください",
+  "enter_custom_station_name": "カスタム観測点名を入力（!@#￥%&などの特殊記号は使用できません）",
   "display_settings": "データ表示設定",
   "RT_display_settings": "等級データ表示設定",
   "no_station_available": "利用可能な観測点がありません。設定またはネットワークを確認してください。",
@@ -86,5 +86,12 @@
   "current_parameters": "現在の地震パラメータ",
   "maximum_records": "最大記録",
   "directional_components": "方向成分",
-  "system_status": "システム状態"
+  "system_status": "システム状態",
+  "current_pga_components": "現在の PGA 成分",
+  "current_pgv_components": "現在の PGV 成分",
+  "current_pgd_components": "現在の PGD 成分",
+  "max_pga_components": "最大 PGA 成分",
+  "max_pgv_components": "最大 PGV 成分",
+  "max_pgd_components": "最大 PGD 成分",
+  "uuid_copied": "UUID がクリップボードにコピーされました"
 }

@@ -289,6 +289,7 @@ import { useI18n } from 'vue-i18n'
 import PgaWaveformChart from '../components/PgaWaveformChart.vue'
 import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 
+
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -347,6 +348,7 @@ watch(locale, (newLang: string) => {
 // 语言切换函数
 const changeLanguage = (lang: string) => {
   locale.value = lang
+  // URL 更新会通过 locale 的 watcher 自动处理
 }
 
 // 自动刷新相关函数
@@ -404,6 +406,43 @@ function formatTime(timeStr: string) {
 onMounted(() => {
   initWebSocket()
   console.log('初始数据:', seismicDataArray.value)
+  
+  // 监听浏览器前进后退按钮
+  window.addEventListener('popstate', () => {
+    const path = window.location.pathname
+    if (path !== '/' && path.length > 1) {
+      const { uuid, customName, isWaveMode, showDetail, language } = safeParseURL(path)
+      
+      // 设置语言
+      if (language && language !== locale.value) {
+        locale.value = language
+      }
+      
+      // 设置 UUID
+      if (uuid && uuid.trim()) {
+        stationTypeFilter.value = uuid.trim()
+      }
+      
+      // 设置自定义名称
+      if (customName && customName.trim()) {
+        customStationName.value[uuid.trim()] = customName.trim()
+      }
+      
+      // 如果是波形模式，切换到波形模式
+      if (isWaveMode) {
+        showStationData.value = false
+        localStorage.setItem('dontShowWaveformWarning', 'true')
+      }
+      
+      // 如果需要显示详情模态框
+      if (showDetail && uuid && uuid.trim()) {
+        // 将需要显示详情的 UUID 保存到响应式变量
+        pendingDetailUUID.value = uuid.trim()
+      }
+    } else {
+      stationTypeFilter.value = ''
+    }
+  })
 })
 
 
@@ -413,6 +452,15 @@ const selectedStation = ref()
 function showStationDetail(data: any) {
   selectedStation.value = data
   stationDetailModal.value?.show() // 显示详情弹窗
+  
+  // 更新 URL 添加 /detail 后缀
+  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+    const currentUUID = stationTypeFilter.value.trim()
+    const customName = customStationName.value[currentUUID]
+    
+    const newUrl = generateURL(currentUUID, customName, !showStationData.value, true)
+    window.history.pushState({}, '', newUrl)
+  }
 }
 
 function formatNumber(value: number): string {
@@ -431,6 +479,55 @@ watch(() => themeStore.isDark, (isDark: boolean) => {
 
 const showSettings = ref(false)
 const stationTypeFilter = ref('')
+
+// 从 URL 初始化测站过滤器和自定义名称
+onMounted(() => {
+  const path = window.location.pathname
+  if (path !== '/' && path.length > 1) {
+    const { uuid, customName, isWaveMode, showDetail, language } = safeParseURL(path)
+    
+    // 设置语言
+    if (language && language !== locale.value) {
+      locale.value = language
+    }
+    
+    // 设置 UUID
+    if (uuid && uuid.trim()) {
+      stationTypeFilter.value = uuid.trim()
+    }
+    
+    // 设置自定义名称
+    if (customName && customName.trim()) {
+      customStationName.value[uuid.trim()] = customName.trim()
+    }
+    
+    // 如果是波形模式，切换到波形模式
+    if (isWaveMode) {
+      showStationData.value = false
+      localStorage.setItem('dontShowWaveformWarning', 'true')
+    }
+    
+    // 如果需要显示详情模态框，保存状态等待数据加载
+    if (showDetail && uuid && uuid.trim()) {
+      // 将需要显示详情的 UUID 保存到响应式变量
+      pendingDetailUUID.value = uuid.trim()
+    }
+  }
+})
+
+// 监听测站过滤器变化，更新 URL
+watch(stationTypeFilter, (newValue) => {
+  if (newValue && newValue.trim()) {
+    // 检查是否有自定义名称
+    const customName = customStationName.value[newValue.trim()]
+    const newUrl = generateURL(newValue.trim(), customName, !showStationData.value)
+    window.history.pushState({}, '', newUrl)
+  } else {
+    // 如果没有输入，生成只包含语言前缀的 URL
+    const newUrl = generateURL()
+    window.history.pushState({}, '', newUrl)
+  }
+}, { immediate: false })
 
 // 添加显示设置的响应式状态
 const displaySettings = ref({
@@ -459,6 +556,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (timer) clearInterval(timer)
+  
+  // 清理 popstate 事件监听器
+  window.removeEventListener('popstate', () => {})
 })
 
 function parseUpdateAt(str: string): number {
@@ -575,6 +675,166 @@ onUnmounted(() => {
 })
 
 const customStationName = ref<Record<string, string>>({}) // 修改为对象以存储每个UUID的名称
+const pendingDetailUUID = ref<string | null>(null) // 待显示的详情 UUID
+
+// 语言前缀映射
+const languagePrefixMap: Record<string, string> = {
+  'cn': 'zhs',   // 简体中文
+  'tw': 'zht',   // 繁体中文
+  'kr': 'ko',    // 韩语
+  'en': 'en',    // 英语
+  'jp': 'ja'     // 日语
+}
+
+// 安全的 URL 解析函数
+const safeParseURL = (path: string): { uuid: string; customName: string; isWaveMode: boolean; showDetail: boolean; language: string } => {
+  try {
+    const fullPath = decodeURIComponent(path.substring(1))
+    
+    let isWaveMode = false
+    let uuid = ''
+    let customName = ''
+    let showDetail = false
+    let language = 'zhs' // 默认语言
+    
+    // 解析路径部分
+    let pathToParse = fullPath
+    
+    // 检查是否以 /detail 结尾
+    if (pathToParse.endsWith('/detail')) {
+      showDetail = true
+      pathToParse = pathToParse.substring(0, pathToParse.length - 7) // 移除 /detail
+    }
+    
+    // 检查语言前缀 - 优先检查第一个路径段
+    const pathParts = pathToParse.split('/')
+    if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
+      language = languagePrefixMap[pathParts[0]]
+      pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
+    }
+    
+    // 检查是否是波形模式
+    if (pathToParse.startsWith('wave/')) {
+      isWaveMode = true
+      pathToParse = pathToParse.substring(5) // 移除 wave/
+    }
+    
+    // 解析 UUID 和自定义名称
+    const nameIndex = pathToParse.indexOf('&')
+    if (nameIndex !== -1) {
+      uuid = pathToParse.substring(0, nameIndex)
+      customName = pathToParse.substring(nameIndex + 1)
+    } else {
+      uuid = pathToParse
+    }
+    
+    return { uuid, customName, isWaveMode, showDetail, language }
+  } catch (error) {
+    console.warn('URL 解析失败，尝试原始解析:', error)
+    // 降级到原始解析，不进行解码
+    const rawPath = path.substring(1)
+    let isWaveMode = false
+    let uuid = ''
+    let customName = ''
+    let showDetail = false
+    let language = 'zhs' // 默认语言
+    
+    // 解析路径部分
+    let pathToParse = rawPath
+    
+    // 检查是否以 /detail 结尾
+    if (pathToParse.endsWith('/detail')) {
+      showDetail = true
+      pathToParse = pathToParse.substring(0, pathToParse.length - 7) // 移除 /detail
+    }
+    
+    // 检查语言前缀 - 优先检查第一个路径段
+    const pathParts = pathToParse.split('/')
+    if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
+      language = languagePrefixMap[pathParts[0]]
+      pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
+    }
+    
+    // 检查是否是波形模式
+    if (pathToParse.startsWith('wave/')) {
+      isWaveMode = true
+      pathToParse = pathToParse.substring(5) // 移除 wave/
+    }
+    
+    // 解析 UUID 和自定义名称
+    const nameIndex = pathToParse.indexOf('&')
+    if (nameIndex !== -1) {
+      uuid = pathToParse.substring(0, nameIndex)
+      customName = pathToParse.substring(nameIndex + 1)
+    } else {
+      uuid = pathToParse
+    }
+    
+    return { uuid, customName, isWaveMode, showDetail, language }
+  }
+}
+
+// 安全的 URL 编码函数
+const safeEncodeURIComponent = (str: string): string => {
+  try {
+    // 过滤掉可能导致 URL 问题的特殊字符
+    const cleanStr = str.replace(/[^\w\s\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g, '')
+    return encodeURIComponent(cleanStr)
+  } catch (error) {
+    console.warn('URL 编码失败，使用原始字符串:', error)
+    return str.replace(/[^\w\s\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g, '')
+  }
+}
+
+// 生成包含语言前缀的 URL
+const generateURL = (uuid?: string, customName?: string, isWaveMode?: boolean, showDetail?: boolean): string => {
+  // 获取当前语言对应的前缀
+  const currentLang = locale.value
+  const langPrefix = Object.entries(languagePrefixMap).find(([_, lang]) => lang === currentLang)?.[0]
+  
+  let url = ''
+  
+  // 添加语言前缀（如果不是默认语言）
+  if (langPrefix && currentLang !== 'zhs') {
+    url += `/${langPrefix}`
+  }
+  
+  // 如果没有 UUID，只返回语言前缀
+  if (!uuid || !uuid.trim()) {
+    return url || '/'
+  }
+  
+  // 添加波形模式前缀
+  if (isWaveMode) {
+    url += '/wave'
+  }
+  
+  // 添加 UUID
+  url += `/${uuid}`
+  
+  // 添加自定义名称
+  if (customName && customName.trim()) {
+    url += `&${safeEncodeURIComponent(customName.trim())}`
+  }
+  
+  // 添加详情后缀
+  if (showDetail) {
+    url += '/detail'
+  }
+  
+  return url
+}
+
+// 监听自定义名称变化，更新 URL
+watch(customStationName, (newNames) => {
+  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+    const currentUUID = stationTypeFilter.value.trim()
+    const customName = newNames[currentUUID]
+    
+    const newUrl = generateURL(currentUUID, customName, !showStationData.value)
+    window.history.pushState({}, '', newUrl)
+  }
+}, { deep: true, immediate: false })
 
 // 保存显示设置到本地存储
 const saveDisplaySettings = () => {
@@ -596,6 +856,46 @@ function goToCreateStation() {
 // 修改 showCards 数据属性名称
 const showStationData = ref(true);
 const showWarningModal = ref(false); // 控制警告弹窗显示
+
+// 监听测站数据变化，检查是否需要显示详情模态框
+watch(seismicDataArray, (newData) => {
+  if (pendingDetailUUID.value && newData.length > 0) {
+    const stationData = newData.find(data => data.type === pendingDetailUUID.value)
+    if (stationData) {
+      // 找到对应的测站数据，显示详情模态框
+      selectedStation.value = stationData
+      stationDetailModal.value?.show()
+      // 清除待显示的 UUID
+      pendingDetailUUID.value = null
+    }
+  }
+}, { deep: true, immediate: false })
+
+// 监听语言变化，更新 URL
+watch(locale, (newLang) => {
+  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+    const currentUUID = stationTypeFilter.value.trim()
+    const customName = customStationName.value[currentUUID]
+    
+    const newUrl = generateURL(currentUUID, customName, !showStationData.value)
+    window.history.pushState({}, '', newUrl)
+  } else {
+    // 如果没有测站过滤器，只更新语言前缀
+    const newUrl = generateURL()
+    window.history.pushState({}, '', newUrl)
+  }
+}, { immediate: false })
+
+// 监听波形模式变化，更新 URL
+watch(showStationData, (isDataMode) => {
+  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+    const currentUUID = stationTypeFilter.value.trim()
+    const customName = customStationName.value[currentUUID]
+    
+    const newUrl = generateURL(currentUUID, customName, !isDataMode)
+    window.history.pushState({}, '', newUrl)
+  }
+}, { immediate: false })
 
 // 修改 toggleCards 函数名称
 const toggleStationData = () => {

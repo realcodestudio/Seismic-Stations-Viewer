@@ -72,7 +72,7 @@
   "yes": "是",
   "station_details": "测站详细信息",
   "custom_station_name": "自定义测站显示名称",
-  "enter_custom_station_name": "输入以修改该测站显示名称",
+  "enter_custom_station_name": "输入自定义的测站名称（不可使用!@#￥%&等特殊符号）",
   "display_settings": "数据显示开关",
   "RT_display_settings": "等级数据显示开关",
   "no_station_available": "暂无可用测站，请检查设置或网络",
@@ -86,5 +86,12 @@
   "current_parameters": "当前地震参数",
   "maximum_records": "最大值记录",
   "directional_components": "方向分量",
-  "system_status": "系统状态"
+  "system_status": "系统状态",
+  "current_pga_components": "当前 PGA 分量",
+  "current_pgv_components": "当前 PGV 分量",
+  "current_pgd_components": "当前 PGD 分量",
+  "max_pga_components": "最大 PGA 分量",
+  "max_pgv_components": "最大 PGV 分量",
+  "max_pgd_components": "最大 PGD 分量",
+  "uuid_copied": "UUID 已复制到剪贴板"
 }

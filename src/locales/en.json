@@ -72,7 +72,7 @@
   "yes": "Yes",
   "station_details": "Station Details",
   "custom_station_name": "Custom Station Display Name",
-  "enter_custom_station_name": "Enter to modify station display name",
+  "enter_custom_station_name": "Enter custom station name (special symbols like !@#$%& are not allowed)",
   "display_settings": "Data Display Toggle",
   "RT_display_settings": "Intensity Display Toggle",
   "no_station_available": "No available stations. Please check your settings or network.",
@@ -86,5 +86,12 @@
   "current_parameters": "Current Seismic Parameters",
   "maximum_records": "Maximum Records",
   "directional_components": "Directional Components",
-  "system_status": "System Status"
+  "system_status": "System Status",
+  "current_pga_components": "Current PGA Components",
+  "current_pgv_components": "Current PGV Components",
+  "current_pgd_components": "Current PGD Components",
+  "max_pga_components": "Maximum PGA Components",
+  "max_pgv_components": "Maximum PGV Components",
+  "max_pgd_components": "Maximum PGD Components",
+  "uuid_copied": "UUID copied to clipboard"
 }

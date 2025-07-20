@@ -72,7 +72,7 @@
   "yes": "예",
   "station_details": "측정소 상세 정보",
   "custom_station_name": "사용자 정의 측정소 이름",
-  "enter_custom_station_name": "측정소 이름을 수정하려면 입력하세요",
+  "enter_custom_station_name": "사용자 정의 측정소 이름 입력 (!@#￥%& 등의 특수 기호는 사용할 수 없음)",
   "display_settings": "데이터 표시 설정",
   "RT_display_settings": "등급 데이터 표시 설정",
   "no_station_available": "사용 가능한 측정소가 없습니다. 설정 또는 네트워크를 확인하세요",
@@ -86,5 +86,12 @@
   "current_parameters": "현재 지진 매개변수",
   "maximum_records": "최대 기록",
   "directional_components": "방향 성분",
-  "system_status": "시스템 상태"
+  "system_status": "시스템 상태",
+  "current_pga_components": "현재 PGA 성분",
+  "current_pgv_components": "현재 PGV 성분",
+  "current_pgd_components": "현재 PGD 성분",
+  "max_pga_components": "최대 PGA 성분",
+  "max_pgv_components": "최대 PGV 성분",
+  "max_pgd_components": "최대 PGD 성분",
+  "uuid_copied": "UUID가 클립보드에 복사되었습니다"
 }
