@@ -444,12 +444,7 @@ onMounted(async () => {
   window.addEventListener('popstate', () => {
     const path = window.location.pathname
     if (path !== '/' && path.length > 1) {
-      const { uuid, customName, isWaveMode, showDetail, language } = safeParseURL(path)
-      
-      // 暂时禁用 URL 语言设置
-      // if (language && language !== locale.value) {
-      //   locale.value = language
-      // }
+      const { uuid, customName, isWaveMode, showDetail } = safeParseURL(path)
       
       // 设置 UUID
       if (uuid && uuid.trim()) {
@@ -518,12 +513,7 @@ onMounted(async () => {
   // 处理 URL 参数
   const path = window.location.pathname
   if (path !== '/' && path.length > 1) {
-    const { uuid, customName, isWaveMode, showDetail, language } = safeParseURL(path)
-    
-    // 暂时禁用 URL 语言设置
-    // if (language && language !== locale.value) {
-    //   locale.value = language
-    // }
+    const { uuid, customName, isWaveMode, showDetail } = safeParseURL(path)
     
     // 设置 UUID
     if (uuid && uuid.trim()) {
@@ -729,7 +719,7 @@ const countryLanguageMap: Record<string, string> = {
 }
 
 // 安全的 URL 解析函数
-const safeParseURL = (path: string): { uuid: string; customName: string; isWaveMode: boolean; showDetail: boolean; language: string } => {
+const safeParseURL = (path: string): { uuid: string; customName: string; isWaveMode: boolean; showDetail: boolean } => {
   try {
     const fullPath = decodeURIComponent(path.substring(1))
     
@@ -770,7 +760,7 @@ const safeParseURL = (path: string): { uuid: string; customName: string; isWaveM
       uuid = pathToParse
     }
     
-    return { uuid, customName, isWaveMode, showDetail, language }
+    return { uuid, customName, isWaveMode, showDetail }
   } catch (error) {
     console.warn('URL 解析失败，尝试原始解析:', error)
     // 降级到原始解析，不进行解码
@@ -812,7 +802,7 @@ const safeParseURL = (path: string): { uuid: string; customName: string; isWaveM
       uuid = pathToParse
     }
     
-    return { uuid, customName, isWaveMode, showDetail, language }
+    return { uuid, customName, isWaveMode, showDetail }
   }
 }
 
