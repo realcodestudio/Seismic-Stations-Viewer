@@ -2,17 +2,17 @@
   <div class="seismic-container" :class="{ 'dark': themeStore.isDark }">
     <div class="controls-container">
       <button class="main-toggle" @click="toggleControls">
-        <Icon :icon="showControls ? 'mdi:close' : 'mdi:menu'" />
+        <Icon :icon="showControls ? 'mdi:close' : 'mdi:menu'" size="32" style="width: 32px; height: 32px;" />
       </button>
       <div class="control-buttons" :class="{ 'expanded': showControls }">
-        <div class="theme-toggle" @click="themeStore.toggleTheme">
-          <Icon :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'" />
+        <div class="theme-toggle" @click="() => { themeStore.toggleTheme(); showControls = false; }">
+          <Icon :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'" size="24" />
         </div>
-        <div class="settings-toggle" @click="toggleSettings">
-          <Icon icon="mdi:cog" />
+        <div class="settings-toggle" @click="() => { toggleSettings(); showControls = false; }">
+          <Icon icon="mdi:cog" size="24" />
         </div>
-        <div class="wave-icon" @click="toggleStationData">
-          <Icon icon="mdi:waveform" />
+        <div class="wave-icon" @click="() => { toggleStationData(); showControls = false; }">
+          <Icon icon="mdi:waveform" size="24" />
         </div>
       </div>
     </div>
@@ -293,6 +293,12 @@ import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
 const showControls = ref(false);
 const toggleControls = () => {
   showControls.value = !showControls.value;
+
+  if (showControls.value) {
+    setTimeout(() => {
+      showControls.value = false;
+    }, 4000);  // 如果是展开状态，4秒后自动折叠
+  }
 };
 import { Icon } from '@iconify/vue'
 import { useThemeStore } from '../stores/theme'
@@ -2125,11 +2131,11 @@ onMounted(() => {
 }
 
 .main-toggle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
   background-color: var(--primary-color);
-  color: white;
+  color: var(--text-color);
   border: none;
   display: flex;
   align-items: center;
@@ -2137,7 +2143,18 @@ onMounted(() => {
   cursor: pointer;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   z-index: 1001;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+.main-toggle .iconify {
+  width: 32px;
+  height: 32px;
+}
+
+.dark .main-toggle {
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+
 
 .control-buttons {
   display: flex;
@@ -2161,22 +2178,24 @@ onMounted(() => {
   height: 40px;
   border-radius: 50%;
   background-color: var(--secondary-color);
-  color: white;
+  color: var(--text-color);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.dark .theme-toggle, .dark .settings-toggle, .dark .wave-icon {
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 
 /* 具体图标的样式 */
 .icon {
-  color: var(--icon-color);
-  /* 设置图标颜色 */
+  color: var(--text-color);
   transition: color 0.3s ease;
-  /* 添加过渡效果 */
 }
 
 .no-station-hint {
