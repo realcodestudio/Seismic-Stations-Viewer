@@ -1,14 +1,20 @@
 <template>
   <div class="seismic-container" :class="{ 'dark': themeStore.isDark }">
-    <div class="theme-toggle" @click="themeStore.toggleTheme">
-      <Icon :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'" />
-    </div>
-
-    <div class="settings-toggle" @click="toggleSettings">
-      <Icon icon="mdi:cog" />
-    </div>
-    <div class="wave-icon" @click="toggleStationData">
-      <Icon icon="mdi:waveform" />
+    <div class="controls-container">
+      <button class="main-toggle" @click="toggleControls">
+        <Icon :icon="showControls ? 'mdi:close' : 'mdi:menu'" />
+      </button>
+      <div class="control-buttons" :class="{ 'expanded': showControls }">
+        <div class="theme-toggle" @click="themeStore.toggleTheme">
+          <Icon :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'" />
+        </div>
+        <div class="settings-toggle" @click="toggleSettings">
+          <Icon icon="mdi:cog" />
+        </div>
+        <div class="wave-icon" @click="toggleStationData">
+          <Icon icon="mdi:waveform" />
+        </div>
+      </div>
     </div>
 
     <div class="settings-panel" :class="{ 'show': showSettings }">
@@ -283,6 +289,11 @@
 <script setup lang="ts">
 import { CSSProperties } from 'vue';
 import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
+
+const showControls = ref(false);
+const toggleControls = () => {
+  showControls.value = !showControls.value;
+};
 import { Icon } from '@iconify/vue'
 import { useThemeStore } from '../stores/theme'
 import { useSeismicStore } from '../stores/seismic'
@@ -2101,6 +2112,63 @@ onMounted(() => {
     width: 100%;
     right: -100%;
   }
+}
+
+.controls-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.main-toggle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+}
+
+.control-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.control-buttons.expanded {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.theme-toggle, .settings-toggle, .wave-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s;
 }
 
 /* 具体图标的样式 */
