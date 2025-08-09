@@ -467,28 +467,28 @@ const refreshGeoIP = async (forceRefresh = false) => {
 }
 
 // 确保在页面加载时处理哈希URL
-onMounted(() => {
-  // 处理URL哈希参数
-  const handleHashChange = () => {
-    const hash = window.location.hash.substring(1); // 获取#后面的部分
-    if (hash) {
-      const { uuid } = safeParseURL(hash);
-      if (uuid && uuid.trim()) {
-        stationTypeFilter.value = uuid.trim();
-      }
-    }
-  };
-
-  // 初始加载时处理
-  handleHashChange();
-  // 监听哈希变化
-  window.addEventListener('hashchange', handleHashChange);
-
-  // 组件卸载时移除监听
-  onUnmounted(() => {
-    window.removeEventListener('hashchange', handleHashChange);
-  });
-});
+// onMounted(() => {
+//   // 处理URL哈希参数
+//   const handleHashChange = () => {
+//     const hash = window.location.hash.substring(1); // 获取#后面的部分
+//     if (hash) {
+//       const { uuid } = safeParseURL(hash);
+//       if (uuid && uuid.trim()) {
+//         stationTypeFilter.value = uuid.trim();
+//       }
+//     }
+//   };
+// 
+//   // 初始加载时处理
+//   handleHashChange();
+//   // 监听哈希变化
+//   window.addEventListener('hashchange', handleHashChange);
+// 
+//   // 组件卸载时移除监听
+//   onUnmounted(() => {
+//     window.removeEventListener('hashchange', handleHashChange);
+//   });
+// });
 
 // 页面加载时的 GeoIP 检测（每次刷新都调用 API）
 const initGeoIP = async () => {
@@ -561,35 +561,35 @@ onMounted(async () => {
   console.log('初始数据:', seismicDataArray.value)
   
   // 监听浏览器前进后退按钮
-  window.addEventListener('popstate', () => {
-    const path = window.location.pathname
-    if (path !== '/' && path.length > 1) {
-      const { uuid, customName, isWaveMode } = safeParseURL(path)
-      
-      // 设置UUID过滤器
-      if (uuid && uuid.trim()) {
-        stationTypeFilter.value = uuid.trim()
-        // 存储自定义名称
-        if (customName && customName.trim()) {
-          customStationName.value[uuid.trim()] = customName.trim()
-        }
-      }
-      
-      // 如果是波形模式，切换到波形模式
-      if (isWaveMode) {
-        showStationData.value = false
-        localStorage.setItem('dontShowWaveformWarning', 'true')
-      }
-      
-      // 如果是详情页面，设置待显示的UUID
-      // Removed showDetail check as it's no longer used
-      if (uuid && uuid.trim()) {
-        pendingDetailUUID.value = uuid.trim()
-      }
-    } else {
-      stationTypeFilter.value = ''
-    }
-  })
+// window.addEventListener('popstate', () => {
+//   const path = window.location.pathname
+//   if (path !== '/' && path.length > 1) {
+//     const { uuid, customName, isWaveMode } = safeParseURL(path)
+//     
+//     // 设置UUID过滤器
+//     if (uuid && uuid.trim()) {
+//       stationTypeFilter.value = uuid.trim()
+//       // 存储自定义名称
+//       if (customName && customName.trim()) {
+//         customStationName.value[uuid.trim()] = customName.trim()
+//       }
+//     }
+//     
+//     // 如果是波形模式，切换到波形模式
+//     if (isWaveMode) {
+//       showStationData.value = false
+//       localStorage.setItem('dontShowWaveformWarning', 'true')
+//     }
+//     
+//     // 如果是详情页面，设置待显示的UUID
+//     // Removed showDetail check as it's no longer used
+//     if (uuid && uuid.trim()) {
+//       pendingDetailUUID.value = uuid.trim()
+//     }
+//   } else {
+//     stationTypeFilter.value = ''
+//   }
+// })
 })
 
 
@@ -601,11 +601,11 @@ function showStationDetail(data: any) {
   stationDetailModal.value?.show() // 显示详情弹窗
   
   // 更新 URL 添加 /detail 后缀
-  const uuid = data.type
-  const customName = customStationName.value[uuid] || ''
-  
-  const newUrl = generateURL(uuid, customName, !showStationData.value)
-  window.history.pushState({}, '', newUrl)
+  // const uuid = data.type
+  // const customName = customStationName.value[uuid] || ''
+  // 
+  // const newUrl = generateURL(uuid, customName, !showStationData.value)
+  // window.history.pushState({}, '', newUrl)
 }
 
 function formatNumber(value: number): string {
@@ -628,50 +628,50 @@ const stationTypeFilter = ref('')
 // 从 URL 初始化测站过滤器和自定义名称
 onMounted(async () => {
   // 处理 URL 参数
-  const path = window.location.pathname
-  if (path !== '/' && path.length > 1) {
-    const { uuid, customName, isWaveMode } = safeParseURL(path)
-    
-    // 设置 UUID
-    if (uuid && uuid.trim()) {
-      stationTypeFilter.value = uuid.trim()
-    }
-    
-    // 设置自定义名称
-    if (customName && customName.trim()) {
-      customStationName.value[uuid.trim()] = customName.trim()
-    }
-    
-    // 如果是波形模式，切换到波形模式
-    if (isWaveMode) {
-      showStationData.value = false
-      localStorage.setItem('dontShowWaveformWarning', 'true')
-    }
-    
-    // 如果需要显示详情模态框，保存状态等待数据加载
-    if (uuid && uuid.trim()) {
-      // 将需要显示详情的 UUID 保存到响应式变量
-      pendingDetailUUID.value = uuid.trim()
-    }
-  }
+  // const path = window.location.pathname
+  // if (path !== '/' && path.length > 1) {
+  //   const { uuid, customName, isWaveMode } = safeParseURL(path)
+  //   
+  //   // 设置 UUID
+  //   if (uuid && uuid.trim()) {
+  //     stationTypeFilter.value = uuid.trim()
+  //   }
+  //   
+  //   // 设置自定义名称
+  //   if (customName && customName.trim()) {
+  //     customStationName.value[uuid.trim()] = customName.trim()
+  //   }
+  //   
+  //   // 如果是波形模式，切换到波形模式
+  //   if (isWaveMode) {
+  //     showStationData.value = false
+  //     localStorage.setItem('dontShowWaveformWarning', 'true')
+  //   }
+  //   
+  //   // 如果需要显示详情模态框，保存状态等待数据加载
+  //   if (uuid && uuid.trim()) {
+  //     // 将需要显示详情的 UUID 保存到响应式变量
+  //     pendingDetailUUID.value = uuid.trim()
+  //   }
+  // }
   
   // 页面加载时自动执行一次位置检测（每次刷新都调用 API）
   await initGeoIP()
 })
 
 // 监听测站过滤器变化，更新 URL
-watch(stationTypeFilter, (newValue) => {
-  if (newValue && newValue.trim()) {
-    // 检查是否有自定义名称
-    const customName = customStationName.value[newValue.trim()]
-    const newUrl = generateURL(newValue.trim(), customName, !showStationData.value)
-    window.history.pushState({}, '', newUrl)
-  } else {
-    // 如果没有输入，生成只包含语言前缀的 URL
-    const newUrl = generateURL()
-    window.history.pushState({}, '', newUrl)
-  }
-}, { immediate: false })
+// watch(stationTypeFilter, (newValue) => {
+//   if (newValue && newValue.trim()) {
+//     // 检查是否有自定义名称
+//     const customName = customStationName.value[newValue.trim()]
+//     const newUrl = generateURL(newValue.trim(), customName, !showStationData.value)
+//     window.history.pushState({}, '', newUrl)
+//   } else {
+//     // 如果没有输入，生成只包含语言前缀的 URL
+//     const newUrl = generateURL()
+//     window.history.pushState({}, '', newUrl)
+//   }
+// }, { immediate: false })
 
 // 添加显示设置的响应式状态
 const displaySettings = ref({
@@ -1055,15 +1055,15 @@ function generateURL(uuid?: string, customName?: string, isWaveMode?: boolean): 
 }
 
 // 监听自定义名称变化，更新 URL
-watch(customStationName, (newNames) => {
-  if (stationTypeFilter.value && stationTypeFilter.value.trim() && !stationDetailModal.value?.isVisible()) {
-    const currentUUID = stationTypeFilter.value.trim()
-    const customName = newNames[currentUUID]
-    
-    const newUrl = generateURL(currentUUID, customName, !showStationData.value)
-    window.history.pushState({}, '', newUrl)
-  }
-}, { deep: true, immediate: false })
+// watch(customStationName, (newNames) => {
+//   if (stationTypeFilter.value && stationTypeFilter.value.trim() && !stationDetailModal.value?.isVisible()) {
+//     const currentUUID = stationTypeFilter.value.trim()
+//     const customName = newNames[currentUUID]
+//     
+//     const newUrl = generateURL(currentUUID, customName, !showStationData.value)
+//     window.history.pushState({}, '', newUrl)
+//   }
+// }, { deep: true, immediate: false })
 
 // 保存显示设置到本地存储
 const saveDisplaySettings = () => {
@@ -1110,40 +1110,44 @@ watch(stationTypeFilter, (newValue) => {
   }
 }, { immediate: true })
 
-// 监听详情模态框可见性变化，不再更新URL
-watch(() => stationDetailModal.value?.isVisible() || false, (isVisible) => {
-  // 仅在需要时更新stationTypeFilter，不修改URL
-  if (!isVisible && lastUUID.value) {
-    stationTypeFilter.value = lastUUID.value;
-  }
-}, { immediate: false })
+// 监听详情模态框可见性变化，更新URL
+// watch(() => stationDetailModal.value?.isVisible() || false, (isVisible) => {
+//   if (!isVisible) {
+//     // 当模态框关闭时，移除URL中的UUID
+//     const newUrl = generateURL(undefined, undefined, !showStationData.value);
+//     window.history.pushState({}, '', newUrl);
+//   } else if (lastUUID.value) {
+//     // 当模态框打开时，确保stationTypeFilter正确
+//     stationTypeFilter.value = lastUUID.value;
+//   }
+// }, { immediate: false })
 
 // 语言变化时的 URL 更新
-watch(locale, () => {
-  const isDetailOpen = stationDetailModal.value?.isVisible() || false;
-  if (stationTypeFilter.value && stationTypeFilter.value.trim() && !isDetailOpen) {
-    const currentUUID = stationTypeFilter.value.trim()
-    const customName = customStationName.value[currentUUID]
-    
-    const newUrl = generateURL(currentUUID, customName, !showStationData.value)
-    window.history.pushState({}, '', newUrl)
-  } else {
-    // 如果没有测站过滤器或打开了详情，只更新基础URL
-    const newUrl = generateURL(undefined, undefined, !showStationData.value)
-    window.history.pushState({}, '', newUrl)
-  }
-}, { immediate: false })
+// watch(locale, () => {
+//   const isDetailOpen = stationDetailModal.value?.isVisible() || false;
+//   if (stationTypeFilter.value && stationTypeFilter.value.trim() && !isDetailOpen) {
+//     const currentUUID = stationTypeFilter.value.trim()
+//     const customName = customStationName.value[currentUUID]
+//     
+//     const newUrl = generateURL(currentUUID, customName, !showStationData.value)
+//     window.history.pushState({}, '', newUrl)
+//   } else {
+//     // 如果没有测站过滤器或打开了详情，只更新基础URL
+//     const newUrl = generateURL(undefined, undefined, !showStationData.value)
+//     window.history.pushState({}, '', newUrl)
+//   }
+// }, { immediate: false })
 
 // 监听波形模式变化，更新 URL
-watch(showStationData, (isDataMode) => {
-  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
-    const currentUUID = stationTypeFilter.value.trim()
-    const customName = customStationName.value[currentUUID]
-    
-    const newUrl = generateURL(currentUUID, customName, !isDataMode)
-    window.history.pushState({}, '', newUrl)
-  }
-}, { immediate: false })
+// watch(showStationData, (isDataMode) => {
+//   if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+//     const currentUUID = stationTypeFilter.value.trim()
+//     const customName = customStationName.value[currentUUID]
+//     
+//     const newUrl = generateURL(currentUUID, customName, !isDataMode)
+//     window.history.pushState({}, '', newUrl)
+//   }
+// }, { immediate: false })
 
 // 修改 toggleCards 函数名称
 const toggleStationData = () => {
