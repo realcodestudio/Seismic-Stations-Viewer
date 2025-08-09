@@ -135,19 +135,27 @@
 
         <div class="filter-section">
           <label>{{ $t('filter_by_type') }}</label>
-          <div class="input-wrapper">
-            <input type="text" v-model="stationTypeFilter" :placeholder="$t('enter_station_type')" />
-          </div>
-        </div>
-
-        <div class="filter-section" v-if="stationTypeFilter">
-          <label>{{ $t('custom_station_name') }}</label>
-          <div class="input-wrapper">
-            <input type="text" v-model="customStationName[stationTypeFilter]"
-              :placeholder="$t('enter_custom_station_name')" />
+          <div class="input-wrapper" style="display: flex; gap: 0.5rem;">
+            <input type="text" v-model="stationTypeFilter" :placeholder="$t('enter_station_type')" style="flex: 1;" />
+            <button @click="saveStationUUID" :disabled="!stationTypeFilter.trim()" class="save-btn">{{ $t('save') }}</button>
+            <button @click="discardStationUUID" :disabled="!stationTypeFilter.trim()" class="discard-btn">{{ $t('discard') }}</button>
             <span v-if="showNoMatchError" class="error-emoji">❌</span>
           </div>
         </div>
+
+
+        <div class="filter-section" v-if="stationTypeFilter">
+          <label>{{ $t('custom_station_name') }}</label>
+          <div class="input-wrapper" style="display: flex; gap: 0.5rem;">
+            <input type="text" v-model="customStationName[stationTypeFilter]" :placeholder="$t('enter_custom_station_name')"style="flex: 1;" />
+            <button @click="saveCustomStationName" :disabled="!stationTypeFilter.trim()" class="save-btn">{{ $t('save') }}</button>
+            <button @click="discardCustomStationName" :disabled="!stationTypeFilter.trim()" class="discard-btn">{{ $t('discard') }}</button>
+          </div>
+        </div> 
+       
+
+
+
 
         <div class="language-section">
           <label>{{ $t('language') }}</label>
@@ -157,6 +165,8 @@
               {{ languageNames[lang] }}
             </button>
           </div>
+
+
           <div class="geoip-section">
             <button @click="() => refreshGeoIP(true)" :disabled="isGeoIPDetecting" class="geoip-refresh-btn">
               <Icon icon="mdi:refresh" :class="{ 'spinning': isGeoIPDetecting }" />
@@ -367,18 +377,119 @@ const cancelApiChange = () => {
 };
 
 const confirmApiChange = () => {
-  // 使用非团队API地址
+  // 使用API地址修改后保存
   localStorage.setItem('websocketUrl', websocketUrl.value);
   showApiWarning.value = false;
   alert('WebSocket URL saved, please refresh the page to apply the changes.');
 };
 
-// 重置WebSocket URL到默认值
+// 重置WebSocket API到默认值
 const resetWebsocketUrl = () => {
   websocketUrl.value = defaultWebsocketUrl;
   localStorage.setItem('websocketUrl', defaultWebsocketUrl);
   alert('WebSocket URL reset to default value.');
 };
+
+// 保存测站单独显示功能UUID到本地存储
+const saveStationUUID = () => {
+  console.log('saveStationUUID called');
+  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+    try {
+      localStorage.setItem('savedStationUUID', stationTypeFilter.value.trim());
+      // 同时保存自定义测站名称
+      saveCustomStationName();
+      console.log('UUID saved successfully:', stationTypeFilter.value.trim());
+      // 使用alert可能被浏览器阻止，添加控制台日志
+      alert(t('uuid_saved_successfully'));
+    } catch (error: any) {
+      console.error('Failed to save UUID:', error);
+      alert('Save: ' + (error.message || error));
+    }
+  }
+};
+
+// 保存自定义测站名称到本地存储
+const saveCustomStationName = () => {
+  try {
+    const currentUUID = stationTypeFilter.value.trim();
+    if (currentUUID) {
+      const customName = customStationName.value[currentUUID];
+      if (customName && customName.trim()) {
+        // 保存当前UUID的自定义名称
+        localStorage.setItem(`customStationName_${currentUUID}`, customName.trim());
+      } else {
+        // 如果没有自定义名称，删除保存的名称
+        localStorage.removeItem(`customStationName_${currentUUID}`);
+      }
+      console.log('Custom station name saved successfully for UUID:', currentUUID);
+    }
+  } catch (error) {
+    console.error('Failed to save custom station name:', error);
+  }
+};
+
+// 舍弃测站UUID
+const discardStationUUID = () => {
+  console.log('discardStationUUID called');
+  try {
+    // 获取当前UUID以清除对应的自定义名称
+    const currentUUID = stationTypeFilter.value;
+    localStorage.removeItem('savedStationUUID');
+    stationTypeFilter.value = '';
+    
+    // 同时清除保存的自定义测站名称
+    if (currentUUID && currentUUID.trim()) {
+      localStorage.removeItem(`customStationName_${currentUUID.trim()}`);
+      // 从响应式对象中删除
+      delete customStationName.value[currentUUID.trim()];
+    }
+    
+    console.log('UUID discarded successfully');
+    alert(t('uuid_discarded_successfully'));
+  } catch (error: any) {
+    console.error('Failed to discard UUID:', error);
+    alert('舍弃失败: ' + (error.message || error));
+  }
+};
+
+// 舍弃自定义测站名称
+const discardCustomStationName = () => {
+  console.log('discardCustomStationName called');
+  try {
+    const currentUUID = stationTypeFilter.value;
+    if (currentUUID && currentUUID.trim()) {
+      localStorage.removeItem(`customStationName_${currentUUID.trim()}`);
+      // 从响应式对象中删除
+      delete customStationName.value[currentUUID.trim()];
+      console.log('Custom station name discarded successfully');
+      alert(t('custom_name_discarded_successfully'));
+    }
+  } catch (error: any) {
+    console.error('Failed to discard custom station name:', error);
+    alert('舍弃失败: ' + (error.message || error));
+  }
+};
+
+// 添加调试函数，检查localStorage状态
+const checkUUIDStatus = () => {
+  const savedUUID = localStorage.getItem('savedStationUUID');
+  console.log('Current saved UUID:', savedUUID);
+  console.log('Current stationTypeFilter:', stationTypeFilter.value);
+};
+
+// 页面加载时检查状态
+onMounted(() => {
+  checkUUIDStatus();
+});
+
+// 移除自动保存的watch监听器
+// watch(stationTypeFilter, (newValue) => {
+//   if (newValue && newValue.trim()) {
+//     localStorage.setItem('savedStationUUID', newValue.trim());
+//   } else {
+//     localStorage.removeItem('savedStationUUID');
+//   }
+// });
 import { Icon } from '@iconify/vue'
 import { useThemeStore } from '../stores/theme'
 import { useSeismicStore } from '../stores/seismic'
@@ -388,6 +499,7 @@ import { getIntensityStyle } from '../utils/intensityUtils'
 import { getLPGMStyle } from '../utils/lpgmUtils'
 import StationDetailModal from '../components/StationDetailModal.vue'
 import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 import PgaWaveformChart from '../components/PgaWaveformChart.vue'
 import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 
@@ -502,6 +614,18 @@ const initGeoIP = async () => {
   
   // 调用 API 检测（不使用缓存）
   await detectUserLocation(false)
+  
+  // 从本地存储读取保存的UUID - 放在detectUserLocation之后
+  try {
+    const savedUUID = localStorage.getItem('savedStationUUID');
+    if (savedUUID && savedUUID.trim()) {
+      stationTypeFilter.value = savedUUID.trim();
+      // 同时加载自定义测站名称
+      loadCustomStationName(savedUUID.trim());
+    }
+  } catch (error) {
+    console.warn('无法读取保存的UUID:', error);
+  }
 }
 
 // 自动刷新相关函数
@@ -535,7 +659,13 @@ onUnmounted(() => {
 
 const seismicDataArray = computed(() => {
   const data = Array.from(seismicStore.seismicDataMap.values())
-  // console.log('当前数据:', data)
+  // 应用测站类型过滤
+  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+    const filter = stationTypeFilter.value.trim().toLowerCase();
+    return data.filter(item => 
+      item.type && item.type.toLowerCase().includes(filter)
+    );
+  }
   return data
 })
 
@@ -622,8 +752,8 @@ watch(() => themeStore.isDark, (isDark: boolean) => {
   document.documentElement.classList.toggle('dark', isDark)
 }, { immediate: true })
 
-const showSettings = ref(false)
 const stationTypeFilter = ref('')
+const showSettings = ref(false)
 
 // 从 URL 初始化测站过滤器和自定义名称
 onMounted(async () => {
@@ -835,103 +965,6 @@ const countryLanguageMap: Record<string, string> = {
   'EN': 'en'     // 英语国家代码 - 英语
 }
 
-// 安全的 URL 解析函数
-function safeParseURL(path: string): { uuid: string; customName: string; isWaveMode: boolean } {
-  try {
-    // 获取 Vite 配置的 base 路径
-    const basePath = import.meta.env.BASE_URL || '/'    
-    // 移除 base 路径部分
-    let actualPath = path
-    if (basePath !== '/' && path.startsWith(basePath)) {
-      actualPath = path.substring(basePath.length)
-    }  
-    
-    // 处理哈希模式
-    let hashIndex = actualPath.indexOf('#')
-    if (hashIndex !== -1) {
-      actualPath = actualPath.substring(hashIndex + 1)
-    }
-    
-    const fullPath = decodeURIComponent(actualPath || '')
-    
-    let uuid = ''
-    let isWaveMode = false
-    let customName = ''
-    
-    // 解析路径部分
-    let pathToParse = fullPath
-    
-    // 检查是否是波形模式
-    if (pathToParse.startsWith('wave/')) {
-      isWaveMode = true
-      pathToParse = pathToParse.substring(5) // 移除 wave/
-    }
-    
-    // 解析自定义名称
-    if (pathToParse.includes('&')) {
-      const parts = pathToParse.split('&', 2)
-      uuid = parts[0]
-      customName = parts[1]
-    } else {
-      uuid = pathToParse
-    }
-    
-    return { uuid, customName, isWaveMode }
-  } catch (error) {
-    console.warn('URL 解析失败，尝试原始解析:', error)
-    // 降级到原始解析，不进行解码
-    // 获取 Vite 配置的 base 路径
-    const basePath = import.meta.env.BASE_URL || '/'    
-    // 移除 base 路径部分
-    let actualPath = path
-    if (basePath !== '/' && path.startsWith(basePath)) {
-      actualPath = path.substring(basePath.length)
-    }  
-    
-    // 处理哈希模式
-    let hashIndex = actualPath.indexOf('#')
-    if (hashIndex !== -1) {
-      actualPath = actualPath.substring(hashIndex + 1)
-    }
-    
-    const rawPath = actualPath || ''
-    let uuid = ''
-    let isWaveMode = false
-    let customName = ''
-    
-    // 解析路径部分
-    let pathToParse = rawPath
-    
-    // 检查是否是波形模式
-    if (pathToParse.startsWith('wave/')) {
-      isWaveMode = true
-      pathToParse = pathToParse.substring(5) // 移除 wave/
-    }
-    
-    // 解析自定义名称
-    if (pathToParse.includes('&')) {
-      const parts = pathToParse.split('&', 2)
-      uuid = parts[0]
-      customName = parts[1]
-    } else {
-      uuid = pathToParse
-    }
-    
-    return { uuid, customName, isWaveMode }
-  }
-}
-
-// 安全的 URL 编码函数
-const safeEncodeURIComponent = (str: string): string => {
-  try {
-    // 过滤掉可能导致 URL 问题的特殊字符
-    const cleanStr = str.replace(/[^\w\s\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g, '')
-    return encodeURIComponent(cleanStr)
-  } catch (error) {
-    console.warn('URL 编码失败，使用原始字符串:', error)
-    return str.replace(/[^\w\s\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g, '')
-  }
-}
 
 // 检测用户地理位置并设置语言（用于手动刷新）
 const detectUserLocation = async (useCache = false): Promise<void> => {
@@ -1026,7 +1059,8 @@ const detectUserLocation = async (useCache = false): Promise<void> => {
   }
 }
 
-// 生成URL
+// 生成URL (当前未使用)
+// @ts-ignore
 function generateURL(uuid?: string, customName?: string, isWaveMode?: boolean): string {
   // 获取 Vite 配置的 base 路径
   const basePath = import.meta.env.BASE_URL || '/'  
@@ -1048,7 +1082,7 @@ function generateURL(uuid?: string, customName?: string, isWaveMode?: boolean): 
   
   // 添加自定义名称
   if (customName && customName.trim()) {
-    url += `&${safeEncodeURIComponent(customName.trim())}`
+    url += `&${encodeURIComponent(customName.trim())}`
   }
   
   return url
@@ -1100,15 +1134,34 @@ watch(seismicDataArray, (newData) => {
   }
 }, { deep: true, immediate: false })
 
-// 添加一个变量来保存最后使用的UUID
+// 添加一个变量来保存最后使用的UUID (当前未使用)
+// @ts-ignore
 const lastUUID = ref('');
 
-// 监听stationTypeFilter变化，始终保存最新的UUID
-watch(stationTypeFilter, (newValue) => {
-  if (newValue && newValue.trim()) {
-    lastUUID.value = newValue.trim();
+// 移除自动保存的watch监听器，使用手动保存按钮
+// watch(stationTypeFilter, (newValue) => {
+//   if (newValue && newValue.trim()) {
+//     lastUUID.value = newValue.trim();
+//     localStorage.setItem('savedStationUUID', newValue.trim());
+//   } else {
+//     localStorage.removeItem('savedStationUUID');
+//   }
+// }, { immediate: true })
+
+// 从本地存储加载自定义测站名称
+const loadCustomStationName = (uuid: string) => {
+  try {
+    if (uuid && uuid.trim()) {
+      const savedCustomName = localStorage.getItem(`customStationName_${uuid.trim()}`);
+      if (savedCustomName && savedCustomName.trim()) {
+        customStationName.value[uuid.trim()] = savedCustomName.trim();
+        console.log('Custom station name loaded successfully for UUID:', uuid.trim());
+      }
+    }
+  } catch (error) {
+    console.warn('无法读取保存的自定义测站名称:', error);
   }
-}, { immediate: true })
+};
 
 // 监听详情模态框可见性变化，更新URL
 // watch(() => stationDetailModal.value?.isVisible() || false, (isVisible) => {
@@ -1654,7 +1707,7 @@ onMounted(() => {
       padding: 0.8rem;
 
       .detail-btn {
-        padding: 0.4rem 0.8rem;
+        padding: 0.8rem 0.8rem;
         font-size: 0.8rem;
       }
     }
@@ -1666,8 +1719,21 @@ onMounted(() => {
     .detail-btn {
       background: rgba(255, 255, 255, 0);
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.15);
+    }
+  }
+  
+  .settings-content {
+    .filter-section,
+    .websocket-section {
+      .save-btn,
+      .discard-btn,
+      .reset-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-color);
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
       }
     }
   }
@@ -2044,7 +2110,7 @@ onMounted(() => {
         input {
           width: 100%;
           padding: 0.8rem 2rem 0.8rem 1rem;
-          border: 2.5px solid rgba(0, 0, 0, 0.1);
+          border: 2.5px solid rgba(224, 224, 224, 0.1);
           border-radius: 0.8rem;
           background: var(--bg-color);
           color: var(--text-color);
@@ -2093,7 +2159,8 @@ onMounted(() => {
             background: rgba(255, 255, 255, 0.2);
           }
         }
-        
+        .save-btn,
+        .discard-btn,
         .reset-btn {
           padding: 1rem;
           border: none;

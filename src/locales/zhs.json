@@ -100,11 +100,12 @@
   "websocket_url_placeholder": "请输入 WebSocket URL",
   "save": "保存",
   "reset": "重置",
-  "api_warning_title": "API更变提示",
+  "api_warning_title": "API变更提示",
+
   "api_warning_message": "此API可能不是来自Wolfx SeisJS的API。此API的内容字段此项目可能不受支持，若使用此API可能会出现错误。",
 
-  "confirm": "确认"
-
-
-
+  "confirm": "确认",
+  "uuid_saved_successfully": "UUID保存成功",
+  "uuid_discarded_successfully": "UUID已舍弃",
+  "custom_name_discarded_successfully": "自定义测站名称已舍弃"
 }

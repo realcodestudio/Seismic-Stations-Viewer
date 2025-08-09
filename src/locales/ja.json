@@ -100,6 +100,9 @@
   "websocket_url_placeholder": "WebSocket URL を入力",
   "save": "保存",
   "reset": "リセット",
-  "api_warning_title": "API警告",
-  "api_warning_message": "このAPIはWolfxチームのAPIではありません"
+  "api_warning_title": "API 変更通知",
+
+  "api_warning_message": "このAPIはWolfx SeisJSのAPIではありません。一部のフィールドはサポートされていません。使用には注意してください。",
+
+  "custom_name_discarded_successfully": "カスタム観測点名が正常に破棄されました"
 }

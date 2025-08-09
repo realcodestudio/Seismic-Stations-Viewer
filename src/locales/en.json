@@ -100,6 +100,8 @@
   "websocket_url_placeholder": "Enter WebSocket URL",
   "save": "Save",
   "reset": "Reset",
-  "api_warning_title": "API Warning",
-  "api_warning_message": "This API is not from the Wolfx team"
+  "api_warning_title": "API Change Notice",
+  "api_warning_message": "This API may not be from Wolfx SeisJS. Some fields of this API may not be supported, and using this API may cause errors.",
+
+  "custom_name_discarded_successfully": "Custom station name discarded successfully"
 }
