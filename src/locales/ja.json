@@ -95,5 +95,11 @@
   "max_pgd_components": "最大 PGD 成分",
   "uuid_copied": "UUID がクリップボードにコピーされました",
   "detecting_location": "検出中...",
-  "redetect_location": "位置を再検出"
+  "redetect_location": "位置を再検出",
+  "websocket_settings": "WebSocket 設定",
+  "websocket_url_placeholder": "WebSocket URL を入力",
+  "save": "保存",
+  "reset": "リセット",
+  "api_warning_title": "API警告",
+  "api_warning_message": "このAPIはWolfxチームのAPIではありません"
 }

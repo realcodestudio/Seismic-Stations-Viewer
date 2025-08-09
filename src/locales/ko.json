@@ -95,5 +95,11 @@
   "max_pgd_components": "최대 PGD 성분",
   "uuid_copied": "UUID가 클립보드에 복사되었습니다",
   "detecting_location": "감지 중...",
-  "redetect_location": "위치 재감지"
+  "redetect_location": "위치 재감지",
+  "websocket_settings": "WebSocket 설정",
+  "websocket_url_placeholder": "WebSocket URL 입력",
+  "save": "저장",
+  "reset": "재설정",
+  "api_warning_title": "API 경고",
+  "api_warning_message": "이 API는 Wolfx 팀의 API가 아닙니다"
 }

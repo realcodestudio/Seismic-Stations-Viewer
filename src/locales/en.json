@@ -95,5 +95,11 @@
   "max_pgd_components": "Maximum PGD Components",
   "uuid_copied": "UUID copied to clipboard",
   "detecting_location": "Detecting...",
-  "redetect_location": "Redetect Location"
+  "redetect_location": "Redetect Location",
+  "websocket_settings": "WebSocket Settings",
+  "websocket_url_placeholder": "Enter WebSocket URL",
+  "save": "Save",
+  "reset": "Reset",
+  "api_warning_title": "API Warning",
+  "api_warning_message": "This API is not from the Wolfx team"
 }

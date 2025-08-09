@@ -53,6 +53,19 @@
           </div>
         </div>
 
+        <div class="websocket-section">
+          <label>{{ $t('websocket_settings') }}</label>
+          <div class="websocket-control">
+            <div class="input-wrapper">
+              <input type="text" v-model="websocketUrl" :placeholder="$t('websocket_url_placeholder')" />
+            </div>
+            <button @click="saveWebsocketUrl">{{ $t('save') }}</button>
+            <button @click="resetWebsocketUrl" class="reset-btn" :title="$t('reset')">
+              <Icon icon="mdi:refresh" />
+            </button>
+          </div>
+        </div>
+
         <div class="display-section">
           <label>{{ $t('display_settings') }}</label>
           <div class="display-options">
@@ -179,6 +192,25 @@
       </div>
     </div>
 
+    <!-- API提醒模态框 -->
+    <div v-if="showApiWarning" class="api-warning-modal" @click="closeApiWarning">
+      <div class="api-warning-content" @click.stop>
+        <div class="api-warning-header">
+          <h3>{{ $t('api_warning_title') }}</h3>
+          <button class="close-btn" @click="closeApiWarning">
+            <Icon icon="mdi:close" />
+          </button>
+        </div>
+        <div class="api-warning-body">
+          <p>{{ $t('api_warning_message') }}</p>
+          <div class="api-warning-buttons">
+            <button class="cancel-btn" @click="cancelApiChange">{{ $t('cancel') }}</button>
+            <button class="confirm-btn" @click="confirmApiChange">{{ $t('confirm') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="stations-grid">
       <div v-for="data in filteredSeismicData" :key="data.type" class="seismic-card" :style="getCardStyle(data.Shindo)"
         :class="{ 'significant': isSignificantShindo(data.Shindo) }">
@@ -300,6 +332,53 @@ const toggleControls = () => {
     }, 4000);  // 如果是展开状态，4秒后自动折叠
   }
 };
+
+// WebSocket URL配置
+const websocketUrl = ref(localStorage.getItem('websocketUrl') || 'wss://seisjs.wolfx.jp/all_seis');
+const defaultWebsocketUrl = 'wss://seisjs.wolfx.jp/all_seis';
+
+// API提醒模态框相关数据
+const showApiWarning = ref(false);
+const previousWebsocketUrl = ref(websocketUrl.value);
+
+const saveWebsocketUrl = () => {
+  // 检查是否是非默认API地址
+  if (websocketUrl.value !== defaultWebsocketUrl) {
+    // 保存当前URL作为前一个URL
+    previousWebsocketUrl.value = websocketUrl.value;
+    // 显示提醒模态框
+    showApiWarning.value = true;
+  } else {
+    // 如果是默认API地址，直接保存
+    localStorage.setItem('websocketUrl', websocketUrl.value);
+    alert('WebSocket URL saved, please refresh the page to apply the changes.');
+  }
+};
+
+// API提醒模态框相关方法
+const closeApiWarning = () => {
+  showApiWarning.value = false;
+};
+
+const cancelApiChange = () => {
+  // 恢复为原来的API地址
+  websocketUrl.value = defaultWebsocketUrl;
+  showApiWarning.value = false;
+};
+
+const confirmApiChange = () => {
+  // 使用非团队API地址
+  localStorage.setItem('websocketUrl', websocketUrl.value);
+  showApiWarning.value = false;
+  alert('WebSocket URL saved, please refresh the page to apply the changes.');
+};
+
+// 重置WebSocket URL到默认值
+const resetWebsocketUrl = () => {
+  websocketUrl.value = defaultWebsocketUrl;
+  localStorage.setItem('websocketUrl', defaultWebsocketUrl);
+  alert('WebSocket URL reset to default value.');
+};
 import { Icon } from '@iconify/vue'
 import { useThemeStore } from '../stores/theme'
 import { useSeismicStore } from '../stores/seismic'
@@ -319,7 +398,7 @@ import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.1.3') // 修改版本号
+const version = ref('v4.1.4') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -386,6 +465,30 @@ const refreshGeoIP = async (forceRefresh = false) => {
   // 重新检测（使用缓存）
   await detectUserLocation(true)
 }
+
+// 确保在页面加载时处理哈希URL
+onMounted(() => {
+  // 处理URL哈希参数
+  const handleHashChange = () => {
+    const hash = window.location.hash.substring(1); // 获取#后面的部分
+    if (hash) {
+      const { uuid } = safeParseURL(hash);
+      if (uuid && uuid.trim()) {
+        stationTypeFilter.value = uuid.trim();
+      }
+    }
+  };
+
+  // 初始加载时处理
+  handleHashChange();
+  // 监听哈希变化
+  window.addEventListener('hashchange', handleHashChange);
+
+  // 组件卸载时移除监听
+  onUnmounted(() => {
+    window.removeEventListener('hashchange', handleHashChange);
+  });
+});
 
 // 页面加载时的 GeoIP 检测（每次刷新都调用 API）
 const initGeoIP = async () => {
@@ -461,16 +564,15 @@ onMounted(async () => {
   window.addEventListener('popstate', () => {
     const path = window.location.pathname
     if (path !== '/' && path.length > 1) {
-      const { uuid, customName, isWaveMode, showDetail } = safeParseURL(path)
+      const { uuid, customName, isWaveMode } = safeParseURL(path)
       
-      // 设置 UUID
+      // 设置UUID过滤器
       if (uuid && uuid.trim()) {
         stationTypeFilter.value = uuid.trim()
-      }
-      
-      // 设置自定义名称
-      if (customName && customName.trim()) {
-        customStationName.value[uuid.trim()] = customName.trim()
+        // 存储自定义名称
+        if (customName && customName.trim()) {
+          customStationName.value[uuid.trim()] = customName.trim()
+        }
       }
       
       // 如果是波形模式，切换到波形模式
@@ -479,9 +581,9 @@ onMounted(async () => {
         localStorage.setItem('dontShowWaveformWarning', 'true')
       }
       
-      // 如果需要显示详情模态框
-      if (showDetail && uuid && uuid.trim()) {
-        // 将需要显示详情的 UUID 保存到响应式变量
+      // 如果是详情页面，设置待显示的UUID
+      // Removed showDetail check as it's no longer used
+      if (uuid && uuid.trim()) {
         pendingDetailUUID.value = uuid.trim()
       }
     } else {
@@ -499,13 +601,11 @@ function showStationDetail(data: any) {
   stationDetailModal.value?.show() // 显示详情弹窗
   
   // 更新 URL 添加 /detail 后缀
-  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
-    const currentUUID = stationTypeFilter.value.trim()
-    const customName = customStationName.value[currentUUID]
-    
-    const newUrl = generateURL(currentUUID, customName, !showStationData.value, true)
-    window.history.pushState({}, '', newUrl)
-  }
+  const uuid = data.type
+  const customName = customStationName.value[uuid] || ''
+  
+  const newUrl = generateURL(uuid, customName, !showStationData.value)
+  window.history.pushState({}, '', newUrl)
 }
 
 function formatNumber(value: number): string {
@@ -530,7 +630,7 @@ onMounted(async () => {
   // 处理 URL 参数
   const path = window.location.pathname
   if (path !== '/' && path.length > 1) {
-    const { uuid, customName, isWaveMode, showDetail } = safeParseURL(path)
+    const { uuid, customName, isWaveMode } = safeParseURL(path)
     
     // 设置 UUID
     if (uuid && uuid.trim()) {
@@ -549,7 +649,7 @@ onMounted(async () => {
     }
     
     // 如果需要显示详情模态框，保存状态等待数据加载
-    if (showDetail && uuid && uuid.trim()) {
+    if (uuid && uuid.trim()) {
       // 将需要显示详情的 UUID 保存到响应式变量
       pendingDetailUUID.value = uuid.trim()
     }
@@ -718,8 +818,8 @@ onUnmounted(() => {
   stopAutoRefresh()
 })
 
-const customStationName = ref<Record<string, string>>({}) // 修改为对象以存储每个UUID的名称
-const pendingDetailUUID = ref<string | null>(null) // 待显示的详情 UUID
+const customStationName = ref<Record<string, string>>({}) // 存储自定义名称，键为UUID
+const pendingDetailUUID = ref<string | null>(null) // 待显示详情的测站UUID
 const isGeoIPDetecting = ref(false) // 是否正在检测地理位置
 
 // 国家/地区代码到语言的映射（用于手动刷新功能）
@@ -736,88 +836,88 @@ const countryLanguageMap: Record<string, string> = {
 }
 
 // 安全的 URL 解析函数
-const safeParseURL = (path: string): { uuid: string; customName: string; isWaveMode: boolean; showDetail: boolean } => {
+function safeParseURL(path: string): { uuid: string; customName: string; isWaveMode: boolean } {
   try {
-    const fullPath = decodeURIComponent(path.substring(1))
+    // 获取 Vite 配置的 base 路径
+    const basePath = import.meta.env.BASE_URL || '/'    
+    // 移除 base 路径部分
+    let actualPath = path
+    if (basePath !== '/' && path.startsWith(basePath)) {
+      actualPath = path.substring(basePath.length)
+    }  
     
-    let isWaveMode = false
+    // 处理哈希模式
+    let hashIndex = actualPath.indexOf('#')
+    if (hashIndex !== -1) {
+      actualPath = actualPath.substring(hashIndex + 1)
+    }
+    
+    const fullPath = decodeURIComponent(actualPath || '')
+    
     let uuid = ''
+    let isWaveMode = false
     let customName = ''
-    let showDetail = false
     
     // 解析路径部分
     let pathToParse = fullPath
     
-    // 检查是否以 /detail 结尾
-    if (pathToParse.endsWith('/detail')) {
-      showDetail = true
-      pathToParse = pathToParse.substring(0, pathToParse.length - 7) // 移除 /detail
-    }
-    
-    // 暂时禁用语言前缀检查
-    // const pathParts = pathToParse.split('/')
-    // if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
-    //   language = languagePrefixMap[pathParts[0]]
-    //   pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
-    // }
-    
     // 检查是否是波形模式
     if (pathToParse.startsWith('wave/')) {
       isWaveMode = true
       pathToParse = pathToParse.substring(5) // 移除 wave/
     }
     
-    // 解析 UUID 和自定义名称
-    const nameIndex = pathToParse.indexOf('&')
-    if (nameIndex !== -1) {
-      uuid = pathToParse.substring(0, nameIndex)
-      customName = pathToParse.substring(nameIndex + 1)
+    // 解析自定义名称
+    if (pathToParse.includes('&')) {
+      const parts = pathToParse.split('&', 2)
+      uuid = parts[0]
+      customName = parts[1]
     } else {
       uuid = pathToParse
     }
     
-    return { uuid, customName, isWaveMode, showDetail }
+    return { uuid, customName, isWaveMode }
   } catch (error) {
     console.warn('URL 解析失败，尝试原始解析:', error)
     // 降级到原始解析，不进行解码
-    const rawPath = path.substring(1)
-    let isWaveMode = false
+    // 获取 Vite 配置的 base 路径
+    const basePath = import.meta.env.BASE_URL || '/'    
+    // 移除 base 路径部分
+    let actualPath = path
+    if (basePath !== '/' && path.startsWith(basePath)) {
+      actualPath = path.substring(basePath.length)
+    }  
+    
+    // 处理哈希模式
+    let hashIndex = actualPath.indexOf('#')
+    if (hashIndex !== -1) {
+      actualPath = actualPath.substring(hashIndex + 1)
+    }
+    
+    const rawPath = actualPath || ''
     let uuid = ''
+    let isWaveMode = false
     let customName = ''
-    let showDetail = false
     
     // 解析路径部分
     let pathToParse = rawPath
     
-    // 检查是否以 /detail 结尾
-    if (pathToParse.endsWith('/detail')) {
-      showDetail = true
-      pathToParse = pathToParse.substring(0, pathToParse.length - 7) // 移除 /detail
-    }
-    
-    // 暂时禁用语言前缀检查
-    // const pathParts = pathToParse.split('/')
-    // if (pathParts.length > 0 && languagePrefixMap[pathParts[0]]) {
-    //   language = languagePrefixMap[pathParts[0]]
-    //   pathToParse = pathParts.slice(1).join('/') // 移除语言前缀
-    // }
-    
     // 检查是否是波形模式
     if (pathToParse.startsWith('wave/')) {
       isWaveMode = true
       pathToParse = pathToParse.substring(5) // 移除 wave/
     }
     
-    // 解析 UUID 和自定义名称
-    const nameIndex = pathToParse.indexOf('&')
-    if (nameIndex !== -1) {
-      uuid = pathToParse.substring(0, nameIndex)
-      customName = pathToParse.substring(nameIndex + 1)
+    // 解析自定义名称
+    if (pathToParse.includes('&')) {
+      const parts = pathToParse.split('&', 2)
+      uuid = parts[0]
+      customName = parts[1]
     } else {
       uuid = pathToParse
     }
     
-    return { uuid, customName, isWaveMode, showDetail }
+    return { uuid, customName, isWaveMode }
   }
 }
 
@@ -926,22 +1026,19 @@ const detectUserLocation = async (useCache = false): Promise<void> => {
   }
 }
 
-// 生成包含语言前缀的 URL
-const generateURL = (uuid?: string, customName?: string, isWaveMode?: boolean, showDetail?: boolean): string => {
-  // 暂时禁用语言前缀功能
-  // const currentLang = locale.value
-  // const langPrefix = Object.entries(languagePrefixMap).find(([_, lang]) => lang === currentLang)?.[0]
+// 生成URL
+function generateURL(uuid?: string, customName?: string, isWaveMode?: boolean): string {
+  // 获取 Vite 配置的 base 路径
+  const basePath = import.meta.env.BASE_URL || '/'  
   
-  let url = ''
+  let url = basePath  
   
-  // 暂时禁用语言前缀
-  // if (langPrefix && currentLang !== 'zhs') {
-  //   url += `/${langPrefix}`
-  // }
+  // 对于简单HTTP服务器，使用哈希模式避免404
+  url += '#'
   
-  // 如果没有 UUID，只返回根路径
-  if (!uuid || !uuid.trim()) {
-    return '/'
+  // 确保URL格式正确
+  if (uuid && uuid.trim()) {
+    url += uuid.trim()
   }
   
   // 添加波形模式前缀
@@ -949,17 +1046,9 @@ const generateURL = (uuid?: string, customName?: string, isWaveMode?: boolean, s
     url += '/wave'
   }
   
-  // 添加 UUID
-  url += `/${uuid}`
-  
   // 添加自定义名称
   if (customName && customName.trim()) {
     url += `&${safeEncodeURIComponent(customName.trim())}`
-  }
-  
-  // 添加详情后缀
-  if (showDetail) {
-    url += '/detail'
   }
   
   return url
@@ -967,7 +1056,7 @@ const generateURL = (uuid?: string, customName?: string, isWaveMode?: boolean, s
 
 // 监听自定义名称变化，更新 URL
 watch(customStationName, (newNames) => {
-  if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
+  if (stationTypeFilter.value && stationTypeFilter.value.trim() && !stationDetailModal.value?.isVisible()) {
     const currentUUID = stationTypeFilter.value.trim()
     const customName = newNames[currentUUID]
     
@@ -997,7 +1086,7 @@ function goToCreateStation() {
 const showStationData = ref(true);
 const showWarningModal = ref(false); // 控制警告弹窗显示
 
-// 监听测站数据变化，检查是否需要显示详情模态框
+// 基于UUID的详情模态框监听逻辑
 watch(seismicDataArray, (newData) => {
   if (pendingDetailUUID.value && newData.length > 0) {
     const stationData = newData.find(data => data.type === pendingDetailUUID.value)
@@ -1011,20 +1100,39 @@ watch(seismicDataArray, (newData) => {
   }
 }, { deep: true, immediate: false })
 
-// 暂时禁用语言变化时的 URL 更新
-// watch(locale, (newLang) => {
-//   if (stationTypeFilter.value && stationTypeFilter.value.trim()) {
-//     const currentUUID = stationTypeFilter.value.trim()
-//     const customName = customStationName.value[currentUUID]
-//     
-//     const newUrl = generateURL(currentUUID, customName, !showStationData.value)
-//     window.history.pushState({}, '', newUrl)
-//   } else {
-//     // 如果没有测站过滤器，只更新语言前缀
-//     const newUrl = generateURL()
-//     window.history.pushState({}, '', newUrl)
-//   }
-// }, { immediate: false })
+// 添加一个变量来保存最后使用的UUID
+const lastUUID = ref('');
+
+// 监听stationTypeFilter变化，始终保存最新的UUID
+watch(stationTypeFilter, (newValue) => {
+  if (newValue && newValue.trim()) {
+    lastUUID.value = newValue.trim();
+  }
+}, { immediate: true })
+
+// 监听详情模态框可见性变化，不再更新URL
+watch(() => stationDetailModal.value?.isVisible() || false, (isVisible) => {
+  // 仅在需要时更新stationTypeFilter，不修改URL
+  if (!isVisible && lastUUID.value) {
+    stationTypeFilter.value = lastUUID.value;
+  }
+}, { immediate: false })
+
+// 语言变化时的 URL 更新
+watch(locale, () => {
+  const isDetailOpen = stationDetailModal.value?.isVisible() || false;
+  if (stationTypeFilter.value && stationTypeFilter.value.trim() && !isDetailOpen) {
+    const currentUUID = stationTypeFilter.value.trim()
+    const customName = customStationName.value[currentUUID]
+    
+    const newUrl = generateURL(currentUUID, customName, !showStationData.value)
+    window.history.pushState({}, '', newUrl)
+  } else {
+    // 如果没有测站过滤器或打开了详情，只更新基础URL
+    const newUrl = generateURL(undefined, undefined, !showStationData.value)
+    window.history.pushState({}, '', newUrl)
+  }
+}, { immediate: false })
 
 // 监听波形模式变化，更新 URL
 watch(showStationData, (isDataMode) => {
@@ -1052,10 +1160,10 @@ const toggleStationData = () => {
   }
 };
 
-// 处理警告弹窗同意事件
-const handleWarningAgreed = (dontShowAgain: boolean) => { // 接收复选框状态参数
+// 处理警告弹窗同意
+const handleWarningAgreed = (dontShowAgain: boolean) => { // 接收状态参数
   showWarningModal.value = false; // 隐藏警告弹窗
-  if (dontShowAgain) { // 如果用户勾选了不再提示
+  if (dontShowAgain) { // 如果勾选了不再提示
     localStorage.setItem('dontShowWaveformWarning', 'true'); // 在本地存储中记录
   }
   showStationData.value = !showStationData.value; // 执行切换到波形图的逻辑
@@ -1847,6 +1955,8 @@ onMounted(() => {
     }
 
     .filter-section,
+    .websocket-section,
+
     .language-section {
       label {
         display: block;
@@ -1921,7 +2031,8 @@ onMounted(() => {
       }
     }
 
-    .filter-section {
+    .filter-section,
+    .websocket-section {
       .input-wrapper {
         position: relative;
         width: 100%;
@@ -1929,7 +2040,7 @@ onMounted(() => {
         input {
           width: 100%;
           padding: 0.8rem 2rem 0.8rem 1rem;
-          border: 1px solid rgba(0, 0, 0, 0.1);
+          border: 2.5px solid rgba(0, 0, 0, 0.1);
           border-radius: 0.8rem;
           background: var(--bg-color);
           color: var(--text-color);
@@ -1957,6 +2068,50 @@ onMounted(() => {
           pointer-events: none;
         }
       }
+      
+      .websocket-control {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        
+        button {
+          padding: 1rem 1rem;
+          border: none;
+          border-radius: 0.8rem;
+          background: rgba(255, 255, 255, 0.1);
+          color: var(--text-color);
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 1rem;
+          white-space: nowrap;
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+        }
+        
+        .reset-btn {
+          padding: 1rem;
+          border: none;
+          border-radius: 0.8rem;
+          background: rgba(255, 255, 255, 0.1);
+          color: var(--text-color);
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+          
+          .iconify {
+            width: 1.2rem;
+            height: 1.2rem;
+          }
+        }
+      }
     }
 
     .refresh-section {
@@ -1969,7 +2124,7 @@ onMounted(() => {
         color: var(--text-color);
         font-weight: 500;
         text-align: left;
-        padding-left: 0.5rem;
+        padding-left: .5rem;
       }
 
       .refresh-control {
@@ -2253,5 +2408,107 @@ onMounted(() => {
       }
     }
   }
+}
+
+/* API提醒模态框样式 */
+.api-warning-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.api-warning-content {
+  background: var(--bg-color);
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+  width: 90%;
+  max-width: 500px;
+  overflow: hidden;
+}
+
+.api-warning-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.api-warning-header h3 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.3rem;
+}
+
+.api-warning-body {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.api-warning-body p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.api-warning-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.api-warning-buttons button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.confirm-btn {
+  background: #2196F3;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background: #1976D2;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 </style>

@@ -1,15 +1,19 @@
 import { useSeismicStore } from "../stores/seismic";
 
 export function initWebSocket() {
-  const ws = new WebSocket("wss://seisjs.wolfx.jp/all_seis");
+  const websocketUrl = localStorage.getItem('websocketUrl') || 'wss://seisjs.wolfx.jp/all_seis';
+  const ws = new WebSocket(websocketUrl);
   const seismicStore = useSeismicStore();
 
   ws.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
 
+      // 添加详细日志
+      console.log("收到WebSocket数据:", data);
       if (!data || typeof data.PGA === "undefined") {
-        console.warn("收到无效的WebSocket数据:", data);
+        console.warn("收到无效的WebSocket数据: 缺少PGA字段");
+        console.dir(data);
         return;
       }
 
