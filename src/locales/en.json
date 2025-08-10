@@ -102,6 +102,10 @@
   "reset": "Reset",
   "api_warning_title": "API Change Notice",
   "api_warning_message": "This API may not be from Wolfx SeisJS. Some fields of this API may not be supported, and using this API may cause errors.",
-
-  "custom_name_discarded_successfully": "Custom station name discarded successfully"
+  "confirm": "Confirm",
+  "discard": "Discard",
+  "enter_custom_station_name_escaped": "Enter custom station name.",
+  "custom_name_discarded_successfully": "Custom station name discarded successfully.",
+  "uuid_saved_successfully": "UUID saved successfully.",
+  "uuid_discarded_successfully": "UUID discarded successfully."
 }

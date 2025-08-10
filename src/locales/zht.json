@@ -73,6 +73,7 @@
   "station_details": "測站詳細資訊",
   "custom_station_name": "自訂測站顯示名稱",
   "enter_custom_station_name": "輸入自訂的測站名稱（不可使用!@#￥%&等特殊符號）",
+  "enter_custom_station_name_escaped": "輸入自訂的測站名稱",
   "display_settings": "資料顯示開關",
   "RT_display_settings": "等級資料顯示開關",
   "no_station_available": "目前無可用測站，請檢查設定或網路",
@@ -102,5 +103,9 @@
   "reset": "重置",
   "api_warning_title": "API變更提示",
   "api_warning_message": "此API可能並非來自Wolfx SeisJS。可能不支援此API的內容字段，使用此API可能會導致錯誤。",
-  "custom_name_discarded_successfully": "自訂測站名稱已捨棄"
+  "custom_name_discarded_successfully": "自訂測站名稱已捨棄",
+  "discard": "捨棄",
+  "confirm": "確認",
+  "uuid_saved_successfully": "UUID已保存成功",
+  "uuid_discarded_successfully": "UUID已捨棄成功"
 }

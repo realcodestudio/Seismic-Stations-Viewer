@@ -147,7 +147,7 @@
         <div class="filter-section" v-if="stationTypeFilter">
           <label>{{ $t('custom_station_name') }}</label>
           <div class="input-wrapper" style="display: flex; gap: 0.5rem;">
-            <input type="text" v-model="customStationName[stationTypeFilter]" :placeholder="$t('enter_custom_station_name')"style="flex: 1;" />
+            <input type="text" v-model="customStationName[stationTypeFilter]" :placeholder="$t('enter_custom_station_name_escaped')"style="flex: 1;" />
             <button @click="saveCustomStationName" :disabled="!stationTypeFilter.trim()" class="save-btn">{{ $t('save') }}</button>
             <button @click="discardCustomStationName" :disabled="!stationTypeFilter.trim()" class="discard-btn">{{ $t('discard') }}</button>
           </div>
@@ -390,6 +390,19 @@ const resetWebsocketUrl = () => {
   alert('WebSocket URL reset to default value.');
 };
 
+import { Icon } from '@iconify/vue'
+import { useThemeStore } from '../stores/theme'
+import { useSeismicStore } from '../stores/seismic'
+import { initWebSocket } from '../services/websocket'
+import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
+import { getIntensityStyle } from '../utils/intensityUtils'
+import { getLPGMStyle } from '../utils/lpgmUtils'
+import StationDetailModal from '../components/StationDetailModal.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+import PgaWaveformChart from '../components/PgaWaveformChart.vue'
+import WaveformWarningModal from '../components/WaveformWarningModal.vue'
+
 // 保存测站单独显示功能UUID到本地存储
 const saveStationUUID = () => {
   console.log('saveStationUUID called');
@@ -490,18 +503,6 @@ onMounted(() => {
 //     localStorage.removeItem('savedStationUUID');
 //   }
 // });
-import { Icon } from '@iconify/vue'
-import { useThemeStore } from '../stores/theme'
-import { useSeismicStore } from '../stores/seismic'
-import { initWebSocket } from '../services/websocket'
-import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
-import { getIntensityStyle } from '../utils/intensityUtils'
-import { getLPGMStyle } from '../utils/lpgmUtils'
-import StationDetailModal from '../components/StationDetailModal.vue'
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
-import PgaWaveformChart from '../components/PgaWaveformChart.vue'
-import WaveformWarningModal from '../components/WaveformWarningModal.vue'
 
 
 ////版本号！！！
@@ -2510,9 +2511,9 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.771);
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(141, 141, 141, 0.53);
 }
 
 .api-warning-header h3 {
@@ -2523,7 +2524,7 @@ onMounted(() => {
 
 .api-warning-body {
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.851);
 }
 
 .api-warning-body p {

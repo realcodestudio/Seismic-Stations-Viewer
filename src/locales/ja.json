@@ -101,8 +101,11 @@
   "save": "保存",
   "reset": "リセット",
   "api_warning_title": "API 変更通知",
-
+  "confirm": "確認",
+  "discard": "破棄",
   "api_warning_message": "このAPIはWolfx SeisJSのAPIではありません。一部のフィールドはサポートされていません。使用には注意してください。",
-
-  "custom_name_discarded_successfully": "カスタム観測点名が正常に破棄されました"
+  "enter_custom_station_name_escaped": "カスタム観測点名を入力",
+  "custom_name_discarded_successfully": "カスタム観測点名が正常に破棄されました",
+  "uuid_saved_successfully": "UUIDが正常に保存されました",
+  "uuid_discarded_successfully": "UUIDが正常に破棄されました"
 }
