@@ -275,7 +275,7 @@
           <span class="update-time">{{ $t('update_time', { time: formatTime(data.update_at) }) }}</span>
         </div>
 
-        <div v-if="showStationData" class="data-grid">
+        <div v-if="showStationData" class="data-grid" :class="{ 'single-item': getActiveDisplayItemsCount() === 1, 'double-items': getActiveDisplayItemsCount() === 2 }">
           <div v-if="displaySettings.realTimeJMA" class="shindo-display" :style="getShindoStyle(data.Shindo || '0')">
             <h1 class="shindo-label">{{ $t('real_time_shindo') }}</h1>
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
@@ -852,6 +852,15 @@ const displaySettings = ref({
   realTimeCSIS: true,
   longPeriod: true
 })
+  
+  // 计算当前激活的显示项目数量
+  function getActiveDisplayItemsCount() {
+    let count = 0;
+    if (displaySettings.value.realTimeJMA) count++;
+    if (displaySettings.value.realTimeCSIS) count++;
+    if (displaySettings.value.longPeriod) count++;
+    return count;
+  }
 
 function toggleSettings() {
   showSettings.value = !showSettings.value
@@ -1506,6 +1515,28 @@ onMounted(() => {
     &:has(> :nth-child(2):last-child) {
       grid-template-columns: repeat(2, 1fr);
 
+      >div {
+        width: 100%;
+      }
+    }
+
+    // 当single-item类被添加时
+    &.single-item {
+      grid-template-columns: 1fr;
+      justify-content: flex-end;
+      
+      >div {
+        grid-column: 1 / -1;
+        max-width: none;
+        width: 100%;
+        justify-self: end;
+      }
+    }
+
+    // 当double-items类被添加时
+    &.double-items {
+      grid-template-columns: repeat(2, 1fr);
+      
       >div {
         width: 100%;
       }
