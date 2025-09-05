@@ -1,6 +1,6 @@
 <template>
   <div v-if="isVisible" class="modal-overlay" @click.self="cancel">
-    <div class="modal-content" :class="{ dark: isDark }">
+    <div class="modal-content">
       <h3>{{ $t('waveform_accuracy_warning_title') }}</h3>
       <p>{{ $t('waveform_accuracy_warning_message') }}</p>
       <div class="modal-checkbox">
@@ -9,7 +9,7 @@
           {{ $t('dont_show_waveform_warning_again') }}
         </label>
       </div>
-      <div class="modal-actions" :class="{ dark: isDark }">
+      <div class="modal-actions">
         <button @click="agree">{{ $t('agree') }}</button>
         <button @click="cancel">{{ $t('cancel') }}</button>
       </div>
@@ -28,10 +28,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  isDark: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 const emit = defineEmits(['agree', 'cancel']);
@@ -46,9 +42,6 @@ const agree = () => {
 };
 
 const cancel = () => {
-  if (props.isDark) {
-    console.log('Modal is in dark mode');
-  }
   console.log(t('cancel'));
   emit('cancel');
 };
@@ -76,11 +69,6 @@ const cancel = () => {
   max-width: 400px;
 }
 
-.modal-content.dark {
-  background: #333;
-  color: #eee;
-}
-
 .modal-checkbox {
   margin-top: 15px;
   margin-bottom: 15px;
@@ -102,15 +90,6 @@ const cancel = () => {
   border-radius: 20px;
   justify-content: center;
   gap: 10px;
-}
-
-.modal-actions.dark button:first-child {
-  background: #0d47a1;
-}
-
-.modal-actions.dark button:last-child {
-  background: #555;
-  color: #eee;
 }
 
 button {

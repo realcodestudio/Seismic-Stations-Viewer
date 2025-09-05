@@ -107,5 +107,10 @@
   "enter_custom_station_name_escaped": "カスタム観測点名を入力",
   "custom_name_discarded_successfully": "カスタム観測点名が正常に破棄されました",
   "uuid_saved_successfully": "UUIDが正常に保存されました",
-  "uuid_discarded_successfully": "UUIDが正常に破棄されました"
+  "uuid_discarded_successfully": "UUIDが正常に破棄されました",
+  "background_settings": "背景設定",
+  "white_background": "白い背景",
+  "wolfx_background": "Wolfx R2",
+  "green_black_background": "緑色の背景",
+  "black_background": "黒い背景"
 }

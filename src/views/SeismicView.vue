@@ -1,13 +1,10 @@
 <template>
-  <div class="seismic-container" :class="{ 'dark': themeStore.isDark }">
+  <div class="seismic-container">
     <div class="controls-container">
       <button class="main-toggle" @click="toggleControls">
         <Icon :icon="showControls ? 'mdi:close' : 'mdi:menu'" size="32" style="width: 32px; height: 32px;" />
       </button>
       <div class="control-buttons" :class="{ 'expanded': showControls }">
-        <div class="theme-toggle" @click="() => { themeStore.toggleTheme(); showControls = false; }">
-          <Icon :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'" size="24" />
-        </div>
         <div class="settings-toggle" @click="() => { toggleSettings(); showControls = false; }">
           <Icon icon="mdi:cog" size="24" />
         </div>
@@ -69,66 +66,66 @@
         <div class="display-section">
           <label>{{ $t('display_settings') }}</label>
           <div class="display-options">
-            <div class="display-option">
-              <label class="toggle-switch">
-                <input type="checkbox" v-model="displaySettings.pga" @change="saveDisplaySettings">
-                <span class="slider"></span>
-              </label>
-              <span class="option-text">PGA</span>
-            </div>
+            <button 
+              class="background-option-btn"
+              :class="{ active: displaySettings.pga }"
+              @click="() => { displaySettings.pga = !displaySettings.pga; saveDisplaySettings(); }"
+            >
+              PGA
+            </button>
 
-            <div class="display-option">
-              <label class="toggle-switch">
-                <input type="checkbox" v-model="displaySettings.measuredIntensity" @change="saveDisplaySettings">
-                <span class="slider"></span>
-              </label>
-              <span class="option-text">{{ $t('calc_shindo') }}</span>
-            </div>
+            <button 
+              class="background-option-btn"
+              :class="{ active: displaySettings.measuredIntensity }"
+              @click="() => { displaySettings.measuredIntensity = !displaySettings.measuredIntensity; saveDisplaySettings(); }"
+            >
+              {{ $t('calc_shindo') }}
+            </button>
 
-            <div class="display-option">
-              <label class="toggle-switch">
-                <input type="checkbox" v-model="displaySettings.maxJMAShindo" @change="saveDisplaySettings">
-                <span class="slider"></span>
-              </label>
-              <span class="option-text">{{ $t('max_shindo') }}</span>
-            </div>
+            <button 
+              class="background-option-btn"
+              :class="{ active: displaySettings.maxJMAShindo }"
+              @click="() => { displaySettings.maxJMAShindo = !displaySettings.maxJMAShindo; saveDisplaySettings(); }"
+            >
+              {{ $t('max_shindo') }}
+            </button>
 
-            <div class="display-option">
-              <label class="toggle-switch">
-                <input type="checkbox" v-model="displaySettings.maxCSISIntensity" @change="saveDisplaySettings">
-                <span class="slider"></span>
-              </label>
-              <span class="option-text">{{ $t('max_intensity') }}</span>
-            </div>
+            <button 
+              class="background-option-btn"
+              :class="{ active: displaySettings.maxCSISIntensity }"
+              @click="() => { displaySettings.maxCSISIntensity = !displaySettings.maxCSISIntensity; saveDisplaySettings(); }"
+            >
+              {{ $t('max_intensity') }}
+            </button>
 
 
             <div class="display-section">
               <label>{{ $t('RT_display_settings') }}</label>
+              <div class="display-options">
+                <button 
+                  class="background-option-btn"
+                  :class="{ active: displaySettings.longPeriod }"
+                  @click="() => { displaySettings.longPeriod = !displaySettings.longPeriod; saveDisplaySettings(); }"
+                >
+                  {{ $t('realtime_LPGM') }}
+                </button>
 
-              <div class="RT-display-option">
-                <label class="toggle-switch">
-                  <input type="checkbox" v-model="displaySettings.longPeriod" @change="saveDisplaySettings">
-                  <span class="slider"></span>
-                </label>
-                <span class="option-text">{{ $t('realtime_LPGM') }}</span>
+                <button 
+                  class="background-option-btn"
+                  :class="{ active: displaySettings.realTimeJMA }"
+                  @click="() => { displaySettings.realTimeJMA = !displaySettings.realTimeJMA; saveDisplaySettings(); }"
+                >
+                  {{ $t('real_time_shindo') }}
+                </button>
 
-                <div class="RT-display-option">
-                  <label class="toggle-switch">
-                    <input type="checkbox" v-model="displaySettings.realTimeJMA" @change="saveDisplaySettings">
-                    <span class="slider"></span>
-                  </label>
-                  <span class="option-text">{{ $t('real_time_shindo') }}</span>
-                </div>
-
-                <div class="RT-display-option">
-                  <label class="toggle-switch">
-                    <input type="checkbox" v-model="displaySettings.realTimeCSIS" @change="saveDisplaySettings">
-                    <span class="slider"></span>
-                  </label>
-                  <span class="option-text">{{ $t('real_time_intensity') }}</span>
-                </div>
+                <button 
+                  class="background-option-btn"
+                  :class="{ active: displaySettings.realTimeCSIS }"
+                  @click="() => { displaySettings.realTimeCSIS = !displaySettings.realTimeCSIS; saveDisplaySettings(); }"
+                >
+                  {{ $t('real_time_intensity') }}
+                </button>
               </div>
-
             </div>
           </div>
         </div>
@@ -159,8 +156,9 @@
 
         <div class="language-section">
           <label>{{ $t('language') }}</label>
-          <div class="language-buttons">
+          <div class="display-options">
             <button v-for="lang in ['zhs', 'zht', 'en', 'ja', 'ko']" :key="lang" @click="changeLanguage(lang)"
+              class="background-option-btn"
               :class="{ 'active': locale === lang }">
               {{ languageNames[lang] }}
             </button>
@@ -171,6 +169,52 @@
             <button @click="() => refreshGeoIP(true)" :disabled="isGeoIPDetecting" class="geoip-refresh-btn">
               <Icon icon="mdi:refresh" :class="{ 'spinning': isGeoIPDetecting }" />
               {{ isGeoIPDetecting ? $t('detecting_location') : $t('redetect_location') }}
+            </button>
+          </div>
+        </div>
+
+        <div class="background-section">
+          <label>{{ $t('background_settings') }}</label>
+          <div class="background-options">
+            <button 
+              class="background-option-btn" 
+              :class="{ active: backgroundType === 'white' }"
+              @click="() => { backgroundType = 'white'; saveBackgroundSettings(); }"
+            >
+              {{ $t('white_background') }}
+            </button>
+
+            <button 
+              class="background-option-btn" 
+              :class="{ active: backgroundType === 'wolfx' }"
+              @click="() => { backgroundType = 'wolfx'; saveBackgroundSettings(); }"
+            >
+              {{ $t('wolfx_background') }}
+            </button>
+            
+            <button 
+              class="background-option-btn" 
+              :class="{ active: backgroundType === 'green-black' }"
+              @click="() => { backgroundType = 'green-black'; saveBackgroundSettings(); }"
+            >
+              {{ $t('green_black_background') }}
+            </button>
+            
+            <button 
+              class="background-option-btn" 
+              :class="{ active: backgroundType === 'black' }"
+              @click="() => { backgroundType = 'black'; saveBackgroundSettings(); }"
+            >
+              {{ $t('black_background') }}
+            </button>
+            
+            <button 
+              v-if="backgroundType === 'wolfx'"
+              class="background-option-btn"
+              @click="refreshBackground"
+              title="刷新背景"
+            >
+              <Icon icon="mdi:refresh" />
             </button>
           </div>
         </div>
@@ -306,7 +350,7 @@
           </div>
         </div>
 
-        <PgaWaveformChart v-if="!showStationData" :pga-history="data.pgaHistory" :is-dark="themeStore.isDark" />
+        <PgaWaveformChart v-if="!showStationData" :pga-history="data.pgaHistory" />
 
         <div class="card-footer">
           <button class="detail-btn" @click="showStationDetail(data)">
@@ -323,8 +367,7 @@
     </div>
 
     <StationDetailModal ref="stationDetailModal" :stationType="selectedStation?.type || null" />
-    <WaveformWarningModal :isVisible="showWarningModal" @agree="handleWarningAgreed" @cancel="handleWarningCanceled"
-      :is-dark="themeStore.isDark" />
+    <WaveformWarningModal :isVisible="showWarningModal" @agree="handleWarningAgreed" @cancel="handleWarningCanceled" />
   </div>
 </template>
 
@@ -391,7 +434,6 @@ const resetWebsocketUrl = () => {
 };
 
 import { Icon } from '@iconify/vue'
-import { useThemeStore } from '../stores/theme'
 import { useSeismicStore } from '../stores/seismic'
 import { initWebSocket } from '../services/websocket'
 import { getShindoStyle, isSignificantShindo } from '../utils/shindoUtils'
@@ -519,7 +561,6 @@ const version = ref('v4.2.2') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 
-const themeStore = useThemeStore()
 const seismicStore = useSeismicStore()
 
 // 1. 语言名称类型定义
@@ -748,10 +789,6 @@ function formatIntensity(value: string | number | null | undefined): string {
   if (!value || isNaN(Number(value))) return '0';
   return Math.round(Number(value)).toString();
 }
-
-watch(() => themeStore.isDark, (isDark: boolean) => {
-  document.documentElement.classList.toggle('dark', isDark)
-}, { immediate: true })
 
 const stationTypeFilter = ref('')
 const showSettings = ref(false)
@@ -1105,12 +1142,103 @@ const saveDisplaySettings = () => {
   localStorage.setItem('displaySettings', JSON.stringify(displaySettings.value))
 }
 
+// 添加背景设置的响应式状态
+const backgroundType = ref('wolfx'); // 默认使用Wolfx图床
+const wolfxBackgroundUrl = ref(''); // 保存刷新后的Wolfx背景URL
+
+// 保存背景设置到本地存储
+function saveBackgroundSettings() {
+  try {
+    localStorage.setItem('backgroundType', backgroundType.value);
+    // 应用背景设置
+    applyBackgroundSettings();
+  } catch (error: any) {
+    console.error('Failed to save background settings:', error);
+  }
+}
+
+// 应用背景设置
+function applyBackgroundSettings() {
+  const seismicContainer = document.querySelector('.seismic-container');
+  if (seismicContainer) {
+    // 移除所有背景相关的类和内联样式，确保新背景样式能正确应用
+    seismicContainer.classList.remove('wolfx-background', 'white-background', 'green-black-background', 'black-background');
+    
+    // 清除可能的内联背景样式，防止与CSS类冲突
+    seismicContainer.style.backgroundImage = '';
+    seismicContainer.style.backgroundSize = '';
+    seismicContainer.style.backgroundPosition = '';
+    seismicContainer.style.backgroundRepeat = '';
+    
+    // 根据选择的背景类型添加对应的类
+    if (backgroundType.value === 'white') {
+      seismicContainer.classList.add('white-background');
+    } else if (backgroundType.value === 'wolfx') {
+      seismicContainer.classList.add('wolfx-background');
+      // 如果有保存的刷新URL，使用它而不是CSS中的默认URL
+      if (wolfxBackgroundUrl.value) {
+        seismicContainer.style.backgroundImage = `url('${wolfxBackgroundUrl.value}')`;
+        seismicContainer.style.backgroundSize = 'cover';
+        seismicContainer.style.backgroundPosition = 'center';
+        seismicContainer.style.backgroundRepeat = 'no-repeat';
+      }
+    } else if (backgroundType.value === 'green-black') {
+      seismicContainer.classList.add('green-black-background');
+    } else if (backgroundType.value === 'black') {
+      seismicContainer.classList.add('black-background');
+    }
+  }
+}
+
+// 刷新背景（主要用于Wolfx图床背景）
+function refreshBackground() {
+  // 对Wolfx图床背景添加时间戳参数来刷新图片
+  if (backgroundType.value === 'wolfx') {
+    const timestamp = new Date().getTime();
+    const newUrl = `https://api.wolfx.jp/img.php?t=${timestamp}`;
+    // 保存刷新后的URL
+    wolfxBackgroundUrl.value = newUrl;
+    
+    // 更新背景图片URL
+    const seismicContainer = document.querySelector('.seismic-container');
+    if (seismicContainer) {
+      // 移除wolfx-background类和内联样式，防止冲突
+      seismicContainer.classList.remove('wolfx-background');
+      seismicContainer.style.backgroundImage = '';
+      
+      // 强制重绘
+      void seismicContainer.offsetWidth;
+      
+      // 直接设置背景图片
+      seismicContainer.style.backgroundImage = `url('${newUrl}')`;
+      seismicContainer.style.backgroundSize = 'cover';
+      seismicContainer.style.backgroundPosition = 'center';
+      seismicContainer.style.backgroundRepeat = 'no-repeat';
+      
+      // 重新添加类
+      seismicContainer.classList.add('wolfx-background');
+    }
+  } else {
+    // 对于其他背景类型，直接重新应用背景设置
+    applyBackgroundSettings();
+  }
+}
+
 // 初始化时读取本地存储的显示设置
 onMounted(() => {
   const savedSettings = localStorage.getItem('displaySettings')
   if (savedSettings) {
     displaySettings.value = JSON.parse(savedSettings)
   }
+  
+  // 从本地存储加载背景设置
+  const savedBackgroundType = localStorage.getItem('backgroundType');
+  if (savedBackgroundType) {
+    backgroundType.value = savedBackgroundType;
+  }
+  
+  // 应用背景设置
+  applyBackgroundSettings();
 })
 
 function goToCreateStation() {
@@ -1266,33 +1394,12 @@ onMounted(() => {
   padding: 2rem;
   transition: background-color 0.3s ease;
   background: var(--bg-color);
-
-  &.dark {
-    --bg-color: #121212;
-    --card-bg: #a1a1a12f;
-    --card-bg-rgb: 161, 161, 161;
-    --text-color: rgba(255, 255, 255, 0.9);
-    --text-secondary: rgba(255, 255, 255, 0.7);
-
-    /* 确保滚动容器也使用深色背景 */
-    &,
-    &>* {
-      background: var(--bg-color);
-    }
-  }
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {
     padding: 0.8rem;
-  }
-}
-
-/* 添加全局深色模式样式 */
-:global(html.dark) {
-  background: #121212;
-
-  body,
-  #app {
-    background: #121212;
   }
 }
 
@@ -1598,19 +1705,8 @@ onMounted(() => {
   }
 }
 
-.theme-toggle {
-  position: fixed;
-  top: 2rem;
-  right: 1rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-  padding: 0.25rem;
-  border-radius: 75%;
-  background: var(--card-bg);
-  transition: all 1s ease;
-  z-index: 100;
-
-  &:hover {
+/* 主题切换按钮已移除 */
+/* .theme-toggle {
     transform: scale(1, 1);
   }
 }
@@ -1675,10 +1771,9 @@ onMounted(() => {
 }
 
 .fade-enter,
-.fade-leave-to
-
+.fade-leave-to,
 /* .fade-leave-active in <2.1.8 */
-  {
+.fade-leave-active {
   opacity: 0;
 }
 
@@ -1809,6 +1904,7 @@ onMounted(() => {
   z-index: 1000;
   display: flex;
   flex-direction: column;
+  text-align: left;
 
   &.show {
     right: 0;
@@ -1929,15 +2025,6 @@ onMounted(() => {
     }
 
     .alert-section {
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--text-color);
-        font-weight: 500;
-        text-align: left;
-        padding-left: 0.5rem;
-      }
-
       .alert-control {
         display: flex;
         align-items: center;
@@ -2027,16 +2114,7 @@ onMounted(() => {
 
     .filter-section,
     .websocket-section,
-
     .language-section {
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--text-color);
-        font-weight: 500;
-        text-align: left;
-        padding-left: 0.5rem;
-      }
     }
 
     .language-section {
@@ -2196,7 +2274,8 @@ onMounted(() => {
         color: var(--text-color);
         font-weight: 500;
         text-align: left;
-        padding-left: .5rem;
+        padding-left: 0;
+        margin-left: 0;
       }
 
       .refresh-control {
@@ -2271,7 +2350,8 @@ onMounted(() => {
         color: var(--text-color);
         font-weight: 500;
         text-align: left;
-        padding-left: 0.5rem;
+        padding-left: 0;
+        margin-left: 0;
         word-wrap: break-word;
       }
 
@@ -2361,8 +2441,8 @@ onMounted(() => {
   width: 60px;
   height: 60px;
   border-radius: 100%;
-  background-color: var(--primary-color);
-  color: var(--text-color);
+  background-color: #ffffff;
+  color: #333;
   border: none;
   display: flex;
   align-items: center;
@@ -2400,12 +2480,12 @@ onMounted(() => {
   pointer-events: auto;
 }
 
-.theme-toggle, .settings-toggle, .wave-icon {
+.settings-toggle, .wave-icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--secondary-color);
-  color: var(--text-color);
+  background-color: #ffffff;
+  color: #333;
   border: none;
   display: flex;
   align-items: center;
@@ -2415,7 +2495,8 @@ onMounted(() => {
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
-.dark .theme-toggle, .dark .settings-toggle, .dark .wave-icon {
+/* 深色模式相关样式已移除 */
+/* .dark .theme-toggle, .dark .settings-toggle, .dark .wave-icon {
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 

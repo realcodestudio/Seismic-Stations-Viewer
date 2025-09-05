@@ -107,5 +107,10 @@
   "discard": "捨棄",
   "confirm": "確認",
   "uuid_saved_successfully": "UUID已保存成功",
-  "uuid_discarded_successfully": "UUID已捨棄成功"
+  "uuid_discarded_successfully": "UUID已捨棄成功",
+  "background_settings": "背景設定",
+  "white_background": "純白背景",
+  "wolfx_background": "Wolfx R2",
+  "green_black_background": "綠色背景",
+  "black_background": "純黑背景"
 }

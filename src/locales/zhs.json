@@ -107,5 +107,10 @@
   "uuid_saved_successfully": "UUID保存成功",
   "uuid_discarded_successfully": "UUID已舍弃",
   "enter_custom_station_name_escaped": "输入自定义测站名称",
-  "custom_name_discarded_successfully": "自定义测站名称已舍弃"
+  "custom_name_discarded_successfully": "自定义测站名称已舍弃",
+  "background_settings": "背景设置",
+  "white_background": "纯白背景",
+  "wolfx_background": "Wolfx R2",
+  "green_black_background": "绿色背景",
+  "black_background": "纯黑背景"
 }

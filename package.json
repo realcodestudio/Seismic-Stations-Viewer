@@ -10,23 +10,23 @@
   },
   "dependencies": {
     "@iconify/vue": "^5.0.0",
-    "@vueuse/core": "^13.5.0",
+    "@vueuse/core": "^13.6.0",
     "cn-fontsource-975-maru-sc-regular": "^1.0.1",
     "echarts": "^5.6.0",
     "pinia": "^3.0.3",
-    "sass": "^1.89.2",
-    "vue": "^3.5.17",
-    "vue-i18n": "^10.0.0",
+    "sass": "^1.90.0",
+    "vue": "^3.5.18",
+    "vue-i18n": "^10.0.8",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@iconify-json/vscode-icons": "^1.2.23",
-    "@tauri-apps/api": "^2.6.0",
-    "@tauri-apps/cli": "^2.6.2",
-    "@vitejs/plugin-vue": "^6.0.0",
+    "@iconify-json/vscode-icons": "^1.2.26",
+    "@tauri-apps/api": "^2.7.0",
+    "@tauri-apps/cli": "^2.7.1",
+    "@vitejs/plugin-vue": "^6.0.1",
     "typescript": "~5.8.3",
-    "vite": "^7.0.5",
-    "vue-tsc": "^3.0.3"
+    "vite": "^7.1.1",
+    "vue-tsc": "^3.0.5"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

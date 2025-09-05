@@ -3,9 +3,8 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #213547;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,7 +18,7 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #747bff;
 }
 
 body {
@@ -43,12 +42,12 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #f9f9f9;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #747bff;
 }
 button:focus,
 button:focus-visible {
@@ -60,36 +59,22 @@ button:focus-visible {
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
   text-align: center;
+  overflow: hidden;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #213547;
-    background-color: #000000;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+
+/* 确保根容器全屏显示 */
+#app > div[data-v-app=''] {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 @font-face {
@@ -99,16 +84,280 @@ button:focus-visible {
   font-style: normal;
 }
 
+/* 使用指定图床作为背景 */
+#app > div[data-v-app=''] > div[data-v-41b86640].seismic-container {
+  background-image: url('https://api.wolfx.jp/img.php') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+/* 设置区域通用样式 */
+.background-section,
+.display-section {
+  margin-bottom: 20px;
+}
+
+.background-options,
+.display-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+/* 点击式选项按钮样式 */
+.background-option-btn {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  width: auto;
+  min-width: auto;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+}
+
+.background-option-btn:hover {
+  border-color: #2196F3;
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.1);
+  transform: translateY(-1px);
+}
+
+.background-option-btn.active {
+  background-color: #2196F3;
+  color: white;
+  border-color: #2196F3;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.background-option-btn.active:hover {
+  background-color: #1976D2;
+  border-color: #1976D2;
+  transform: translateY(-1px);
+}
+
+/* 图标按钮特殊样式 */
+.background-option-btn:has(.iconify) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  text-align: center;
+}
+
+/* 确保图标在黑色背景下也有良好的对比度 */
+.seismic-container.black-background .background-option-btn {
+  background-color: rgba(74, 74, 74, 0.9);
+  border-color: #5a5a5a;
+  color: #fff;
+}
+
+.seismic-container.black-background .background-option-btn:hover {
+  border-color: #2196F3;
+}
+
+.seismic-container.black-background .background-option-btn.active {
+  background-color: #2196F3;
+  border-color: #2196F3;
+}
+
+/* 设置面板样式优化 */
+.filter-section,
+.websocket-section,
+.language-section,
+.geoip-section,
+.version-section {
+  margin-bottom: 20px;
+}
+
+/* 所有label元素统一样式 */
+label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+  color: #333;
+  text-align: left !important;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* 确保背景图完全覆盖整个容器 */
+/* 默认使用Wolfx图床背景 */
+#app > div[data-v-app=''] > div[data-v-41b86640].seismic-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+  filter: blur(3px);
+}
+
+#app .seismic-container {
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Wolfx图床背景样式 */
+#app > div[data-v-app=''] > div[data-v-41b86640].seismic-container.wolfx-background::before {
+  background-image: url('https://api.wolfx.jp/img.php');
+}
+
+#app .seismic-container.wolfx-background {
+  background-image: url('https://api.wolfx.jp/img.php');
+}
+
+/* 白色背景样式 */
+#app > div[data-v-app=''] > div[data-v-41b86640].seismic-container.white-background::before {
+  background-image: none;
+  background-color: #ffffff;
+}
+
+#app .seismic-container.white-background {
+  background-image: none;
+  background-color: #ffffff;
+}
+
+/* 绿色背景（白字）样式 - 已移除选项 */
+/* #app > div[data-v-app=''] > div[data-v-41b86640].seismic-container.green-white-background::before {
+  background-image: none;
+  background-color: #27F531;
+}
+
+#app .seismic-container.green-white-background {
+  background-image: none;
+  background-color: #27F531;
+  color: white;
+} */
+
+/* 绿色背景下的白字卡片样式 - 已移除选项 */
+/* .seismic-container.green-white-background [data-v-41b86640].seismic-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #333;
+}
+
+.seismic-container.green-white-background .settings-panel {
+  color: white;
+} */
+
+/* 绿色背景（黑字）样式 */
+#app > div[data-v-app=''] > div[data-v-41b86640].seismic-container.green-black-background::before {
+  background-image: none;
+  background-color: #27F531;
+}
+
+#app .seismic-container.green-black-background {
+  background-image: none;
+  background-color: #27F531;
+  color: black;
+}
+
+/* 纯黑背景样式 */
+#app > div[data-v-app=''] > div[data-v-41b86640].seismic-container.black-background::before {
+  background-image: none;
+  background-color: #000000;
+}
+
+#app .seismic-container.black-background {
+  background-image: none;
+  background-color: #000000;
+  color: white;
+}
+
+/* 黑色背景下的卡片样式 */
+.seismic-container.black-background [data-v-41b86640].seismic-card {
+  background: #4A4A4A;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* 黑色背景下的文字样式 - 保留非数值显示的文字为白色 */
+.seismic-container.black-background .seismic-card .card-header .region,
+.seismic-container.black-background .seismic-card .card-header .update-time,
+.seismic-container.black-background .data-box h4,
+.seismic-container.black-background .data-box .label-text,
+.seismic-container.black-background label {
+  color: white;
+}
+
+/* 黑色背景下的卡片头部文字 */
+.seismic-container.black-background .seismic-card .card-header .region,
+.seismic-container.black-background .seismic-card .card-header .update-time {
+  color: white;
+}
+
+/* 黑色背景下的数值显示 */
+.seismic-container.black-background .shindo-display,
+.seismic-container.black-background .intensity-display,
+.seismic-container.black-background .LPGM-display {
+  color: white;
+  background-color: #4A4A4A;
+}
+
+/* 黑色背景下的数据盒文字 */
+.seismic-container.black-background .data-box h4,
+.seismic-container.black-background .data-box .label-text {
+  color: white;
+}
+
+/* 绿色背景下的黑字卡片样式 - 不透明 */
+.seismic-container.green-black-background [data-v-41b86640].seismic-card {
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(255, 255, 255, 1);
+  color: #333;
+}
+
 .no-station-hint {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 300px;
-  color: #bbb;
+  color: #666;
   font-size: 1.3rem;
   opacity: 0.8;
   .hint-text {
     margin-top: 0.5rem;
   }
+}
+
+/* 地震卡片样式 - 在白色背景下调整透明度 */
+[data-v-41b86640].seismic-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px;
+  transition: all 0.3s ease;
+}
+
+/* 在白色背景下的卡片样式 */
+.seismic-container.white-background [data-v-41b86640].seismic-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }

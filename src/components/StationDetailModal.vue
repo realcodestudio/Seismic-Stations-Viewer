@@ -566,10 +566,7 @@ defineExpose({ show: showModal })
   z-index: 1000;
   backdrop-filter: blur(20px);
 
-  // 夜间模式背景
-  :global(html.dark) & {
-    background: rgba(0, 0, 0, 0.6);
-  }
+
 
   .modal-content {
     background: var(--card-bg);
@@ -713,11 +710,7 @@ defineExpose({ show: showModal })
                   transform: scale(1.1);
                 }
 
-                :global(html.dark) & {
-                  &:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                  }
-                }
+
               }
             }
 
@@ -740,9 +733,7 @@ defineExpose({ show: showModal })
                   padding-bottom: 0.5rem;
                   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
-                  :global(html.dark) & {
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                  }
+
                 }
               }
 
@@ -801,30 +792,7 @@ defineExpose({ show: showModal })
                     background: rgba(255, 255, 255, 0.266);
                   }
 
-                  // 夜间模式数据卡片样式
-                  :global(html.dark) & {
-                    background: rgba(60, 60, 60, 0.8);
-                    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
-          &:hover {
-                      background: rgba(70, 70, 70, 0.9);
-                      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-                    }
-
-                    .item-content {
-                      .label {
-                        color: rgba(255, 255, 255, 0.7);
-                      }
-
-                      .value {
-                        color: rgba(255, 255, 255, 0.95);
-                      }
-                    }
-
-                    .item-icon {
-                      color: rgba(255, 255, 255, 0.6);
-                    }
-          }
 
           .item-icon {
                   flex-shrink: 0;
@@ -866,29 +834,7 @@ defineExpose({ show: showModal })
   }
 }
 
-// 夜间模式适配样式
-:global(html.dark) .station-modal .modal-content {
-  --card-item-bg: rgba(30, 30, 30, 0.9);
-  --text-secondary: rgba(255, 255, 255, 0.176);
 
-  .panel {
-    background: rgba(40, 40, 40, 0.8);
-    
-    .panel-header {
-      background: linear-gradient(135deg, rgba(59, 131, 246, 0.319), rgb(132, 0, 255));
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .modal-header {
-      background: linear-gradient(135deg, rgba(17, 108, 255, 0.351), rgba(146, 51, 234, 0.322));
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .panel-content {
-      // 数据卡片样式已在上面单独定义，这里不需要重复
-    }
-  }
-}
 
 @media (max-width: 768px) {
   .station-modal {

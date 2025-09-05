@@ -9,7 +9,6 @@ import type { ECharts, EChartsOption } from 'echarts';
 
 const props = defineProps<{
   pgaHistory: { time: number, value: number }[];
-  isDark: boolean;
 }>();
 
 const chartContainer = ref<HTMLElement | null>(null);
@@ -44,13 +43,13 @@ const renderChart = (history: { time: number, value: number }[]) => {
 
   const { diffData, timeLabels } = calculatePgaDiff(history);
 
-  // 根据是否是夜间模式设置颜色
-  const axisColor = props.isDark ? '#555' : '#666';
-  const textColor = props.isDark ? '#bbb' : '#666';
-  const splitLineColor = props.isDark ? '#333' : '#555';
-  const waveformColor = props.isDark ? '#ff9933' : '#1e90ff';
-  const areaGradientColorStart = props.isDark ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 153, 51, 0.2)';
-  const areaGradientColorEnd = props.isDark ? 'rgba(0, 0, 0, 0)' : 'rgba(255, 153, 51, 0)';
+  // 使用浅色模式的颜色
+  const axisColor = '#666';
+  const textColor = '#666';
+  const splitLineColor = '#555';
+  const waveformColor = '#1e90ff';
+  const areaGradientColorStart = 'rgba(255, 153, 51, 0.2)';
+  const areaGradientColorEnd = 'rgba(255, 153, 51, 0)';
 
   const option: EChartsOption = {
     backgroundColor: 'transparent', // 背景透明

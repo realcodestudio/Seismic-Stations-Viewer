@@ -107,5 +107,10 @@
   "enter_custom_station_name_escaped": "Enter custom station name.",
   "custom_name_discarded_successfully": "Custom station name discarded successfully.",
   "uuid_saved_successfully": "UUID saved successfully.",
-  "uuid_discarded_successfully": "UUID discarded successfully."
+  "uuid_discarded_successfully": "UUID discarded successfully.",
+  "background_settings": "Background Settings",
+  "white_background": "White Background",
+  "wolfx_background": "Wolfx R2",
+  "green_black_background": "Green Background",
+  "black_background": "Black Background"
 }
