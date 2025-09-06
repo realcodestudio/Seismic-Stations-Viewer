@@ -5,120 +5,126 @@ export function getShindoStyle(shindo: string): CSSProperties {
   const themeStore = useThemeStore();
   const isDark = themeStore.isDark;
   
-  // JMA震度等级对应的浅色样式
+  // 震度等级对应的样式 浅色系 反之深色
   const lightStyles: Record<string, CSSProperties> = {
     "7": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(226, 0, 173, 0.57)",
-      borderColor: "rgba(58, 0, 119, 1)",
+      backgroundColor: "rgba(176, 0, 0, 0.6)",
+      borderColor: "rgba(204, 0, 0, 1)",
     },
-    "6強": {
+    "6强": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(255, 0, 55, 0.57)",
-      borderColor: "rgba(204, 41, 122, 1)",
+      backgroundColor: "rgba(255, 112, 0, 0.6)",
+      borderColor: "rgba(255, 152, 0, 1)",
     },
     "6弱": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(255, 116, 116, 0.57)",
-      borderColor: "rgba(204, 54, 54, 1)",
+      backgroundColor: "rgba(255, 182, 0, 0.6)",
+      borderColor: "rgba(255, 202, 0, 1)",
     },
-    "5強": {
+    "5强": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(255, 131, 7, 0.57)",
-      borderColor: "rgba(204, 122, 41, 1)",
+      backgroundColor: "rgba(225, 199, 85, 0.6)",
+      borderColor: "rgba(255, 222, 0, 1)",
     },
     "5弱": {
-      color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(255, 204, 51, 0.57)",
-      borderColor: "rgba(204, 163, 41, 1)",
+      color: "rgba(255, 255, 255, 1)",
+      backgroundColor: "rgba(55, 226, 120, 0.6)",
+      borderColor: "rgba(139, 195, 74, 1)",
     },
     "4": {
-      color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(255, 255, 64, 0.45)",
-      borderColor: "rgba(204, 204, 41, 1)",
+      color: "rgba(255, 255, 255, 1)",
+      backgroundColor: "rgba(49, 163, 92, 0.6)",
+      borderColor: "rgba(76, 175, 80, 1)",
     },
     "3": {
-      color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(0, 255, 132, 0.3)",
-      borderColor: "rgba(41, 204, 41, 1)",
+      color: "rgba(255, 255, 255, 1)",
+      backgroundColor: "rgba(30, 110, 230, 0.6)",
+      borderColor: "rgba(33, 150, 243, 1)",
     },
     "2": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(0, 191, 255, 0.3)",
-      borderColor: "rgba(41, 163, 204, 1)",
+      backgroundColor: "rgba(107, 135, 136, 0.6)",
+      borderColor: "rgba(96, 125, 139, 1)",
     },
     "1": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(150, 245, 255, 0.3)",
-      borderColor: "rgba(163, 163, 163, 1)",
+      backgroundColor: "rgba(255, 255, 255, 0.3)",
+      borderColor: "rgba(247, 247, 247, 0.3)",
     },
     "0": {
       color: "rgba(0, 0, 0, 1)",
       backgroundColor: "rgba(255, 255, 255, 0.3)",
-      borderColor: "rgba(214, 213, 213, 1)",
+      borderColor: "rgba(247, 247, 247, 1)",
     },
   };
 
-  // JMA震度等级对应的深色样式
   const darkStyles: Record<string, CSSProperties> = {
     "7": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(98, 0, 131, 1)",
-      borderColor: "rgba(90, 0, 151, 1)",
+      backgroundColor: "rgba(176, 0, 0, 0.6)",
+      borderColor: "rgba(236, 0, 0, 1)",
     },
-    "6強": {
+    "6强": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(141, 0, 0, 1)",
-      borderColor: "rgba(236, 57, 138, 1)",
+      backgroundColor: "rgba(220, 90, 0, 0.6)",
+      borderColor: "rgba(236, 109, 0, 1)",
     },
     "6弱": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(255, 0, 0, 1)",
-      borderColor: "rgba(236, 70, 70, 1)",
+      backgroundColor: "rgba(230, 150, 0, 0.6)",
+      borderColor: "rgba(236, 163, 0, 1)",
     },
-    "5強": {
+    "5强": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(255, 82, 34, 1)",
-      borderColor: "rgba(236, 138, 57, 1)",
+      backgroundColor: "rgba(214, 182, 40, 0.6)",
+      borderColor: "rgba(236, 196, 0, 1)",
     },
     "5弱": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(246, 148, 0, 1)",
-      borderColor: "rgba(236, 179, 57, 1)",
+      backgroundColor: "rgba(39, 164, 86, 0.6)",
+      borderColor: "rgba(66, 165, 245, 1)",
     },
     "4": {
-      color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(200, 200, 63, 1)",
-      borderColor: "rgba(236, 220, 57, 1)",
+      color: "rgba(255, 255, 255, 1)",
+      backgroundColor: "rgba(27, 132, 67, 0.6)",
+      borderColor: "rgba(56, 142, 60, 1)",
     },
     "3": {
-      color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(0, 156, 141, 1)",
-      borderColor: "rgba(57, 220, 57, 1)",
+      color: "rgba(255, 255, 255, 1)",
+      backgroundColor: "rgba(60, 112, 190, 0.6)",
+      borderColor: "rgba(41, 128, 185, 1)",
     },
     "2": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(0, 92, 178, 1)",
-      borderColor: "rgba(57, 179, 220, 1)",
+      backgroundColor: "rgba(187, 187, 187, 0.6)",
+      borderColor: "rgba(158, 158, 158, 1)",
     },
     "1": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(134, 134, 134, 1)",
+      backgroundColor: "rgba(134, 134, 134, 0.6)",
       borderColor: "rgba(179, 179, 179, 1)",
     },
     "0": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(0, 0, 0, 1)",
-      borderColor: "rgba(238, 238, 238, 1)",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      borderColor: "rgba(236, 236, 236, 1)",
     },
   };
 
-  // 如果传入的震度等级不存在，则返回默认样式
+  // 如果传入的震度不存在，则返回默认样式
   return isDark ? (darkStyles[shindo] || darkStyles["0"]) : (lightStyles[shindo] || lightStyles["0"]);
 }
 
 export function isSignificantShindo(shindo: string): boolean {
-  // 震度3以上视为显著地震
-  const significantLevels = ["3", "4", "5弱", "5強", "6弱", "6強", "7"];
+  // 震度4以上视为显著地震
+  const significantLevels = [
+    "4",
+    "5弱",
+    "5强",
+    "6弱",
+    "6强",
+    "7",
+  ];
   return significantLevels.includes(shindo);
 }

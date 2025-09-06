@@ -362,11 +362,34 @@ label {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* 在Wolfx R2背景下的卡片样式 - 半透明模糊亚克力效果 */
+/* 在Wolfx R2背景下的卡片样式实现半透明模糊亚克力效果. 强兼FF😈 */
 .seismic-container.wolfx-background [data-v-41b86640].seismic-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
+  /* Firefox和其他不支持backdrop-filter的浏览器的回退方案 */
+  background: rgba(255, 255, 255, 0.72);
+  /* 特定浏览器前缀 */
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  /* 为支持backdrop-filter的浏览器调整透明度 */
+  @supports (-webkit-backdrop-filter: blur(15px)) or (backdrop-filter: blur(15px)) {
+    background: rgba(255, 255, 255, 0.45);
+  }
+  border: 1px solid rgba(255, 255, 255, 0.802);
+  box-shadow: 0 4px 6px rgba(96, 96, 96, 0.401);
+}
+
+/* 为Wolfx背景下的所有数据显示元素添加半透明兼容样式 */
+.seismic-container.wolfx-background [data-v-41b86640].shindo-display,
+.seismic-container.wolfx-background [data-v-41b86640].intensity-display,
+.seismic-container.wolfx-background [data-v-41b86640].LPGM-display,
+.seismic-container.wolfx-background [data-v-41b86640].data-box {
+  /* Firefox和其他不支持backdrop-filter的浏览器的回退方案 */
+  background: rgba(255, 255, 255, 0.8);
+  /* 特定浏览器前缀 */
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  /* 为支持backdrop-filter的浏览器调整透明度 */
+  @supports (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px)) {
+    background: rgba(255, 255, 255, 0.6);
+  }
   border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

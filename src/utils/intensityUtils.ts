@@ -49,12 +49,12 @@ export function getIntensityStyle(intensity: string): CSSProperties {
     },
     "4": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(49, 163, 93, 0.5)",
+      backgroundColor: "rgba(49, 163, 92, 0.5)",
       borderColor: "rgba(204, 204, 41, 1)",
     },
     "3": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(30, 110, 230, 0.55)",
+      backgroundColor: "rgba(30, 110, 230, 0.5)",
       borderColor: "rgba(41, 204, 41, 1)",
     },
     "2": {
@@ -77,67 +77,67 @@ export function getIntensityStyle(intensity: string): CSSProperties {
   const darkStyles: Record<string, CSSProperties> = {
     "12": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(116, 0, 179, 1)",
+      backgroundColor: "rgba(116, 0, 179, 0.6)",
       borderColor: "rgba(90, 0, 151, 1)",
     },
     "11": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(125, 0, 132, 1)",
+      backgroundColor: "rgba(125, 0, 132, 0.6)",
       borderColor: "rgba(90, 0, 151, 1)",
     },
     "10": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(130, 0, 153, 1)",
+      backgroundColor: "rgba(130, 0, 153, 0.6)",
       borderColor: "rgba(90, 0, 151, 1)",
     },
     "9": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(160, 0, 0, 1)",
+      backgroundColor: "rgba(160, 0, 0, 0.6)",
       borderColor: "rgba(90, 0, 151, 1)",
     },
     "8": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(185, 0, 0, 1)",
+      backgroundColor: "rgba(185, 0, 0, 0.6)",
       borderColor: "rgba(236, 57, 138, 1)",
     },
     "7": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(194, 124, 1, 1)",
+      backgroundColor: "rgba(194, 124, 1, 0.6)",
       borderColor: "rgba(236, 70, 70, 1)",
     },
     "6": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(214, 182, 40, 1)",
+      backgroundColor: "rgba(214, 182, 40, 0.6)",
       borderColor: "rgba(236, 138, 57, 1)",
     },
     "5": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(39, 164, 86, 1)",
+      backgroundColor: "rgba(39, 164, 86, 0.6)",
       borderColor: "rgba(236, 179, 57, 1)",
     },
     "4": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(27, 132, 67, 1)",
+      backgroundColor: "rgba(27, 132, 67, 0.6)",
       borderColor: "rgba(236, 220, 57, 1)",
     },
     "3": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(60, 112, 190, 1)",
+      backgroundColor: "rgba(60, 112, 190, 0.6)",
       borderColor: "rgba(57, 220, 57, 1)",
     },
     "2": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(187, 187, 187, 1)",
+      backgroundColor: "rgba(187, 187, 187, 0.5)",
       borderColor: "rgba(57, 179, 220, 1)",
     },
     "1": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(134, 134, 134, 1)",
+      backgroundColor: "rgba(134, 134, 134, 0.6)",
       borderColor: "rgba(179, 179, 179, 1)",
     },
     "0": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: "rgba(0, 0, 0, 1)",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
       borderColor: "rgba(236, 236, 236, 1)",
     },
   };
