@@ -324,6 +324,37 @@ label {
   color: white;
 }
 
+/* 移动端黑色背景样式添加深色模糊效果 */
+@media screen and (max-width: 768px) {
+  .seismic-container.black-background [data-v-41b86640].seismic-card {
+    /* 深色背景下的半透明模糊效果 */
+    background: rgba(74, 74, 74, 0.8);
+    /* 添加深色模糊效果 */
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .seismic-container.black-background .shindo-display,
+  .seismic-container.black-background .intensity-display,
+  .seismic-container.black-background .LPGM-display {
+    /* 深色背景下的半透明模糊效果 */
+    background: rgba(74, 74, 74, 0.8);
+    /* 添加深色模糊效果 */
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+  }
+  
+  .seismic-container.black-background .data-box {
+    /* 深色背景下的半透明模糊效果 */
+    background: rgba(74, 74, 74, 0.8);
+    /* 添加深色模糊效果 */
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
 /* 绿色背景下的黑字卡片样式 - 不透明 */
 .seismic-container.green-black-background [data-v-41b86640].seismic-card {
   background: rgba(255, 255, 255, 1);
