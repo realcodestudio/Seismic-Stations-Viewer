@@ -360,30 +360,30 @@ label {
        screen and (max-width: 768px) and (-webkit-device-pixel-ratio: 3) {
   .seismic-container.black-background [data-v-41b86640].seismic-card {
     /* 深色背景下的半透明模糊效果 - 针对webkit优化 */
-    background: rgba(30, 30, 30, 0.9);
+    background: rgba(20, 20, 20, 0.95);
     /* 为webkit优化的深色模糊效果 */
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+    -webkit-backdrop-filter: blur(30px) brightness(0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8);
   }
   
   .seismic-container.black-background .shindo-display,
   .seismic-container.black-background .intensity-display,
   .seismic-container.black-background .LPGM-display {
     /* 深色背景下的半透明模糊效果 - 针对webkit优化 */
-    background: rgba(30, 30, 30, 0.9);
+    background: rgba(20, 20, 20, 0.95);
     /* 为webkit优化的深色模糊效果 */
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(30px) brightness(0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
   
   .seismic-container.black-background .data-box {
     /* 深色背景下的半透明模糊效果 - 针对webkit优化 */
-    background: rgba(30, 30, 30, 0.9);
+    background: rgba(20, 20, 20, 0.95);
     /* 为webkit优化的深色模糊效果 */
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(30px) brightness(0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
   }
 }
 
