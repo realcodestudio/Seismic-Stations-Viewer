@@ -200,13 +200,7 @@
               {{ $t('green_black_background') }}
             </button>
             
-            <button 
-              class="background-option-btn" 
-              :class="{ active: backgroundType === 'black' }"
-              @click="() => { backgroundType = 'black'; saveBackgroundSettings(); }"
-            >
-              {{ $t('black_background') }}
-            </button>
+
             
             <button 
               v-if="backgroundType === 'wolfx'"
@@ -553,7 +547,7 @@ onMounted(() => {
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.2.5r6') // 修改版本号
+const version = ref('v4.2.6') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -1151,77 +1145,18 @@ const saveDisplaySettings = () => {
   localStorage.setItem('displaySettings', JSON.stringify(displaySettings.value))
 }
 
-// 检测当前是否为黑色背景模式
-function isBlackBackground(): boolean {
-  return backgroundType.value === 'black';
-}
-
 // 根据显示类型和值获取对应的样式
 function getDisplayStyle(type: 'shindo' | 'intensity' | 'lpgm', value: string): CSSProperties {
-  if (isBlackBackground()) {
-    // 在黑色背景模式下，直接使用深色样式定义
-    switch (type) {
-      case 'shindo':
-        // 深色JMA震度等级样式
-        const darkShindoStyles: Record<string, CSSProperties> = {
-          "7": { color: "#ffffff", backgroundColor: "#620083", borderColor: "#5a0097" },
-          "6強": { color: "#ffffff", backgroundColor: "#8D0000", borderColor: "#ec398a" },
-          "6弱": { color: "#ffffff", backgroundColor: "#FF0000", borderColor: "#ec4646" },
-          "5強": { color: "#ffffff", backgroundColor: "#E27400", borderColor: "#ec8a39" },
-          "5弱": { color: "#ffffff", backgroundColor: "#A38C00", borderColor: "#ecb339" },
-          "4": { color: "#ffffff", backgroundColor: "#73A300", borderColor: "#ecdc39" },
-          "3": { color: "#ffffff", backgroundColor: "#00A351", borderColor: "#39dc39" },
-          "2": { color: "#ffffff", backgroundColor: "#007DB3", borderColor: "#39b3dc" },
-          "1": { color: "#000000", backgroundColor: "#868686", borderColor: "#b3b3b3" },
-          "0": { color: "#ffffff", backgroundColor: "#000000", borderColor: "#ececec" }
-        };
-        return darkShindoStyles[value] || darkShindoStyles["0"];
-        
-      case 'intensity':
-        // 深色烈度等级样式
-        const darkIntensityStyles: Record<string, CSSProperties> = {
-          "12": { color: "#ffffff", backgroundColor: "#7400B3", borderColor: "#5a0097" },
-          "11": { color: "#ffffff", backgroundColor: "#7D0084", borderColor: "#5a0097" },
-          "10": { color: "#ffffff", backgroundColor: "#820099", borderColor: "#5a0097" },
-          "9": { color: "#ffffff", backgroundColor: "#A00000", borderColor: "#5a0097" },
-          "8": { color: "#ffffff", backgroundColor: "#B90000", borderColor: "#ec398a" },
-          "7": { color: "#ffffff", backgroundColor: "#C27C01", borderColor: "#ec4646" },
-          "6": { color: "#ffffff", backgroundColor: "#D6B628", borderColor: "#ec8a39" },
-          "5": { color: "#ffffff", backgroundColor: "#27A456", borderColor: "#ecb339" },
-          "4": { color: "#ffffff", backgroundColor: "#1B8443", borderColor: "#ecdc39" },
-          "3": { color: "#ffffff", backgroundColor: "#3C70BE", borderColor: "#39dc39" },
-          "2": { color: "#000000", backgroundColor: "#BBBBBB", borderColor: "#39b3dc" },
-          "1": { color: "#ffffff", backgroundColor: "#868686", borderColor: "#b3b3b3" },
-          "0": { color: "#ffffff", backgroundColor: "#000000", borderColor: "#ececec" }
-        };
-        return darkIntensityStyles[value] || darkIntensityStyles["0"];
-        
-      case 'lpgm':
-        // 深色长周期地震动等级样式
-        const darkLPGMStyles: Record<string, CSSProperties> = {
-          "4": { color: "#ffffff", backgroundColor: "#90007D", borderColor: "#5a0097" },
-          "3": { color: "#ffffff", backgroundColor: "#BB0000", borderColor: "#ec398a" },
-          "2": { color: "#ffffff", backgroundColor: "#DC9A00", borderColor: "#ecdc39" },
-          "1": { color: "#000000", backgroundColor: "#CDAB00", borderColor: "#39dc39" },
-          "0": { color: "#ffffff", backgroundColor: "#000000", borderColor: "#ececec" }
-        };
-        return darkLPGMStyles[value] || darkLPGMStyles["0"];
-        
-      default:
-        return {};
-    }
-  } else {
-    // 非黑色背景模式下，使用常规样式
-    switch (type) {
-      case 'shindo':
-        return getShindoStyle(value);
-      case 'intensity':
-        return getIntensityStyle(value);
-      case 'lpgm':
-        return getLPGMStyle(value);
-      default:
-        return {};
-    }
+  // 直接使用常规样式
+  switch (type) {
+    case 'shindo':
+      return getShindoStyle(value);
+    case 'intensity':
+      return getIntensityStyle(value);
+    case 'lpgm':
+      return getLPGMStyle(value);
+    default:
+      return {};
   }
 }
 
@@ -1254,22 +1189,20 @@ function applyBackgroundSettings() {
     seismicContainer.style.backgroundRepeat = '';
     
     // 根据选择的背景类型添加对应的类
-    if (backgroundType.value === 'white') {
-      seismicContainer.classList.add('white-background');
-    } else if (backgroundType.value === 'wolfx') {
-      seismicContainer.classList.add('wolfx-background');
-      // 如果有保存的刷新URL，使用它而不是CSS中的默认URL
-      if (wolfxBackgroundUrl.value) {
-        seismicContainer.style.backgroundImage = `url('${wolfxBackgroundUrl.value}')`;
-        seismicContainer.style.backgroundSize = 'cover';
-        seismicContainer.style.backgroundPosition = 'center';
-        seismicContainer.style.backgroundRepeat = 'no-repeat';
-      }
-    } else if (backgroundType.value === 'green-black') {
-      seismicContainer.classList.add('green-black-background');
-    } else if (backgroundType.value === 'black') {
-      seismicContainer.classList.add('black-background');
+  if (backgroundType.value === 'white') {
+    seismicContainer.classList.add('white-background');
+  } else if (backgroundType.value === 'wolfx') {
+    seismicContainer.classList.add('wolfx-background');
+    // 如果有保存的刷新URL，使用它而不是CSS中的默认URL
+    if (wolfxBackgroundUrl.value) {
+      seismicContainer.style.backgroundImage = `url('${wolfxBackgroundUrl.value}')`;
+      seismicContainer.style.backgroundSize = 'cover';
+      seismicContainer.style.backgroundPosition = 'center';
+      seismicContainer.style.backgroundRepeat = 'no-repeat';
     }
+  } else if (backgroundType.value === 'green-black') {
+    seismicContainer.classList.add('green-black-background');
+  }
   }
 }
 
@@ -1316,8 +1249,12 @@ onMounted(() => {
   
   // 从本地存储加载背景设置
   const savedBackgroundType = localStorage.getItem('backgroundType');
-  if (savedBackgroundType) {
+  if (savedBackgroundType && savedBackgroundType !== 'black') {
     backgroundType.value = savedBackgroundType;
+  } else if (savedBackgroundType === 'black') {
+    // 如果之前是黑色背景，现在默认使用Wolfx背景
+    backgroundType.value = 'wolfx';
+    saveBackgroundSettings();
   }
   
   // 应用背景设置

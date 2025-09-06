@@ -63,11 +63,11 @@ button:focus-visible {
 
 #app {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   text-align: center;
-  overflow: hidden;
+  overflow: auto;
 }
 
 
@@ -276,110 +276,7 @@ label {
   color: black;
 }
 
-/* 纯黑背景样式 */
-#app > div[data-v-app=''] > div[data-v-41b86640].seismic-container.black-background::before {
-  background-image: none;
-  background-color: #000000;
-}
 
-#app .seismic-container.black-background {
-  background-image: none;
-  background-color: #000000;
-  color: white;
-}
-
-/* 黑色背景下的卡片样式 - 纯黑色 */
-.seismic-container.black-background [data-v-41b86640].seismic-card {
-  background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-/* 黑色背景下的文字样式 - 保留非数值显示的文字为白色 */
-.seismic-container.black-background .seismic-card .card-header .region,
-.seismic-container.black-background .seismic-card .card-header .update-time,
-.seismic-container.black-background .data-box h4,
-.seismic-container.black-background .data-box .label-text,
-.seismic-container.black-background label {
-  color: white;
-}
-
-/* 黑色背景下的卡片头部文字 */
-.seismic-container.black-background .seismic-card .card-header .region,
-.seismic-container.black-background .seismic-card .card-header .update-time {
-  color: white;
-}
-
-/* 黑色背景下的数值显示 - 纯黑色 */
-.seismic-container.black-background .shindo-display,
-.seismic-container.black-background .intensity-display,
-.seismic-container.black-background .LPGM-display {
-  color: white;
-  background-color: #000000;
-}
-
-/* 黑色背景下的数据盒文字 */
-.seismic-container.black-background .data-box h4,
-.seismic-container.black-background .data-box .label-text {
-  color: white;
-}
-
-/* 移动端黑色背景样式 - 纯黑色无模糊 */
-@media screen and (max-width: 768px) {
-  .seismic-container.black-background [data-v-41b86640].seismic-card {
-    /* 纯黑色背景，无模糊效果 */
-    background: #000000;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .seismic-container.black-background .shindo-display,
-  .seismic-container.black-background .intensity-display,
-  .seismic-container.black-background .LPGM-display {
-    /* 纯黑色背景，无模糊效果 */
-    background: #000000;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-  
-  .seismic-container.black-background .data-box {
-    /* 纯黑色背景，无模糊效果 */
-    background: #000000;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-}
-
-/* 为移动端webkit环境（Android webkit、iOS/mac webkit）添加特定的深色样式 - 纯黑色 */
-@media screen and (max-width: 768px) and (-webkit-device-pixel-ratio: 2),
-       screen and (max-width: 768px) and (-webkit-device-pixel-ratio: 3) {
-  .seismic-container.black-background [data-v-41b86640].seismic-card {
-    /* 纯黑色背景，无模糊效果 */
-    background: #000000;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8);
-  }
-  
-  .seismic-container.black-background .shindo-display,
-  .seismic-container.black-background .intensity-display,
-  .seismic-container.black-background .LPGM-display {
-    /* 纯黑色背景，无模糊效果 */
-    background: #000000;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .seismic-container.black-background .data-box {
-    /* 纯黑色背景，无模糊效果 */
-    background: #000000;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
-  }
-}
 
 /* 绿色背景下的黑字卡片样式 - 不透明 */
 .seismic-container.green-black-background [data-v-41b86640].seismic-card {
