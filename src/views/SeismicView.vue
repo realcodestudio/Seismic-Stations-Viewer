@@ -276,18 +276,18 @@
         </div>
 
         <div v-if="showStationData" class="data-grid" :class="{ 'single-item': getActiveDisplayItemsCount() === 1, 'double-items': getActiveDisplayItemsCount() === 2 }">
-          <div v-if="displaySettings.realTimeJMA" class="shindo-display" :style="getShindoStyle(data.Shindo || '0')">
+          <div v-if="displaySettings.realTimeJMA" class="shindo-display" :style="getDisplayStyle('shindo', data.Shindo || '0')">
             <h1 class="shindo-label">{{ $t('real_time_shindo') }}</h1>
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
           </div>
 
           <div v-if="displaySettings.realTimeCSIS" class="intensity-display"
-            :style="getIntensityStyle(formatIntensity(data.Intensity))">
+            :style="getDisplayStyle('intensity', formatIntensity(data.Intensity))">
             <h1 class="intensity-label">{{ $t('real_time_intensity') }}</h1>
             <span class="intensity-value">{{ formatIntensity(data.Intensity) }}</span>
           </div>
 
-          <div v-if="displaySettings.longPeriod" class="LPGM-display" :style="getLPGMStyle(String(data.LPGM || '0'))">
+          <div v-if="displaySettings.longPeriod" class="LPGM-display" :style="getDisplayStyle('lpgm', String(data.LPGM || '0'))">
             <h1 class="LPGM-label">{{ $t('realtime_LPGM') }}</h1>
             <span class="LPGM-value">{{ data.LPGM || '0' }}</span>
           </div>
@@ -553,7 +553,7 @@ onMounted(() => {
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.2.3') // 修改版本号
+const version = ref('v4.2.4') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -1151,6 +1151,80 @@ const saveDisplaySettings = () => {
   localStorage.setItem('displaySettings', JSON.stringify(displaySettings.value))
 }
 
+// 检测当前是否为黑色背景模式
+function isBlackBackground(): boolean {
+  return backgroundType.value === 'black';
+}
+
+// 根据显示类型和值获取对应的样式
+function getDisplayStyle(type: 'shindo' | 'intensity' | 'lpgm', value: string): CSSProperties {
+  if (isBlackBackground()) {
+    // 在黑色背景模式下，直接使用深色样式定义
+    switch (type) {
+      case 'shindo':
+        // 深色JMA震度等级样式
+        const darkShindoStyles: Record<string, CSSProperties> = {
+          "7": { color: "#ffffff", backgroundColor: "#620083", borderColor: "#5a0097" },
+          "6強": { color: "#ffffff", backgroundColor: "#8D0000", borderColor: "#ec398a" },
+          "6弱": { color: "#ffffff", backgroundColor: "#FF0000", borderColor: "#ec4646" },
+          "5強": { color: "#ffffff", backgroundColor: "#E27400", borderColor: "#ec8a39" },
+          "5弱": { color: "#ffffff", backgroundColor: "#A38C00", borderColor: "#ecb339" },
+          "4": { color: "#ffffff", backgroundColor: "#73A300", borderColor: "#ecdc39" },
+          "3": { color: "#ffffff", backgroundColor: "#00A351", borderColor: "#39dc39" },
+          "2": { color: "#ffffff", backgroundColor: "#007DB3", borderColor: "#39b3dc" },
+          "1": { color: "#000000", backgroundColor: "#868686", borderColor: "#b3b3b3" },
+          "0": { color: "#ffffff", backgroundColor: "#000000", borderColor: "#ececec" }
+        };
+        return darkShindoStyles[value] || darkShindoStyles["0"];
+        
+      case 'intensity':
+        // 深色烈度等级样式
+        const darkIntensityStyles: Record<string, CSSProperties> = {
+          "12": { color: "#ffffff", backgroundColor: "#7400B3", borderColor: "#5a0097" },
+          "11": { color: "#ffffff", backgroundColor: "#7D0084", borderColor: "#5a0097" },
+          "10": { color: "#ffffff", backgroundColor: "#820099", borderColor: "#5a0097" },
+          "9": { color: "#ffffff", backgroundColor: "#A00000", borderColor: "#5a0097" },
+          "8": { color: "#ffffff", backgroundColor: "#B90000", borderColor: "#ec398a" },
+          "7": { color: "#ffffff", backgroundColor: "#C27C01", borderColor: "#ec4646" },
+          "6": { color: "#ffffff", backgroundColor: "#D6B628", borderColor: "#ec8a39" },
+          "5": { color: "#ffffff", backgroundColor: "#27A456", borderColor: "#ecb339" },
+          "4": { color: "#ffffff", backgroundColor: "#1B8443", borderColor: "#ecdc39" },
+          "3": { color: "#ffffff", backgroundColor: "#3C70BE", borderColor: "#39dc39" },
+          "2": { color: "#000000", backgroundColor: "#BBBBBB", borderColor: "#39b3dc" },
+          "1": { color: "#ffffff", backgroundColor: "#868686", borderColor: "#b3b3b3" },
+          "0": { color: "#ffffff", backgroundColor: "#000000", borderColor: "#ececec" }
+        };
+        return darkIntensityStyles[value] || darkIntensityStyles["0"];
+        
+      case 'lpgm':
+        // 深色长周期地震动等级样式
+        const darkLPGMStyles: Record<string, CSSProperties> = {
+          "4": { color: "#ffffff", backgroundColor: "#90007D", borderColor: "#5a0097" },
+          "3": { color: "#ffffff", backgroundColor: "#BB0000", borderColor: "#ec398a" },
+          "2": { color: "#ffffff", backgroundColor: "#DC9A00", borderColor: "#ecdc39" },
+          "1": { color: "#000000", backgroundColor: "#CDAB00", borderColor: "#39dc39" },
+          "0": { color: "#ffffff", backgroundColor: "#000000", borderColor: "#ececec" }
+        };
+        return darkLPGMStyles[value] || darkLPGMStyles["0"];
+        
+      default:
+        return {};
+    }
+  } else {
+    // 非黑色背景模式下，使用常规样式
+    switch (type) {
+      case 'shindo':
+        return getShindoStyle(value);
+      case 'intensity':
+        return getIntensityStyle(value);
+      case 'lpgm':
+        return getLPGMStyle(value);
+      default:
+        return {};
+    }
+  }
+}
+
 // 添加背景设置的响应式状态
 const backgroundType = ref('wolfx'); // 默认使用Wolfx图床
 const wolfxBackgroundUrl = ref(''); // 保存刷新后的Wolfx背景URL
@@ -1168,7 +1242,7 @@ function saveBackgroundSettings() {
 
 // 应用背景设置
 function applyBackgroundSettings() {
-  const seismicContainer = document.querySelector('.seismic-container');
+  const seismicContainer = document.querySelector('.seismic-container') as HTMLElement;
   if (seismicContainer) {
     // 移除所有背景相关的类和内联样式，确保新背景样式能正确应用
     seismicContainer.classList.remove('wolfx-background', 'white-background', 'green-black-background', 'black-background');
@@ -1209,7 +1283,7 @@ function refreshBackground() {
     wolfxBackgroundUrl.value = newUrl;
     
     // 更新背景图片URL
-    const seismicContainer = document.querySelector('.seismic-container');
+    const seismicContainer = document.querySelector('.seismic-container') as HTMLElement;
     if (seismicContainer) {
       // 移除wolfx-background类和内联样式，防止冲突
       seismicContainer.classList.remove('wolfx-background');
@@ -1441,6 +1515,12 @@ onMounted(() => {
   max-width: 550px;
   min-height: auto;
   margin: 0 auto;
+
+  // 在黑色背景模式下，设置卡片背景为#1C1C1C
+  .black-background .seismic-card {
+    background: #1C1C1C;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.61);
+  }
 
   &.significant {
     transform: scale(1.02);
