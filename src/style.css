@@ -361,3 +361,12 @@ label {
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
+
+/* 在Wolfx R2背景下的卡片样式 - 半透明模糊亚克力效果 */
+.seismic-container.wolfx-background [data-v-41b86640].seismic-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

@@ -553,7 +553,7 @@ onMounted(() => {
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.2.4') // 修改版本号
+const version = ref('v4.2.5') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -1632,7 +1632,7 @@ onMounted(() => {
       padding: 1.2rem 0.75rem;
       border-radius: 1.52rem;
       background: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.487);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.178);
       transition: all 0.3s ease;
       min-height: 120px;
       width: 100%;
