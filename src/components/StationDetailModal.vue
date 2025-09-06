@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="station-modal" @click="closeModal">
+  <div :class="{ 'station-modal': true, 'show': show }" @click="closeModal">
     <div class="modal-content" @click.stop>
       <div class="modal-header">
         <h2>{{ currentData?.region || $t('station_details') }}</h2>
@@ -559,14 +559,27 @@ defineExpose({ show: showModal })
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.289);
+  background: rgba(255, 255, 255, 0);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(20px);
-
-
+  backdrop-filter: blur(0px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease;
+  
+  &.show {
+    opacity: 1;
+    visibility: visible;
+    background: rgba(255, 255, 255, 0.289);
+    backdrop-filter: blur(20px);
+    
+    .modal-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 
   .modal-content {
     background: var(--card-bg);
@@ -576,6 +589,9 @@ defineExpose({ show: showModal })
     max-height: 95vh;
     overflow-y: auto;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 
     .modal-header {
       position: sticky;

@@ -19,53 +19,53 @@ export function getShindoStyle(shindo: string): CSSProperties {
   const lightStyles: Record<string, CSSProperties> = {
     "7": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(176, 0, 0, 0.8)" : "rgba(176, 0, 0, 0.6)",
-      borderColor: "rgba(204, 0, 0, 1)",
+      backgroundColor: isiOS ? "rgba(255, 0, 55, 0.57)" : "rgba(226, 0, 173, 0.57)",
+      borderColor: "rgb(255, 0, 55)",
     },
-    "6强": {
+    "6強": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(255, 112, 0, 0.8)" : "rgba(255, 112, 0, 0.6)",
-      borderColor: "rgba(255, 152, 0, 1)",
+      backgroundColor: isiOS ? "rgba(255, 0, 55, 0.57)" : "rgba(255, 0, 55, 0.57)",
+      borderColor: "rgb(255, 0, 55)",
     },
     "6弱": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(255, 182, 0, 0.8)" : "rgba(255, 182, 0, 0.6)",
-      borderColor: "rgba(255, 202, 0, 1)",
+      backgroundColor: isiOS ? "rgba(255, 116, 116, 0.57)" : "rgba(255, 116, 116, 0.57)",
+      borderColor: "rgba(255, 116, 116, 1)",
     },
-    "5强": {
+    "5強": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(225, 199, 85, 0.8)" : "rgba(225, 199, 85, 0.6)",
-      borderColor: "rgba(255, 222, 0, 1)",
+      backgroundColor: isiOS ? "rgba(255, 131, 7, 0.57)" : "rgba(255, 131, 7, 0.57)",
+      borderColor: "rgba(255, 131, 7, 1)",
     },
     "5弱": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(55, 226, 120, 0.8)" : "rgba(55, 226, 120, 0.6)",
-      borderColor: "rgba(139, 195, 74, 1)",
+      backgroundColor: isiOS ? "rgba(255, 204, 51, 0.57)" : "rgba(255, 204, 51, 0.57)",
+      borderColor: "rgb(255, 204, 51)",
     },
     "4": {
-      color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(49, 163, 92, 0.8)" : "rgba(49, 163, 92, 0.6)",
-      borderColor: "rgba(76, 175, 80, 1)",
+      color: "rgb(0, 0, 0)",
+      backgroundColor: isiOS ? "rgba(255, 255, 64, 0.45)" : "rgba(255, 255, 64, 0.45)",
+      borderColor: "rgb(255, 255, 64)",
     },
     "3": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(30, 110, 230, 0.8)" : "rgba(30, 110, 230, 0.6)",
-      borderColor: "rgba(33, 150, 243, 1)",
+      backgroundColor: isiOS ? "rgba(0, 255, 132, 0.3)" : "rgba(0, 255, 132, 0.3)",
+      borderColor: "rgb(0, 255, 132)",
     },
     "2": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: isiOS ? "rgba(107, 135, 136, 0.8)" : "rgba(107, 135, 136, 0.6)",
-      borderColor: "rgba(96, 125, 139, 1)",
+      backgroundColor: isiOS ? "rgba(0, 191, 255, 0.3)" : "rgba(0, 191, 255, 0.3)",
+      borderColor: "rgb(0, 191, 255)",
     },
     "1": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: isiOS ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.3)",
-      borderColor: "rgba(247, 247, 247, 0.3)",
+      backgroundColor: isiOS ? "rgba(150, 245, 255, 0.3)" : "rgba(150, 245, 255, 0.3)",
+      borderColor: "rgb(150, 244, 255)",
     },
     "0": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: isiOS ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.3)",
-      borderColor: "rgba(247, 247, 247, 1)",
+      backgroundColor: isiOS ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.3)",
+      borderColor: "rgb(255, 255, 255)",
     },
   };
 

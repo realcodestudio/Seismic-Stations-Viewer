@@ -25,62 +25,62 @@ export function getIntensityStyle(intensity: string): CSSProperties {
     "12": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(75, 0, 116, 0.8)" : "rgba(75, 0, 116, 0.6)",
-      borderColor: "rgba(58, 0, 119, 1)",
+      borderColor: "rgb(75, 0, 116)",
     },
     "11": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(94, 0, 144, 0.75)" : "rgba(94, 0, 144, 0.55)",
-      borderColor: "rgba(58, 0, 119, 1)",
+      borderColor: "rgb(94, 0, 144)",
     },
     "10": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(115, 1, 172, 0.65)" : "rgba(115, 1, 172, 0.45)",
-      borderColor: "rgba(58, 0, 119, 1)",
+      borderColor: "rgb(115, 1, 172)",
     },
     "9": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(160, 0, 0, 0.7)" : "rgba(160, 0, 0, 0.5)",
-      borderColor: "rgba(58, 0, 119, 1)",
+      borderColor: "rgb(160, 0, 0)",
     },
     "8": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(230, 0, 0, 0.75)" : "rgba(230, 0, 0, 0.55)",
-      borderColor: "rgba(204, 41, 122, 1)",
+      borderColor: "rgb(230, 0, 0)",
     },
     "7": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(230, 156, 28, 0.8)" : "rgba(230, 156, 28, 0.6)",
-      borderColor: "rgba(204, 54, 54, 1)",
+      borderColor: "rgb(230, 156, 28)",
     },
     "6": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(225, 199, 85, 0.75)" : "rgba(225, 199, 85, 0.55)",
-      borderColor: "rgba(204, 122, 41, 1)",
+      borderColor: "rgb(225, 199, 85)",
     },
     "5": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(55, 226, 120, 0.75)" : "rgba(55, 226, 120, 0.55)",
-      borderColor: "rgba(204, 163, 41, 1)",
+      borderColor: "rgb(55, 226, 120)",
     },
     "4": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(49, 163, 92, 0.7)" : "rgba(49, 163, 92, 0.5)",
-      borderColor: "rgba(204, 204, 41, 1)",
+      borderColor: "rgb(49, 163, 93)",
     },
     "3": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(30, 110, 230, 0.7)" : "rgba(30, 110, 230, 0.5)",
-      borderColor: "rgba(41, 204, 41, 1)",
+      borderColor: "rgba(30, 110, 230, 1)",
     },
     "2": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(107, 135, 136, 0.7)" : "rgba(107, 135, 136, 0.5)",
-      borderColor: "rgba(41, 163, 204, 1)",
+      borderColor: "rgb(107, 135, 136)",
     },
     "1": {
       color: "rgba(0, 0, 0, 1)",
       backgroundColor: isiOS ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.3)",
-      borderColor: "rgba(247, 247, 247, 0.3)",
+      borderColor: "rgba(247, 247, 247, 1)",
     },
     "0": {
       color: "rgba(0, 0, 0, 1)",
@@ -142,7 +142,7 @@ export function getIntensityStyle(intensity: string): CSSProperties {
     },
     "2": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: "rgba(187, 187, 187, 0.5)",
+      backgroundColor: "rgba(107, 135, 136, 0.5)",
       borderColor: "rgba(57, 179, 220, 1)",
     },
     "1": {

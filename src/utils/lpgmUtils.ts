@@ -17,44 +17,34 @@ export function getLPGMStyle(lpgm: string): CSSProperties {
   
   // LPGM等级对应的样式 浅色系 反之深色
   const lightStyles: Record<string, CSSProperties> = {
-    "5": {
-      color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(176, 0, 0, 0.8)" : "rgba(176, 0, 0, 0.6)",
-      borderColor: "rgba(204, 0, 0, 1)",
-    },
     "4": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(255, 112, 0, 0.8)" : "rgba(255, 112, 0, 0.6)",
-      borderColor: "rgba(255, 152, 0, 1)",
+      backgroundColor: isiOS ? "rgba(220, 0, 154, 0.5)" : "rgba(220, 0, 154, 0.5)",
+      borderColor: "rgb(220, 0, 154)",
     },
     "3": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(255, 182, 0, 0.8)" : "rgba(255, 182, 0, 0.6)",
-      borderColor: "rgba(255, 202, 0, 1)",
+      backgroundColor: isiOS ? "rgba(255, 15, 15, 0.5)" : "rgba(255, 15, 15, 0.5)",
+      borderColor: "rgb(255, 15, 15)",
     },
     "2": {
       color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(55, 226, 120, 0.8)" : "rgba(55, 226, 120, 0.6)",
-      borderColor: "rgba(139, 195, 74, 1)",
+      backgroundColor: isiOS ? "rgba(255, 178, 0, 0.5)" : "rgba(255, 178, 0, 0.5)",
+      borderColor: "rgb(255, 179, 0)",
     },
     "1": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: isiOS ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.3)",
-      borderColor: "rgba(247, 247, 247, 0.3)",
+      backgroundColor: isiOS ? "rgba(255, 251, 17, 0.5)" : "rgba(255, 251, 17, 0.5)",
+      borderColor: "rgb(247, 247, 247)",
     },
     "0": {
       color: "rgba(0, 0, 0, 1)",
-      backgroundColor: isiOS ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.3)",
-      borderColor: "rgba(247, 247, 247, 1)",
+      backgroundColor: isiOS ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.3)",
+      borderColor: "rgb(255, 255, 255)",
     },
   };
 
   const darkStyles: Record<string, CSSProperties> = {
-    "5": {
-      color: "rgba(255, 255, 255, 1)",
-      backgroundColor: isiOS ? "rgba(176, 0, 0, 0.8)" : "rgba(176, 0, 0, 0.6)",
-      borderColor: "rgba(236, 0, 0, 1)",
-    },
     "4": {
       color: "rgba(255, 255, 255, 1)",
       backgroundColor: isiOS ? "rgba(220, 90, 0, 0.8)" : "rgba(220, 90, 0, 0.6)",

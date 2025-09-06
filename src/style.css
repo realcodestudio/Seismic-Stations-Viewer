@@ -200,8 +200,7 @@ label {
   margin-left: 0;
 }
 
-/* 确保背景图完全覆盖整个容器 */
-/* 默认使用Wolfx图床背景 */
+/* 默认使用Wolfx RC图床背景 */
 #app > div[data-v-app=''] > div[data-v-41b86640].seismic-container::before {
   content: '';
   position: fixed;
@@ -264,21 +263,21 @@ label {
   color: white;
 } */
 
-/* 绿色背景（黑字）样式 */
+/* 绿色背景样式 */
 #app > div[data-v-app=''] > div[data-v-41b86640].seismic-container.green-black-background::before {
   background-image: none;
-  background-color: #27F531;
+  background-color: #11ff00;
 }
 
 #app .seismic-container.green-black-background {
   background-image: none;
-  background-color: #27F531;
+  background-color: #11ff00;
   color: black;
 }
 
 
 
-/* 绿色背景下的黑字卡片样式 - 不透明 */
+/* 绿色背景下的黑字卡片样式*/
 .seismic-container.green-black-background [data-v-41b86640].seismic-card {
   background: rgba(255, 255, 255, 1);
   border: 1px solid rgba(255, 255, 255, 1);
@@ -311,7 +310,7 @@ label {
   margin: 10px;
   transition: all 0.3s ease;
   
-  /* 强兼iOS Safari */
+  /* 强兼Safari😈 */
   @media screen and (max-width: 768px) and (-webkit-device-pixel-ratio: 2) {
     background: rgba(255, 255, 255, 0.7);
     -webkit-backdrop-filter: blur(8px);
@@ -331,19 +330,20 @@ label {
   background: rgba(var(--card-bg-rgb), 0.5);
   /* 增加模糊半径并添加饱和度效果，与设置面板保持一致 */
   -webkit-backdrop-filter: blur(60px) saturate(180%);
-  backdrop-filter: blur(60px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.802);
+  backdrop-filter: blur(35px) saturate(180%); /* 调整模糊半径 */
+  border: 1px solid rgba(255, 255, 255, 0.752);
   box-shadow: 0 4px 6px rgba(96, 96, 96, 0.401);
 }
 
-/* 为Wolfx背景下的所有数据显示元素添加半透明兼容样式 */
+/* 为背景下的所有数据显示元素添加半透明兼容样式 */
 .seismic-container.wolfx-background [data-v-41b86640].shindo-display,
 .seismic-container.wolfx-background [data-v-41b86640].intensity-display,
 .seismic-container.wolfx-background [data-v-41b86640].LPGM-display,
 .seismic-container.wolfx-background [data-v-41b86640].data-box {
-  /* 采用与设置面板相同的模糊逻辑实现 */
-  background: rgba(var(--card-bg-rgb), 0.5);
-  /* 增加模糊半径并添加饱和度效果，与设置面板保持一致 */
+
+  /* grid alpha */
+   background: rgba(var(--card-bg-rgb), 0.09);
+
   -webkit-backdrop-filter: blur(60px) saturate(180%);
   backdrop-filter: blur(60px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.7);

@@ -1,5 +1,5 @@
 <template>
-  <div class="seismic-container">
+  <div class="seismic-container" :class="{ 'initial-loaded': initialLoad }">
     <div class="controls-container">
       <button class="main-toggle" @click="toggleControls">
         <Icon :icon="showControls ? 'mdi:close' : 'mdi:menu'" size="32" style="width: 32px; height: 32px;" />
@@ -165,12 +165,7 @@
           </div>
 
 
-          <div class="geoip-section">
-            <button @click="() => refreshGeoIP(true)" :disabled="isGeoIPDetecting" class="geoip-refresh-btn">
-              <Icon icon="mdi:refresh" :class="{ 'spinning': isGeoIPDetecting }" />
-              {{ isGeoIPDetecting ? $t('detecting_location') : $t('redetect_location') }}
-            </button>
-          </div>
+
         </div>
 
         <div class="background-section">
@@ -237,6 +232,36 @@
             <span class="version">{{ version }}</span>
           </div>
         </div>
+
+        <!-- 撤销协议按钮 -->
+        <div class="reset-terms-section">
+          <button 
+            class="reset-terms-button"
+            @click="showResetTermsConfirm = true"
+            style="background: #ff4444; color: #fff; border: none; border-radius: 20px; padding: 10px 15px; font-size: 0.7rem; cursor: pointer; transition: background 0.2s;">
+            {{ $t('reset_terms') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 撤销协议确认弹窗 -->
+    <div v-if="showResetTermsConfirm" class="reset-terms-modal-overlay" @click="showResetTermsConfirm = false">
+      <div class="reset-terms-modal" @click.stop>
+        <div class="reset-terms-header">
+          <h3>{{ $t('confirm_reset_terms') }}</h3>
+        </div>
+        <div class="reset-terms-body">
+          <p>{{ $t('reset_terms_confirm_message') }}</p>
+          <div class="reset-terms-buttons">
+            <button class="reset-terms-cancel" @click="showResetTermsConfirm = false">
+              {{ $t('cancel') }}
+            </button>
+            <button class="reset-terms-confirm" @click="resetTermsAndReload">
+              {{ $t('confirm') }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -260,8 +285,8 @@
     </div>
 
     <div class="stations-grid">
-      <div v-for="data in filteredSeismicData" :key="data.type" class="seismic-card" :style="getCardStyle(data.Shindo)"
-        :class="{ 'significant': isSignificantShindo(data.Shindo) }">
+      <div v-for="(data, index) in filteredSeismicData" :key="data.type" class="seismic-card" :style="getCardStyle(data.Shindo)"
+        :class="{ 'significant': isSignificantShindo(data.Shindo), 'animate': initialLoad }" :data-index="index">
         <div class="card-header">
           <h1 class="region">
             <Icon icon="mdi:map-marker" />{{ customStationName[data.type] || $t('region', { region: data.region }) }}
@@ -387,6 +412,7 @@ const defaultWebsocketUrl = 'wss://seisjs.wolfx.jp/all_seis';
 // API提醒模态框相关数据
 const showApiWarning = ref(false);
 const previousWebsocketUrl = ref(websocketUrl.value);
+const initialLoad = ref(false);
 
 const saveWebsocketUrl = () => {
   // 检查是否是非默认API地址
@@ -547,7 +573,7 @@ onMounted(() => {
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
-const version = ref('v4.2.6') // 修改版本号
+const version = ref('v4.3.0') // 修改版本号
 ////版本号！！！
 ////版本号！！！
 ////版本号！！！
@@ -602,17 +628,7 @@ const changeLanguage = (lang: string) => {
   // URL 更新会通过 locale 的 watcher 自动处理
 }
 
-// 手动刷新 GeoIP 检测
-const refreshGeoIP = async (forceRefresh = false) => {
-  if (forceRefresh) {
-    // 清除缓存，强制重新检测
-    localStorage.removeItem('geoip_cache')
-    localStorage.removeItem('geoip_cache_time')
-  }
-  
-  // 重新检测（使用缓存）
-  await detectUserLocation(true)
-}
+
 
 // 确保在页面加载时处理哈希URL
 // onMounted(() => {
@@ -638,31 +654,7 @@ const refreshGeoIP = async (forceRefresh = false) => {
 //   });
 // });
 
-// 页面加载时的 GeoIP 检测（每次刷新都调用 API）
-const initGeoIP = async () => {
-  // 清除缓存，确保每次都调用 API
-  try {
-    localStorage.removeItem('geoip_cache')
-    localStorage.removeItem('geoip_cache_time')
-  } catch (error) {
-    console.warn('无法清除缓存:', error)
-  }
-  
-  // 调用 API 检测（不使用缓存）
-  await detectUserLocation(false)
-  
-  // 从本地存储读取保存的UUID - 放在detectUserLocation之后
-  try {
-    const savedUUID = localStorage.getItem('savedStationUUID');
-    if (savedUUID && savedUUID.trim()) {
-      stationTypeFilter.value = savedUUID.trim();
-      // 同时加载自定义测站名称
-      loadCustomStationName(savedUUID.trim());
-    }
-  } catch (error) {
-    console.warn('无法读取保存的UUID:', error);
-  }
-}
+
 
 // 自动刷新相关函数
 const startAutoRefresh = () => {
@@ -723,6 +715,11 @@ function formatTime(timeStr: string) {
 }
 
 onMounted(async () => {
+  // 页面加载完成后，添加延迟以实现开场动画
+  setTimeout(() => {
+    initialLoad.value = true
+  }, 100)
+  
   initWebSocket()
   console.log('初始数据:', seismicDataArray.value)
   
@@ -786,6 +783,26 @@ function formatIntensity(value: string | number | null | undefined): string {
 
 const stationTypeFilter = ref('')
 const showSettings = ref(false)
+const showResetTermsConfirm = ref(false)
+
+// 控制body滚动的函数
+const setBodyScroll = (allowScroll: boolean) => {
+  const body = document.body;
+  if (allowScroll) {
+    body.style.overflow = '';
+    body.style.touchAction = '';
+  } else {
+    body.style.overflow = 'hidden';
+    body.style.touchAction = 'none';
+  }
+}
+
+const resetTermsAndReload = () => {
+  // 清除所有localStorage数据
+  localStorage.clear();
+  // 重新加载页面
+  window.location.reload();
+}
 
 // 从 URL 初始化测站过滤器和自定义名称
 onMounted(async () => {
@@ -817,8 +834,17 @@ onMounted(async () => {
   //   }
   // }
   
-  // 页面加载时自动执行一次位置检测（每次刷新都调用 API）
-  await initGeoIP()
+  // 从本地存储读取保存的UUID
+  try {
+    const savedUUID = localStorage.getItem('savedStationUUID');
+    if (savedUUID && savedUUID.trim()) {
+      stationTypeFilter.value = savedUUID.trim();
+      // 同时加载自定义测站名称
+      loadCustomStationName(savedUUID.trim());
+    }
+  } catch (error) {
+    console.warn('无法读取保存的UUID:', error);
+  }
 })
 
 // 监听测站过滤器变化，更新 URL
@@ -858,6 +884,8 @@ const displaySettings = ref({
 
 function toggleSettings() {
   showSettings.value = !showSettings.value
+  // 在设置面板显示时禁用body滚动，隐藏时启用body滚动
+  setBodyScroll(!showSettings.value)
 }
 
 const now = ref(Date.now())
@@ -991,114 +1019,6 @@ onUnmounted(() => {
 
 const customStationName = ref<Record<string, string>>({}) // 存储自定义名称，键为UUID
 const pendingDetailUUID = ref<string | null>(null) // 待显示详情的测站UUID
-const isGeoIPDetecting = ref(false) // 是否正在检测地理位置
-
-// 国家/地区代码到语言的映射（用于手动刷新功能）
-const countryLanguageMap: Record<string, string> = {
-  'CN': 'zhs',   // 中国大陆 - 简体中文
-  'HK': 'zht',   // 香港 - 繁体中文
-  'MO': 'zht',   // 澳门 - 繁体中文
-  'TW': 'zht',   // 台湾 - 繁体中文
-  'KR': 'ko',    // 韩国 - 韩语
-  'JP': 'ja',    // 日本 - 日语
-  'US': 'en',    // 美国 - 英语
-  'UK': 'en',    // 英国 - 英语
-  'EN': 'en'     // 英语国家代码 - 英语
-}
-
-
-// 检测用户地理位置并设置语言（用于手动刷新）
-const detectUserLocation = async (useCache = false): Promise<void> => {
-  if (isGeoIPDetecting.value) return // 防止重复检测
-  
-  // 页面加载时跳过缓存检查，直接调用 GeoAPI
-  // 只有在手动刷新时才检查缓存
-  if (useCache) {
-    // 检查本地存储中是否有缓存的检测结果
-    let cachedGeoIP: string | null = null
-    let cacheTime: string | null = null
-    
-    try {
-      cachedGeoIP = localStorage.getItem('geoip_cache')
-      cacheTime = localStorage.getItem('geoip_cache_time')
-    } catch (error) {
-      console.warn('无法访问 localStorage，跳过缓存检查:', error)
-    }
-    
-    // 如果缓存存在且不超过24小时，使用缓存结果
-    if (cachedGeoIP && cacheTime) {
-      const cacheAge = Date.now() - parseInt(cacheTime)
-      const maxCacheAge = 24 * 60 * 60 * 1000 // 24小时
-      
-      if (cacheAge < maxCacheAge) {
-        try {
-          const cachedData = JSON.parse(cachedGeoIP)
-          const countryCode = cachedData.country_code
-          if (countryCode && countryLanguageMap[countryCode]) {
-            const detectedLanguage = countryLanguageMap[countryCode]
-            console.log(`使用缓存的 GeoIP 数据: ${countryCode}, 语言: ${detectedLanguage}`)
-            if (locale.value !== detectedLanguage) {
-              locale.value = detectedLanguage
-              console.log(`语言已更新为: ${detectedLanguage}`)
-            }
-            return
-          }
-        } catch (error) {
-          console.warn('缓存数据解析失败，重新检测:', error)
-        }
-      }
-    }
-  }
-  
-  isGeoIPDetecting.value = true
-  
-  try {
-    console.log('正在检测用户地理位置...')
-    const response = await fetch('https://api.wolfx.jp/geoip.php')
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    console.log('GeoIP 响应:', data)
-    
-    // 缓存检测结果
-    try {
-      localStorage.setItem('geoip_cache', JSON.stringify(data))
-      localStorage.setItem('geoip_cache_time', Date.now().toString())
-    } catch (error) {
-      console.warn('无法保存到 localStorage:', error)
-    }
-    
-    const countryCode = data.country_code
-    if (countryCode && countryLanguageMap[countryCode]) {
-      const detectedLanguage = countryLanguageMap[countryCode]
-      console.log(`检测到国家/地区: ${countryCode}, 设置语言: ${detectedLanguage}`)
-      
-      // 只有在当前语言不是检测到的语言时才更新
-      if (locale.value !== detectedLanguage) {
-        locale.value = detectedLanguage
-        console.log(`语言已更新为: ${detectedLanguage}`)
-      }
-    } else {
-      console.log(`未识别的国家/地区代码: ${countryCode}, 使用默认英语`)
-      if (locale.value !== 'en') {
-        locale.value = 'en'
-        console.log('语言已设置为默认英语')
-      }
-    }
-  } catch (error) {
-    console.error('GeoIP 检测失败:', error)
-    // 检测失败时使用默认英语
-    if (locale.value !== 'en') {
-      locale.value = 'en'
-      console.log('GeoIP 检测失败，使用默认英语')
-    }
-  } finally {
-    isGeoIPDetecting.value = false
-  }
-}
 
 // 生成URL (当前未使用)
 // @ts-ignore
@@ -1259,6 +1179,11 @@ onMounted(() => {
   
   // 应用背景设置
   applyBackgroundSettings();
+  
+  // 如果当前是wolfx背景，自动刷新获取新背景
+  if (backgroundType.value === 'wolfx') {
+    refreshBackground();
+  }
 })
 
 function goToCreateStation() {
@@ -1417,6 +1342,14 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+
+  &.initial-loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
   @media (max-width: 768px) {
     padding: 0.8rem;
@@ -1452,11 +1385,81 @@ onMounted(() => {
   max-width: 550px;
   min-height: auto;
   margin: 0 auto;
+  opacity: 0;
+  transform: translateY(20px);
+  // 初始状态
+  opacity: 0;
+  transform: translateY(20px);
 
   // 在黑色背景模式下，设置卡片背景为#1C1C1C
   .black-background .seismic-card {
     background: #1C1C1C;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.61);
+  }
+
+  // 只有添加animate类时才应用动画
+  &.animate {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  // 根据data-index设置不同的动画延迟
+  &[data-index="0"].animate {
+    animation-delay: 0.2s;
+  }
+  
+  &[data-index="1"].animate {
+    animation-delay: 0.3s;
+  }
+  
+  &[data-index="2"].animate {
+    animation-delay: 0.4s;
+  }
+  
+  &[data-index="3"].animate {
+    animation-delay: 0.5s;
+  }
+  
+  &[data-index="4"].animate {
+    animation-delay: 0.6s;
+  }
+  
+  &[data-index="5"].animate,
+  &[data-index="6"].animate,
+  &[data-index="7"].animate {
+    animation-delay: 0.7s;
+  }
+  
+  &[data-index="8"].animate,
+  &[data-index="9"].animate {
+    animation-delay: 0.8s;
+  }
+  
+  &[data-index="10"].animate,
+  &[data-index="11"].animate,
+  &[data-index="12"].animate {
+    animation-delay: 0.9s;
+  }
+  
+  &[data-index="13"].animate,
+  &[data-index="14"].animate,
+  &[data-index="15"].animate {
+    animation-delay: 1s;
+  }
+  
+  // 超过15个的卡片
+  &[data-index^="1"].animate {
+    animation-delay: 1.1s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   &.significant {
@@ -1944,18 +1947,34 @@ onMounted(() => {
   right: -700px;
   width: 700px;
   height: 100vh;
-  background: rgba(var(--card-bg-rgb), 0.5);
-  backdrop-filter: blur(120px) saturate(180%);
-  -webkit-backdrop-filter: blur(120px) saturate(180%);
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease;
+  background: rgba(var(--card-bg-rgb), 0);
+  backdrop-filter: blur(0px) saturate(100%);
+  -webkit-backdrop-filter: blur(0px) saturate(100%);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 1000;
   display: flex;
   flex-direction: column;
   text-align: left;
+  /* 解决横向滚动问题 */
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.95);
 
   &.show {
     right: 0;
+    background: rgba(var(--card-bg-rgb), 0.5);
+    backdrop-filter: blur(120px) saturate(180%);
+    -webkit-backdrop-filter: blur(120px) saturate(180%);
+    box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+    transform: scale(1);
+    /* 确保滚动只在设置面板内部进行 */
+    overflow-y: auto;
+  }
+  /* 当隐藏时不显示在页面流中 */
+  &:not(.show) {
+    display: none;
   }
 
   .settings-header {
@@ -1990,8 +2009,7 @@ onMounted(() => {
   }
 
   .settings-content {
-    flex: 1;
-    overflow-y: auto;
+    width: 100%;
     padding: 1.5rem;
 
     &::-webkit-scrollbar {
@@ -2191,41 +2209,7 @@ onMounted(() => {
         }
       }
 
-      .geoip-section {
-        margin-top: 1rem;
-        
-        .geoip-refresh-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.5rem 1rem;
-          border: none;
-          border-radius: 0.5rem;
-          background: rgba(255, 255, 255, 0.1);
-          color: var(--text-color);
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-size: 0.9rem;
 
-          &:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.2);
-          }
-
-          &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-
-          .spinning {
-            animation: spin 1s linear infinite;
-          }
-
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        }
-      }
     }
 
     .filter-section,
@@ -2711,5 +2695,91 @@ onMounted(() => {
 
 .close-btn:hover {
   background: rgba(0, 0, 0, 0.1);
+}
+
+/* 撤销协议按钮样式 */
+.reset-terms-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.reset-terms-button:hover {
+  background: #cc0000;
+}
+
+/* 撤销协议确认弹窗样式 */
+.reset-terms-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.reset-terms-modal {
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.reset-terms-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.reset-terms-header h3 {
+  color: #ff4444;
+  margin: 0;
+}
+
+.reset-terms-body p {
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.reset-terms-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.reset-terms-cancel,
+.reset-terms-confirm {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.reset-terms-cancel {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.reset-terms-cancel:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.reset-terms-confirm {
+  background-color: #ff4444;
+  color: #ffffff;
+}
+
+.reset-terms-confirm:hover {
+  background-color: #cc0000;
 }
 </style>

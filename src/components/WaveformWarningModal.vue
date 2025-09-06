@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isVisible" class="modal-overlay" @click.self="cancel">
+  <div :class="{ 'modal-overlay': true, 'show': isVisible }" @click.self="cancel">
     <div class="modal-content">
       <h3>{{ $t('waveform_accuracy_warning_title') }}</h3>
       <p>{{ $t('waveform_accuracy_warning_message') }}</p>
@@ -54,11 +54,25 @@ const cancel = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.91);
+  background: rgba(0, 0, 0, 0);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.91);
+  
+  .modal-content {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-content {
@@ -67,6 +81,9 @@ const cancel = () => {
   border-radius: 20px;
   text-align: center;
   max-width: 400px;
+  transform: translateY(30px) scale(0.9);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .modal-checkbox {
