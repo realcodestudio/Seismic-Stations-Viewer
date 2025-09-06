@@ -5,6 +5,9 @@
 
   color: #213547;
   background-color: #ffffff;
+  /* 定义卡片背景色RGB变量，用于rgba()函数 */
+  --card-bg-rgb: 255, 255, 255;
+  --card-bg: rgba(255, 255, 255, 0.8);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -370,20 +373,11 @@ label {
 
 /* 在Wolfx R2背景下的卡片样式实现半透明模糊亚克力效果. 强兼FF😈 */
 .seismic-container.wolfx-background [data-v-41b86640].seismic-card {
-  /* Firefox和其他不支持backdrop-filter的浏览器的回退方案 */
-  background: rgba(255, 255, 255, 0.72);
-  /* 特定浏览器前缀 */
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  /* 为支持backdrop-filter的浏览器调整透明度 */
-  @supports (-webkit-backdrop-filter: blur(15px)) or (backdrop-filter: blur(15px)) {
-    background: rgba(255, 255, 255, 0.45);
-  }
-  /* iOS Safari特殊处理 */
-  @media screen and (max-width: 768px) and (-webkit-device-pixel-ratio: 2) {
-    background: rgba(255, 255, 255, 0.6);
-    -webkit-backdrop-filter: blur(8px);
-  }
+  /* 采用与设置面板相同的模糊逻辑实现 */
+  background: rgba(var(--card-bg-rgb), 0.5);
+  /* 增加模糊半径并添加饱和度效果，与设置面板保持一致 */
+  -webkit-backdrop-filter: blur(60px) saturate(180%);
+  backdrop-filter: blur(60px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.802);
   box-shadow: 0 4px 6px rgba(96, 96, 96, 0.401);
 }
@@ -393,19 +387,10 @@ label {
 .seismic-container.wolfx-background [data-v-41b86640].intensity-display,
 .seismic-container.wolfx-background [data-v-41b86640].LPGM-display,
 .seismic-container.wolfx-background [data-v-41b86640].data-box {
-  /* Firefox和其他不支持backdrop-filter的浏览器的回退方案 */
-  background: rgba(255, 255, 255, 0.8);
-  /* 特定浏览器前缀 */
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  /* 为支持backdrop-filter的浏览器调整透明度 */
-  @supports (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px)) {
-    background: rgba(255, 255, 255, 0.6);
-  }
-  /* iOS Safari特殊处理 */
-  @media screen and (max-width: 768px) and (-webkit-device-pixel-ratio: 2) {
-    background: rgba(255, 255, 255, 0.7);
-    -webkit-backdrop-filter: blur(8px);
-  }
+  /* 采用与设置面板相同的模糊逻辑实现 */
+  background: rgba(var(--card-bg-rgb), 0.5);
+  /* 增加模糊半径并添加饱和度效果，与设置面板保持一致 */
+  -webkit-backdrop-filter: blur(60px) saturate(180%);
+  backdrop-filter: blur(60px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.7);
 }
