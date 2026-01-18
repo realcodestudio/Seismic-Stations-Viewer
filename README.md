@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+>This project is no longer under active development.<br>
+>Please visit <a href=https://github.com/realcodestudio/Lens>Bousai Lens</a> for an alternative.
+
+
 <div align="center">
   <image width="256em" src="https://github.com/user-attachments/assets/84003231-98c7-4b10-a761-f5bcf01a3adb" />
  </div>
