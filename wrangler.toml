@@ -1,4 +1,4 @@
-name = "Seismic-Stations-Viewer"
+name = "seismic-stations-viewer"
 main = "worker/index.ts"
 compatibility_date = "2026-02-23"
 
