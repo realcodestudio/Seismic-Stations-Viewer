@@ -1,0 +1,7 @@
+name = "Seismic-Stations-Viewer"
+main = "worker/index.ts"
+compatibility_date = "2026-02-23"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
