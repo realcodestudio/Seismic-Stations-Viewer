@@ -37,11 +37,24 @@ const initChart = () => {
   }
 };
 
+// Y轴动态量程档位
+const Y_AXIS_STEPS = [0.4, 2, 5, 10, 30, 50, 100, 125, 200, 300, 500, 1000, 1250, 2000, 3000, 5000, 10000]
+
+// 根据数据最大绝对值计算Y轴量程
+function getYAxisMax(data: number[]): number {
+  const maxVal = data.reduce((max, v) => Math.max(max, Math.abs(v)), 0)
+  for (const step of Y_AXIS_STEPS) {
+    if (maxVal < step) return step
+  }
+  return 10000
+}
+
 // 渲染图表
 const renderChart = (history: { time: number, value: number }[]) => {
   if (!chart) return;
 
   const { diffData, timeLabels } = calculatePgaDiff(history);
+  const yMax = getYAxisMax(diffData);
 
   // 使用浅色模式的颜色
   const axisColor = '#666';
@@ -69,6 +82,8 @@ const renderChart = (history: { time: number, value: number }[]) => {
     },
     yAxis: {
       type: 'value',
+      min: -yMax,
+      max: yMax,
       axisLine: { show: true, lineStyle: { color: axisColor } }, // 坐标轴线颜色
       axisLabel: { color: textColor }, // 坐标轴文字颜色
       splitLine: { show: true, lineStyle: { type: 'dashed', color: splitLineColor } }, // 网格线样式

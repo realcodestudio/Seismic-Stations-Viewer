@@ -59,8 +59,6 @@
   "error": "観測点UUIDが正しくありません",
   "language": "言語設定",
   "alert_settings": "警報音しきい値設定",
-  "auto_refresh_settings": "WebSocket 自動更新設定",
-  "background_auto_refresh": "10分ごとに観測点リストを自動更新",
   "shindo_3": "震度3以上",
   "shindo_4": "震度4以上",
   "shindo_5-": "震度5弱以上",
@@ -133,5 +131,6 @@
   "reject_confirm_title": "通知",
   "reject_confirm_message": "同意しないとソフトウェアを使用できません",
   "reject_cancel_button": "キャンセル",
-  "continue_disagree_button": "同意しないまま続行"
+  "continue_disagree_button": "同意しないまま続行",
+  "station_unresponsive": "観測点データ応答なし"
 }

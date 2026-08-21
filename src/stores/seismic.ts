@@ -66,6 +66,9 @@ interface SeismicData {
 
   // 添加历史 PGA 数据属性
   pgaHistory: { time: number; value: number }[];
+
+  // PGA 值最后一次变化的时间戳
+  lastPgaChangeAt: number;
 }
 
 export const useSeismicStore = defineStore("seismic", () => {
@@ -78,8 +81,16 @@ export const useSeismicStore = defineStore("seismic", () => {
     const currentStationData = seismicDataMap.value.get(data.type);
     const pgaHistory = currentStationData?.pgaHistory || [];
 
+    // 追踪 PGA 值是否发生变化
+    const prevPGA = currentStationData?.PGA;
+    const now = Date.now();
+    let lastPgaChangeAt = currentStationData?.lastPgaChangeAt || now;
+    if (prevPGA === undefined || prevPGA !== restData.PGA) {
+      lastPgaChangeAt = now;
+    }
+
     // 添加新的 PGA 数据点
-    pgaHistory.push({ time: Date.now(), value: restData.PGA });
+    pgaHistory.push({ time: now, value: restData.PGA });
 
     // 保持历史数据数组长度不超过 60
     if (pgaHistory.length > 60) {
@@ -91,8 +102,8 @@ export const useSeismicStore = defineStore("seismic", () => {
       region: restData.region || data.type.slice(-6),
       latitude: restData.latitude || 0,
       longitude: restData.longitude || 0,
-      // 添加更新后的历史数据
       pgaHistory: pgaHistory,
+      lastPgaChangeAt: lastPgaChangeAt,
     };
 
     seismicDataMap.value.set(data.type, updatedData);

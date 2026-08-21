@@ -39,17 +39,6 @@
           </div>
         </div>
 
-        <div class="refresh-section">
-          <label>{{ $t('auto_refresh_settings') }}</label>
-          <div class="refresh-control">
-            <label class="toggle-switch">
-              <input type="checkbox" v-model="autoRefreshEnabled" @change="saveAutoRefreshSetting">
-              <span class="slider"></span>
-            </label>
-            <span class="refresh-text">{{ $t('background_auto_refresh') }}</span>
-          </div>
-        </div>
-
         <div class="websocket-section">
           <label>{{ $t('websocket_settings') }}</label>
           <div class="websocket-control">
@@ -285,8 +274,10 @@
     </div>
 
     <div class="stations-grid">
-      <div v-for="(data, index) in filteredSeismicData" :key="data.type" class="seismic-card" :style="getCardStyle(data.Shindo)"
-        :class="{ 'significant': isSignificantShindo(data.Shindo), 'animate': initialLoad }" :data-index="index">
+      <div v-for="(data, index) in filteredSeismicData" :key="data.type" class="seismic-card"
+        :class="{ 'significant': isSignificantShindo(data.Shindo), 'animate': initialLoad, 'pga-stale': isStationStale(data) }" :data-index="index"
+        :style="getCardStyle(data.Shindo)"
+        @click="showStationDetail(data)">
         <div class="card-header">
           <h1 class="region">
             <Icon icon="mdi:map-marker" />{{ customStationName[data.type] || $t('region', { region: data.region }) }}
@@ -294,7 +285,7 @@
           <span class="update-time">{{ $t('update_time', { time: formatTime(data.update_at) }) }}</span>
         </div>
 
-        <div v-if="showStationData" class="data-grid" :class="{ 'single-item': getActiveDisplayItemsCount() === 1, 'double-items': getActiveDisplayItemsCount() === 2 }">
+        <div v-if="showStationData && !isStationStale(data)" class="data-grid" :class="{ 'single-item': getActiveDisplayItemsCount() === 1, 'double-items': getActiveDisplayItemsCount() === 2 }">
           <div v-if="displaySettings.realTimeJMA" class="shindo-display" :style="getDisplayStyle('shindo', data.Shindo || '0')">
             <h1 class="shindo-label">{{ $t('real_time_shindo') }}</h1>
             <span class="shindo-value">{{ data.Shindo || '0' }}</span>
@@ -354,7 +345,7 @@
           </div>
         </div>
 
-        <div v-if="!showStationData" class="simplified-data-grid">
+        <div v-if="!showStationData && !isStationStale(data)" class="simplified-data-grid">
           <div class="simplified-data-item">
             <span class="label">{{ $t('real_time_shindo') }}</span>
             <span class="value">{{ data.Shindo || '0' }}</span>
@@ -369,13 +360,12 @@
           </div>
         </div>
 
-        <PgaWaveformChart v-if="!showStationData" :pga-history="data.pgaHistory" />
+        <PgaWaveformChart v-if="!showStationData && !isStationStale(data)" :pga-history="data.pgaHistory" />
 
-        <div class="card-footer">
-          <button class="detail-btn" @click="showStationDetail(data)">
-            <Icon icon="mdi:information" class="icon" />
-            {{ $t('details') }}
-          </button>
+        <!-- PGA 无响应提示 -->
+        <div v-if="isStationStale(data)" class="stale-hint">
+          <Icon icon="mdi:alert" size="36" />
+          <span>{{ $t('station_unresponsive') }}</span>
         </div>
       </div>
     </div>
@@ -656,30 +646,8 @@ const changeLanguage = (lang: string) => {
 
 
 
-// 自动刷新相关函数
-const startAutoRefresh = () => {
-  if (refreshInterval) return
-
-  refreshInterval = window.setInterval(() => {
-    if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
-      console.log('WebSocket连接已断开，尝试重新连接...')
-      initWebSocket()
-    }
-  }, 600000)
-}
-
-const stopAutoRefresh = () => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
-    refreshInterval = null
-  }
-}
-
-
-
 // 组件卸载时清理
 onUnmounted(() => {
-  stopAutoRefresh()
   if (ws.value) {
     ws.value.close()
   }
@@ -908,15 +876,32 @@ function parseUpdateAt(str: string): number {
   return new Date(str.replace(/-/g, '/')).getTime()
 }
 
-const EXPIRE_SECONDS = 25 // 约25秒后自动隐藏update_time长时间未更新测站
+const PGA_STALE_SECONDS = 25 // PGA 超过25秒未变化则隐藏测站卡片
+
+// 判断测站 PGA 是否已超时未变化
+function isStationStale(data: any): boolean {
+  if (data.lastPgaChangeAt) {
+    return now.value - data.lastPgaChangeAt >= PGA_STALE_SECONDS * 1000
+  }
+  const updateTime = parseUpdateAt(data.update_at)
+  return now.value - updateTime >= 25 * 1000
+}
 
 const filteredSeismicData = computed(() => {
-  let arr = !stationTypeFilter.value
+  const isFiltered = stationTypeFilter.value && stationTypeFilter.value.trim();
+  let arr = !isFiltered
     ? seismicDataArray.value
     : seismicDataArray.value.filter(data => data.type === stationTypeFilter.value)
+  // 开启测站单独显示时，不进行 PGA 静默隐藏
+  if (isFiltered) return arr;
   return arr.filter(data => {
+    // 基于 PGA 变化时间过滤：如果 PGA 超过25秒未变化则隐藏
+    if (data.lastPgaChangeAt) {
+      return now.value - data.lastPgaChangeAt < PGA_STALE_SECONDS * 1000
+    }
+    // 回退：如果没有 lastPgaChangeAt，使用 update_at
     const updateTime = parseUpdateAt(data.update_at)
-    return now.value - updateTime < EXPIRE_SECONDS * 1000
+    return now.value - updateTime < 25 * 1000
   })
 })
 
@@ -983,39 +968,7 @@ onMounted(() => {
   }
 })
 
-// 添加自动刷新设置
-const autoRefreshEnabled = ref(false)
-let refreshInterval: number | null = null
 
-// 监听自动刷新设置变化
-watch(autoRefreshEnabled, (newValue: boolean) => {
-  if (newValue) {
-    startAutoRefresh()
-  } else {
-    stopAutoRefresh()
-  }
-})
-
-// 保存设置
-const saveAutoRefreshSetting = () => {
-  localStorage.setItem('autoRefreshEnabled', autoRefreshEnabled.value.toString())
-}
-
-// 初始化时读取设置
-onMounted(() => {
-  const savedSetting = localStorage.getItem('autoRefreshEnabled')
-  if (savedSetting !== null) {
-    autoRefreshEnabled.value = savedSetting === 'true'
-    if (autoRefreshEnabled.value) {
-      startAutoRefresh()
-    }
-  }
-})
-
-// 组件卸载时清理定时器
-onUnmounted(() => {
-  stopAutoRefresh()
-})
 
 const customStationName = ref<Record<string, string>>({}) // 存储自定义名称，键为UUID
 const pendingDetailUUID = ref<string | null>(null) // 待显示详情的测站UUID
@@ -1385,6 +1338,7 @@ onMounted(() => {
   max-width: 550px;
   min-height: auto;
   margin: 0 auto;
+  cursor: pointer;
   opacity: 0;
   transform: translateY(20px);
   // 初始状态
@@ -1466,8 +1420,30 @@ onMounted(() => {
     transform: scale(1.02);
   }
 
+  &.pga-stale {
+    // 卡片保持原样，数据区域已通过 v-if 隐藏
+  }
+
   &:hover {
     transform: translateY(-5px);
+  }
+
+  .stale-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 3rem 1rem;
+    color: #000000;
+    font-size: 0.95rem;
+    font-weight: 500;
+    animation: stale-fade-in 0.4s ease;
+  }
+
+  @keyframes stale-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   .card-header {
@@ -1703,46 +1679,6 @@ onMounted(() => {
     }
   }
 
-  .card-footer {
-    position: absolute;
-    bottom: 0;
-    left: 1;
-    right: 0;
-    padding: 1rem;
-    display: flex;
-    justify-content: center;
-
-    .detail-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 2rem;
-      background: var(--card-bg);
-      color: var(--text-color);
-      font-size: 0rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.1);
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.15);
-        transform: translateY(-2px);
-      }
-
-      .icon {
-        font-size: 1.2rem;
-        color: var(--text-color);
-      }
-
-      span {
-        line-height: 1;
-      }
-    }
-  }
-
   @media (max-width: 768px) {
     padding: 1rem;
 
@@ -1849,25 +1785,10 @@ onMounted(() => {
     .data-grid {
       grid-template-columns: 1fr;
     }
-
-    .card-footer {
-      padding: 0.8rem;
-
-      .detail-btn {
-        padding: 0.8rem 0.8rem;
-        font-size: 0.8rem;
-      }
-    }
   }
 }
 
 .dark {
-  .seismic-card {
-    .detail-btn {
-      background: rgba(255, 255, 255, 0);
-
-    }
-  }
   
   .settings-content {
     .filter-section,
@@ -1904,40 +1825,6 @@ onMounted(() => {
     .icon {
       transition: color 0.3s ease;
     }
-  }
-}
-
-.settings-toggle {
-  position: fixed;
-  top: 2rem;
-  right: 4rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-  padding: 0.25rem;
-  border-radius: 75%;
-  background: var(--card-bg);
-  transition: all 0.3s ease;
-  z-index: 100;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-}
-
-.wave-icon {
-  position: fixed;
-  top: 2rem;
-  right: 7rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-  padding: 0.25rem;
-  border-radius: 75%;
-  background: var(--card-bg);
-  transition: all 0.3s ease;
-  z-index: 100;
-
-  &:hover {
-    transform: scale(1.1);
   }
 }
 
@@ -2296,81 +2183,6 @@ onMounted(() => {
       }
     }
 
-    .refresh-section {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-
-      label {
-        display: block;
-        color: var(--text-color);
-        font-weight: 500;
-        text-align: left;
-        padding-left: 0;
-        margin-left: 0;
-      }
-
-      .refresh-control {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.8rem;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 0.8rem;
-
-        .refresh-text {
-          color: var(--text-color);
-          font-size: 0.9rem;
-        }
-
-        .toggle-switch {
-          position: relative;
-          display: inline-block;
-          width: 50px;
-          height: 24px;
-          flex-shrink: 0;
-
-          input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-
-            &:checked+.slider {
-              background-color: #2196F3;
-
-              &:before {
-                transform: translateX(26px);
-              }
-            }
-          }
-
-          .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-
-            &:before {
-              position: absolute;
-              content: "";
-              height: 16px;
-              width: 16px;
-              left: 4px;
-              bottom: 4px;
-              background-color: white;
-              transition: .4s;
-              border-radius: 50%;
-            }
-          }
-        }
-      }
-    }
-
     .RT-display-section,
     .display-section {
       display: flex;
@@ -2466,23 +2278,36 @@ onMounted(() => {
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .main-toggle {
   width: 60px;
   height: 60px;
   border-radius: 100%;
-  background-color: #ffffff;
-  color: #333;
-  border: none;
+  background-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #555;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   z-index: 1001;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease, transform 0.25s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    border-color: transparent;
+    transform: scale(1.05);
+  }
 }
 
 .main-toggle .iconify {
@@ -2516,15 +2341,28 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #ffffff;
-  color: #333;
-  border: none;
+  background-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #555;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    border-color: transparent;
+    transform: scale(1.1);
+  }
 }
 
 /* 深色模式相关样式已移除 */

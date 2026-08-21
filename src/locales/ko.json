@@ -59,8 +59,6 @@
   "error": "측정소 UUID가 올바르지 않습니다",
   "language": "언어 설정",
   "alert_settings": "경보음 임계값 설정",
-  "auto_refresh_settings": "WebSocket 백그라운드 자동 새로고침",
-  "background_auto_refresh": "10분마다 측정소 목록 자동 새로고침",
   "shindo_3": "JMA 진도 3 이상",
   "shindo_4": "JMA 진도 4 이상",
   "shindo_5-": "JMA 진도 5약 이상",
@@ -133,5 +131,6 @@
   "reject_confirm_title": "알림",
   "reject_confirm_message": "약관에 동의하지 않으면 소프트웨어를 사용할 수 없습니다",
   "reject_cancel_button": "취소",
-  "continue_disagree_button": "동의하지 않은 채 계속"
+  "continue_disagree_button": "동의하지 않은 채 계속",
+  "station_unresponsive": "측정소 데이터 응답 없음"
 }

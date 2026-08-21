@@ -59,8 +59,6 @@
   "error": "Invalid Station UUID",
   "language": "Language Settings",
   "alert_settings": "Alert Threshold Settings",
-  "auto_refresh_settings": "WebSocket Background Auto-Refresh",
-  "background_auto_refresh": "Auto-refresh station list every 10 minutes",
   "shindo_3": "JMA Intensity 3 or higher",
   "shindo_4": "JMA Intensity 4 or higher",
   "shindo_5-": "JMA Intensity 5 Lower or higher",
@@ -133,5 +131,6 @@
   "reject_confirm_title": "Notice",
   "reject_confirm_message": "You cannot use the software if you disagree with the agreement",
   "reject_cancel_button": "Cancel",
-  "continue_disagree_button": "Continue to disagree"
+  "continue_disagree_button": "Continue to disagree",
+  "station_unresponsive": "Station Data Unresponsive"
 }

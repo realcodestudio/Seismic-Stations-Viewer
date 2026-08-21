@@ -59,8 +59,6 @@
   "error": "測站 UUID 不正確",
   "language": "語言設定",
   "alert_settings": "警報音閾值設定",
-  "auto_refresh_settings": "WebSocket 背景自動更新",
-  "background_auto_refresh": "每10分鐘自動刷新測站列表",
   "shindo_3": "JMA 震度3以上",
   "shindo_4": "JMA 震度4以上",
   "shindo_5-": "JMA 震度5弱以上",
@@ -133,5 +131,6 @@
   "reject_confirm_title": "提示",
   "reject_confirm_message": "不同意協議無法使用軟件",
   "reject_cancel_button": "取消",
-  "continue_disagree_button": "繼續不同意"
+  "continue_disagree_button": "繼續不同意",
+  "station_unresponsive": "測站資料無回應"
 }
