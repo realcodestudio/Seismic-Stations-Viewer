@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const emit = defineEmits(['loading-complete']);
 const progress = ref(0);

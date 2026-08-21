@@ -198,7 +198,7 @@
         </div>
 
         <div class="version-section">
-          <a href="https://acg.kr/ssv" target="_blank" rel="noopener noreferrer" class="github-link"
+          <a href="https://github.com/realcodestudio/Seismic-Stations-Viewer" target="_blank" rel="noopener noreferrer" class="github-link"
             :title="$t('github_link')">
             <Icon icon="mdi:github" />
           </a>
